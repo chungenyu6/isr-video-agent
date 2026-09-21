@@ -62,7 +62,13 @@ def load_bundles() -> list[dict]:
 
 
 def summary(b: dict) -> dict:
-    e = b["enhanced"]
+    # A run killed by the hard timeout never reaches the enhanced evaluator, and
+    # may never have submitted evidence at all. Those fields are then absent, not
+    # zero: the run has no outcome, not an empty one. Keep them null so nothing
+    # downstream counts a timeout as a clean result.
+    e = b.get("enhanced") or {}
+    ev = b.get("evidence") or {}
+    v0 = b.get("v0") or {}
     return {
         "bundle": b["_dir"],
         "stage": b["run"]["stage"],
@@ -74,21 +80,21 @@ def summary(b: dict) -> dict:
         "locked_pattern": b["run"]["locked_pattern"],
         "run_status": b["run"]["run_status"],
         "wall_clock_sec": b["telemetry"]["wall_clock_sec"],
-        "decision": b["evidence"]["decision"],
-        "reported_count": b["evidence"]["reported_count"],
-        "v0": b["v0"]["status"],
-        "v0_blind_spot": e["v0_blind_spot"],
-        "outcome": e["outcome"],
-        "layers": e["layers"],
-        "earliest_violated_layer": e["earliest_violated_layer"],
-        "comparison_patterns": e["comparison_patterns"],
-        "full_signatures": e["full_signatures"],
+        "decision": ev.get("decision"),
+        "reported_count": ev.get("reported_count"),
+        "v0": v0.get("status"),
+        "v0_blind_spot": e.get("v0_blind_spot"),
+        "outcome": e.get("outcome"),
+        "layers": e.get("layers"),
+        "earliest_violated_layer": e.get("earliest_violated_layer"),
+        "comparison_patterns": e.get("comparison_patterns"),
+        "full_signatures": e.get("full_signatures"),
         "inspected_frames": sorted({f["frame_id"] for f in b["frames"] if f["inspected"] and f["frame_id"] is not None}),
     }
 
 
 def aggregate(runs: list[dict]) -> dict:
-    failure = sum(1 for r in runs if any(r["outcome"][k] for k in OUTCOMES))
+    failure = sum(1 for r in runs if any((r["outcome"] or {}).get(k) for k in OUTCOMES))
     return {
         "n": len(runs),
         "failure_runs": failure,
@@ -193,6 +199,20 @@ def main() -> int:
     args = ap.parse_args()
 
     runs = [summary(b) for b in load_bundles()]
+
+    if not args.check and not FINAL.exists():
+        # A line with no preregistered campaign (the ISR model-swap line) has no
+        # final-analysis.json to check against, and the aggregates below are
+        # report-shaped: they assume every run reached the enhanced evaluator,
+        # which a hard-timeout run never does. The site's only page is the run
+        # replay, which reads `runs` and nothing else, so publish just that and
+        # be explicit that no report backs it.
+        OUT.parent.mkdir(parents=True, exist_ok=True)
+        OUT.write_text(json.dumps({"runs": runs}, indent=1, ensure_ascii=False) + "\n")
+        print(f"wrote {OUT.relative_to(ROOT)}: {len(runs)} runs (no final-analysis.json at "
+              f"{FINAL}; figures are NOT report-checked)")
+        return 0
+
     derived = derive(runs)
 
     if args.check:
@@ -209,17 +229,6 @@ def main() -> int:
             print(f"MISMATCH {line}")
         print(f"checked {len(runs)} runs: {'OK' if not bad else f'{len(bad)} mismatch(es)'}")
         return 1 if bad else 0
-
-    if not FINAL.exists():
-        # A line with no preregistered campaign (the ISR model-swap line) has no
-        # final-analysis.json to check against. The site's only page is the run
-        # replay, which reads `runs` and nothing else, so publish just that and
-        # be explicit that no report backs it.
-        OUT.parent.mkdir(parents=True, exist_ok=True)
-        OUT.write_text(json.dumps({"runs": runs}, indent=1, ensure_ascii=False) + "\n")
-        print(f"wrote {OUT.relative_to(ROOT)}: {len(runs)} runs (no final-analysis.json at "
-              f"{FINAL}; figures are NOT report-checked)")
-        return 0
 
     final_raw = FINAL.read_bytes()
     final = json.loads(final_raw)

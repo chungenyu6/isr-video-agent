@@ -3,7 +3,7 @@
  "run_id": "fd-pi-pilot-2-nominal-r1-rep_0-20260921T221847Z",
  "harness": "pi",
  "live": false,
- "exported_at": "2026-09-21T22:35:28+00:00",
+ "exported_at": "2026-09-21T23:21:13+00:00",
  "run": {
   "stage": "pilot",
   "clip_id": "2-nominal-r1",
