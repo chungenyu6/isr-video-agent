@@ -1,0 +1,52 @@
+{
+ "runs": [
+  {
+   "bundle": "fd-pi-pilot-2-nominal-r1-rep_0",
+   "stage": "pilot",
+   "clip_id": "2-nominal-r1",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 9943,
+   "candidate": null,
+   "locked_pattern": null,
+   "run_status": "completed",
+   "wall_clock_sec": 140.7,
+   "decision": "report",
+   "reported_count": 0,
+   "v0": "pass",
+   "v0_blind_spot": true,
+   "outcome": {
+    "fn": 2,
+    "fp": 0,
+    "unsupported": 0,
+    "execution_failure": 0,
+    "abstain": 0,
+    "unknown": 0
+   },
+   "layers": {
+    "L0": "pass",
+    "L1": "fail",
+    "L2": "unknown",
+    "L3": "pass",
+    "L4": "fail"
+   },
+   "earliest_violated_layer": "L1",
+   "comparison_patterns": [
+    "fn|L1|count=2"
+   ],
+   "full_signatures": [
+    "fn|L1|count=2|nominal"
+   ],
+   "inspected_frames": [
+    0,
+    45,
+    91,
+    136,
+    181,
+    227,
+    272,
+    317
+   ]
+  }
+ ]
+}

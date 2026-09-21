@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chungenyu6/video-agent-failure-demo/schema/bundle.schema.json",
+  "title": "Failure Discovery replay bundle",
+  "description": "A self-contained replayable record of one Pi run on the wrong-way-vehicle task. Produced by tools/export_run.py from a run directory of the Failure Discovery MVP, consumed by the viewer. The viewer never reads a run directory. Ground truth is NOT in the bundle: it lives per clip in content/oracle/<clip>.json, so a bundle describes only what the agent and the evaluators produced.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundle_version", "run_id", "harness", "live", "exported_at", "run", "task", "video", "budget", "frames", "windows", "events", "pipeline", "evidence", "v0", "enhanced", "telemetry"],
+  "$defs": {
+    "nullable_int": {"type": ["integer", "null"]},
+    "nullable_str": {"type": ["string", "null"]},
+    "status": {"enum": ["pass", "fail", "unknown", "n/a"]}
+  },
+  "properties": {
+    "bundle_version": {"const": "2.0"},
+    "run_id": {"type": "string", "pattern": "^fd-pi-"},
+    "harness": {"const": "pi"},
+    "live": {"type": "boolean"},
+    "exported_at": {"type": "string"},
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "clip_id", "replicate", "agent_seed", "applied_seed", "layout_block", "candidate", "locked_pattern", "run_status", "agent_exit_code", "created_at", "finished_at", "models"],
+      "properties": {
+        "stage": {"enum": ["discovery", "confirmation", "live"]},
+        "clip_id": {"type": "string", "pattern": "^[012]-(nominal|challenging)-r[12]$"},
+        "replicate": {"$ref": "#/$defs/nullable_int"},
+        "agent_seed": {"$ref": "#/$defs/nullable_int"},
+        "applied_seed": {"$ref": "#/$defs/nullable_int"},
+        "layout_block": {"$ref": "#/$defs/nullable_int"},
+        "candidate": {"$ref": "#/$defs/nullable_int"},
+        "locked_pattern": {"$ref": "#/$defs/nullable_str"},
+        "run_status": {"$ref": "#/$defs/nullable_str"},
+        "agent_exit_code": {"$ref": "#/$defs/nullable_int"},
+        "created_at": {"$ref": "#/$defs/nullable_str"},
+        "finished_at": {"$ref": "#/$defs/nullable_str"},
+        "models": {"type": "object"}
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Closed on purpose: a label cannot ride along in a field nobody thought to exclude.",
+      "required": ["question", "oracle_exposed"],
+      "properties": {
+        "question": {"type": "string"},
+        "oracle_exposed": {"const": false}
+      }
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "duration_sec", "fps", "width", "height", "nb_frames", "proxy"],
+      "properties": {
+        "id": {"type": "string"},
+        "duration_sec": {"type": "number", "exclusiveMinimum": 0},
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "width": {"type": "integer"},
+        "height": {"type": "integer"},
+        "nb_frames": {"type": "integer", "minimum": 1},
+        "proxy": {"type": "string", "pattern": "^video/[\\w-]+\\.mp4$"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["limits", "final"],
+      "properties": {
+        "limits": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "final": {"type": "object", "additionalProperties": {"type": "integer"}}
+      }
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "frame_id", "t", "file", "window", "reason", "inspected", "cited", "observation"],
+        "properties": {
+          "key": {"type": "string"},
+          "frame_id": {"$ref": "#/$defs/nullable_int"},
+          "t": {"type": "number"},
+          "file": {"type": ["string", "null"], "pattern": "^frames/\\d{3}_[\\w.\\-]+\\.jpe?g$"},
+          "window": {"$ref": "#/$defs/nullable_str"},
+          "reason": {"$ref": "#/$defs/nullable_str"},
+          "inspected": {"type": "boolean"},
+          "cited": {"type": "boolean"},
+          "observation": {"$ref": "#/$defs/nullable_str"}
+        }
+      }
+    },
+    "windows": {"type": "array", "items": {"type": "object"}},
+    "events": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["t", "type"],
+        "properties": {
+          "t": {"type": "number", "minimum": 0},
+          "type": {"enum": ["run.start", "step.begin", "agent.say", "tool.call", "tool.result", "tool.error", "tool.fault", "budget.spend", "frames.ready", "observe.done", "answer.submit", "verify.result", "run.end"]}
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declared", "actual", "claimed", "agrees"],
+      "properties": {
+        "declared": {"type": "array", "items": {"type": "string"}},
+        "actual": {"type": "array", "items": {"type": "string"}},
+        "claimed": {"type": "array", "items": {"type": "string"}},
+        "agrees": {"type": "boolean"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "decision", "reported_count", "frames_processed", "windows_examined", "notes", "reported_targets"],
+      "properties": {
+        "present": {"type": "boolean"},
+        "decision": {"enum": ["report", "abstain", null]},
+        "reported_count": {"$ref": "#/$defs/nullable_int"},
+        "frames_processed": {"$ref": "#/$defs/nullable_int"},
+        "windows_examined": {"type": "array"},
+        "notes": {"$ref": "#/$defs/nullable_str"},
+        "reported_targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target_ref", "color_name", "interval_frames", "anchors"],
+            "properties": {
+              "target_ref": {"$ref": "#/$defs/nullable_str"},
+              "color_name": {"$ref": "#/$defs/nullable_str"},
+              "interval_frames": {"type": ["array", "null"]},
+              "anchors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["frame_id", "timestamp_sec", "roi_xyxy", "claim", "file"],
+                  "properties": {
+                    "frame_id": {"$ref": "#/$defs/nullable_int"},
+                    "timestamp_sec": {"type": ["number", "null"]},
+                    "roi_xyxy": {"type": ["array", "null"]},
+                    "claim": {"$ref": "#/$defs/nullable_str"},
+                    "file": {"$ref": "#/$defs/nullable_str"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "v0": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "checks", "errors"],
+      "properties": {
+        "status": {"enum": ["pass", "fail", "not_run"]},
+        "checks": {"type": "object", "additionalProperties": {"type": "boolean"}},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "enhanced": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["primary_eligible", "layers", "layer_details", "outcome", "earliest_violated_layer", "full_signatures", "comparison_patterns", "v0_blind_spot"],
+      "properties": {
+        "primary_eligible": {"type": "boolean"},
+        "layers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["L0", "L1", "L2", "L3", "L4"],
+          "properties": {
+            "L0": {"$ref": "#/$defs/status"}, "L1": {"$ref": "#/$defs/status"}, "L2": {"$ref": "#/$defs/status"},
+            "L3": {"$ref": "#/$defs/status"}, "L4": {"$ref": "#/$defs/status"}
+          }
+        },
+        "layer_details": {"type": "object"},
+        "outcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fn", "fp", "unsupported", "execution_failure", "abstain", "unknown"],
+          "properties": {
+            "fn": {"type": "integer", "minimum": 0}, "fp": {"type": "integer", "minimum": 0},
+            "unsupported": {"type": "integer", "minimum": 0}, "execution_failure": {"type": "integer", "minimum": 0},
+            "abstain": {"type": "integer", "minimum": 0}, "unknown": {"type": "integer", "minimum": 0}
+          }
+        },
+        "earliest_violated_layer": {"enum": ["L0", "L1", "L2", "L3", "L4", null]},
+        "full_signatures": {"type": "array", "items": {"type": "string"}},
+        "comparison_patterns": {"type": "array", "items": {"type": "string"}},
+        "v0_blind_spot": {"type": "boolean"}
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wall_clock_sec", "slow_run", "vlm_calls", "vlm_tokens", "tool_faults"],
+      "properties": {
+        "wall_clock_sec": {"type": ["number", "null"]},
+        "slow_run": {"type": "boolean"},
+        "vlm_calls": {"type": "integer"},
+        "vlm_tokens": {"type": "integer"},
+        "tool_faults": {"type": "integer"}
+      }
+    }
+  }
+}

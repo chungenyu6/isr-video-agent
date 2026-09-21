@@ -1,0 +1,48 @@
+# ---- node / build ----
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# ---- python ----
+__pycache__/
+*.pyc
+.venv/
+
+# ---- generated, never committed ----
+# app/public/bundles is a copy of bundles/ made by `npm run sync`, which the
+# build (and CI) runs automatically. Committing it duplicated 11 MB and, worse,
+# created a second source of truth: edit bundles/ without re-syncing and the
+# stale copy is what gets deployed.
+app/public/bundles/
+app/public/content/
+
+# NOTE: app/public/video/*.mp4 IS committed on purpose. CI does not run
+# tools/make_proxies.sh - it has no access to the source media - so if the
+# proxies were ignored the deployed site would have no video at all.
+
+# ---- live mode runtime ----
+live/logs/
+*.pid
+
+# ---- secrets ----
+.env
+*.token
+
+# NOTE: bundles/ IS committed. A bundle is the demo's input data and must be
+# reviewable in diff. tools/validate_bundle.py gates what may enter it.
+
+# screenshots used for review, not part of the product
+docs/shots/
+
+# ---- live-mode output: never committed, never published ----
+# A live run is somebody's ad-hoc question. It lands in bundles/ so the viewer
+# can replay it locally through the same code path, but it must not reach the
+# public site: it would publish whatever anyone typed, and bury the curated
+# scenarios under a growing pile of one-offs. tools/make_scenarios.py skips
+# these too, so a local rebuild cannot surface them either.
+bundles/live-*/
+live/runs/
+live/bundles/
+app/dist-live/
+live/state/

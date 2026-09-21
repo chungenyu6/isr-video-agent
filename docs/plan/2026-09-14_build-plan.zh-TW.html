@@ -1,0 +1,271 @@
+<title>Wrong-Way Demo 建置計劃</title>
+<meta name="description" content="video-agent-failure-demo：把 Failure Discovery MVP 的 56 個正式 run 做成 replay 網站與 live demo 的建置計劃。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#F2F3F0; --surface:#FFFFFF; --ink:#1B2024; --ink-2:#4F585F; --ink-3:#7A838A;
+  --rule:#D6DAD6; --lane:#C28A00; --lane-ink:#7F5A00; --lane-soft:#F6E7C1;
+  --fail:#B3261E; --fail-soft:#F6DAD7; --pass:#2D7A4C; --pass-soft:#D8EDDF;
+  --unk:#5A5E9C; --unk-soft:#E1E2F2; --asphalt:#2A3036; --asphalt-ink:#E9ECEA;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#14181B; --surface:#1C2125; --ink:#E6E9E7; --ink-2:#AEB6BB; --ink-3:#848D93;
+    --rule:#30373C; --lane:#E3B23C; --lane-ink:#EBC25E; --lane-soft:#3A3120;
+    --fail:#EE7A70; --fail-soft:#3D2422; --pass:#72C38F; --pass-soft:#1F3428;
+    --unk:#A5A9E6; --unk-soft:#282A42; --asphalt:#0E1113; --asphalt-ink:#E6E9E7;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#14181B; --surface:#1C2125; --ink:#E6E9E7; --ink-2:#AEB6BB; --ink-3:#848D93;
+  --rule:#30373C; --lane:#E3B23C; --lane-ink:#EBC25E; --lane-soft:#3A3120;
+  --fail:#EE7A70; --fail-soft:#3D2422; --pass:#72C38F; --pass-soft:#1F3428;
+  --unk:#A5A9E6; --unk-soft:#282A42; --asphalt:#0E1113; --asphalt-ink:#E6E9E7;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.75;margin:0;padding-inline:20px;padding-block:0 80px}
+.wrap{max-width:980px;margin:0 auto}
+header.top{padding-block:44px 28px;border-bottom:3px solid var(--ink);position:relative}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:5px;background:repeating-linear-gradient(90deg,var(--lane) 0 34px,transparent 34px 56px)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(38px,6vw,58px);line-height:1.02;letter-spacing:.005em;margin:.2em 0 .25em;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.15;margin:0 0 .4em;text-wrap:balance}
+h3{font-size:16px;font-weight:700;margin:1.4em 0 .3em}
+p{margin:.5em 0;max-width:68ch}
+.lede{font-size:17px;color:var(--ink-2);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:14px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:600}
+section{padding-block:40px 6px;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:14px}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:16px 18px}
+.box h3{margin-top:0}
+.box p,.box li{font-size:14.5px}
+ul{padding-left:1.2em;margin:.4em 0} li{margin:.2em 0;max-width:68ch}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--lane-soft);color:var(--ink);padding:.05em .35em;border-radius:3px;overflow-wrap:anywhere}
+.tbl{overflow-x:auto;margin-top:12px;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--ground)}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--mono);white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;padding:1px 8px;border-radius:99px;white-space:nowrap}
+.p-now{background:var(--lane-soft);color:var(--lane-ink)}
+.p-todo{background:var(--unk-soft);color:var(--unk)}
+.p-block{background:var(--fail-soft);color:var(--fail)}
+.p-ok{background:var(--pass-soft);color:var(--pass)}
+.thesis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:16px}
+.thesis .box{border-top:4px solid var(--fail)}
+.big{font-family:var(--display);font-weight:700;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:20px;color:var(--ink-3);font-weight:500}
+pre.wire{background:var(--asphalt);color:var(--asphalt-ink);font-family:var(--mono);font-size:12.5px;line-height:1.5;padding:16px 18px;border-radius:4px;overflow-x:auto;margin:12px 0}
+.never{border-left:4px solid var(--fail);background:var(--fail-soft);padding:12px 16px;border-radius:0 4px 4px 0;margin-top:14px}
+.never p{margin:.2em 0}
+.ask{border-left:4px solid var(--lane);background:var(--lane-soft);padding:12px 16px;border-radius:0 4px 4px 0;margin-top:14px}
+.tl{margin-top:18px;position:relative;height:66px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.tl .lab{position:absolute;left:10px;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.tl .vis{position:absolute;top:10px;height:12px;background:var(--fail);opacity:.85;border-radius:2px}
+.tl .ans{position:absolute;top:28px;height:12px;background:repeating-linear-gradient(45deg,var(--pass) 0 3px,transparent 3px 7px);border-radius:2px}
+.tl .tick{position:absolute;top:44px;width:2px;height:16px;background:var(--lane)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:9px;margin-right:6px;vertical-align:middle;border-radius:2px}
+footer{margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+a{color:var(--lane-ink)} a:focus-visible{outline:2px solid var(--lane);outline-offset:2px}
+@media (max-width:520px){body{font-size:15px} .big{font-size:36px}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Build plan · internal · 2026-09-14</div>
+  <h1>Wrong-Way Demo 建置計劃</h1>
+  <p class="lede">把 Failure Discovery MVP 的 56 個正式 run 做成一個可以 replay 的網站，再加上只在本機開放的 live demo。網站只呈現實驗已有的結果，不產生新的實驗證據。</p>
+  <div class="meta">
+    <span>repo <b>chungenyu6/video-agent-failure-demo</b> (public)</span>
+    <span>local <b>/home/video-agent-failure-demo</b></span>
+    <span>site <b>chungenyu6.github.io/video-agent-failure-demo</b></span>
+    <span>起點 <b>video-harness-demo@9c5ff71</b></span>
+  </div>
+</header>
+
+<section>
+  <h2>這個站要說的兩件事</h2>
+  <p>舊站想證明「agent 真的有看，我們能證明」。這次的實驗結果不一樣，所以網站要講的也不一樣。</p>
+  <div class="thesis">
+    <div class="box">
+      <div class="eyebrow">V0 blind spot</div>
+      <div class="big">38<small> / 43</small></div>
+      <p>V0 判定通過的正式 run 中，38 個被 enhanced evaluator 抓到語意或覆蓋問題。V0 只檢查結構、預算、ledger 和 hash。</p>
+    </div>
+    <div class="box">
+      <div class="eyebrow">L1 temporal coverage</div>
+      <div class="big">24<small> / 24</small></div>
+      <p>有目標的 discovery run 全部 L1 fail：agent 送進 VLM 的 frames，沒有對每個目標構成有效的 temporal pair。</p>
+    </div>
+  </div>
+  <h3>核心畫面：349-frame 時間軸</h3>
+  <p>同一條時間軸上疊三層：GT 目標可見區間、可判斷方向的 answerable pair 區段、agent 實際送進 VLM 的 frames。沒有交集就一眼看得出來。下圖是示意，不是真實 run。</p>
+  <div class="tl" role="img" aria-label="示意時間軸：目標可見區間與 agent 取樣 frame 沒有交集">
+    <div class="vis" style="left:34%;width:11%"></div>
+    <div class="ans" style="left:35%;width:9%"></div>
+    <div class="vis" style="left:71%;width:10%"></div>
+    <div class="ans" style="left:72%;width:8%"></div>
+    <div class="tick" style="left:2%"></div><div class="tick" style="left:16%"></div>
+    <div class="tick" style="left:27%"></div><div class="tick" style="left:50%"></div>
+    <div class="tick" style="left:63%"></div><div class="tick" style="left:93%"></div>
+  </div>
+  <div class="legend"><span><i style="background:var(--fail)"></i>GT target visible</span><span><i style="background:repeating-linear-gradient(45deg,var(--pass) 0 3px,transparent 3px 7px)"></i>answerable pair 區段</span><span><i style="background:var(--lane)"></i>frame 送進 VLM</span></div>
+</section>
+
+<section>
+  <h2>已確認的決定</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>項目</th><th>決定</th></tr></thead>
+    <tbody>
+      <tr><td>Repo</td><td>新的 public GitHub repo，SSH push；GitHub Pages 用 Actions 部署</td></tr>
+      <tr><td>起點</td><td>複製舊站 <code>9c5ff71</code> 的檔案，不帶 git 歷史；舊站維持原樣繼續運作</td></tr>
+      <tr><td>資料</td><td>12 支 Against-Traffic 影片與 GT（bbox、events）可公開</td></tr>
+      <tr><td>語言</td><td>網站、README 英文；內部計劃文件繁中</td></tr>
+      <tr><td>收錄範圍</td><td>只收 56 個正式 run（36 discovery + 20 confirmation）；pilot 與排除 run 不收</td></tr>
+      <tr><td>Live mode</td><td>靜態站先上線，接著做 live；只綁 127.0.0.1，走 SSH tunnel</td></tr>
+    </tbody>
+  </table></div>
+  <div class="never">
+    <p><b>不會修改的東西</b></p>
+    <p><code>/home/video-agent-failure-discovery-mvp</code>：只讀。不寫檔、不 commit、不呼叫 <code>run_pi.sh</code> 或 <code>new_run.py</code>。</p>
+    <p><code>/home/video-code-harness/video-harness-demo</code>：只複製，不改動。</p>
+  </div>
+</section>
+
+<section>
+  <h2>架構</h2>
+  <p>保留舊站的三段式：run 目錄 → allowlist exporter → <code>bundle.json</code> → React viewer。UI 從不直接讀 run 目錄。</p>
+  <div class="grid2">
+    <div class="box">
+      <h3>沿用</h3>
+      <ul>
+        <li><code>adapters/pi.py</code>：讀 <code>agent/pi-sessions/*.jsonl</code></li>
+        <li><code>clock.ts</code>、Steps、Budget、ToolRack panel</li>
+        <li>N 欄同步 replay：欄位從 harness 改成同一 clip 的不同 seed</li>
+        <li>CI guard → build → Pages 的 workflow 結構</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>移除</h3>
+      <ul>
+        <li>OpenCode adapter 與 bundles</li>
+        <li>Video-MME 題目、gold、選擇題 UI</li>
+        <li>舊的 featured、scenarios、proxy 影片</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>新增</h3>
+      <ul>
+        <li>Schema v2：<code>reported_targets</code>、<code>enhanced</code>（L0–L4、outcome、signature）、<code>run</code>（stage、clip、layout block、seed）</li>
+        <li>Oracle export：<code>frames.jsonl</code> 壓成 visible-only bbox track，加 <code>events.json</code> 區間</li>
+        <li>Answerable 區段直接 import 實驗 repo 的 <code>failure_discovery</code> 計算，JS 不重寫</li>
+        <li>H.264 proxy（原檔 <code>mpeg4</code> 瀏覽器無法播放）</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Guard</h3>
+      <ul>
+        <li>Allowlist 排除 <code>auth.json</code>、<code>environment.txt</code>、<code>workspace/.git</code></li>
+        <li>發佈內容不得出現 <code>/home/</code>、<code>/root/</code></li>
+        <li>每支 proxy 必須正好 349 frames、10 fps</li>
+        <li>頁面數字必須等於 <code>final-analysis.json</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>頁面設計</h2>
+  <h3>Overview</h3>
+<pre class="wire">[ Claim boundary: fixed 12-clip bank · not population risk / causal / safety ]
+
+Discovery matrix   wrong-way 0|1|2 × nominal|challenging × r1|r2 × seed 1..3
+  ■ ■ ■  ■ ■ ■   每格 = 一個 run；顏色 = outcome；角標 = V0 pass/fail；點擊 → replay
+
+V0 × Enhanced      43 V0 pass ─→ 38 enhanced flagged    （可點進每個 run）
+
+Confirmation       cand 0..3 × 5 new seeds   0/5 · 1/5 · 2/5 · 1/5   Wilson 95%
+                   五個 seed 並排 → 看 exact label 如何漂移
+
+Featured cases</pre>
+  <h3>Run replay</h3>
+<pre class="wire">┌ Video (H.264 proxy) ───────────────┐ ┌ Outcome ─────────────────────┐
+│ [What the agent saw] [Oracle view] │ │ FN 2 · FP 0 · unsup 0 · abst 0│
+│ overlay: target / distractor / ROI │ │ L0 ✓  L1 ✗  L2 ?  L3 ✓  L4 ✗  │
+└────────────────────────────────────┘ │ V0 pass → V0 blind spot       │
+┌ 349-frame timeline ────────────────────────────────────────────────┐
+│ GT visible ▬▬   answerable pair ░░   frames sent to VLM │ │ │      │
+└────────────────────────────────────────────────────────────────────┘
+┌ Reported targets & matching ┐ ┌ VLM observations ┐ ┌ Budget 16/16/32 ┐
+Steps (Pi trace, raw on click)</pre>
+  <p>Oracle overlay 預設關閉：觀眾先用 agent 的視角看，再切換看答案。</p>
+</section>
+
+<section>
+  <h2>Featured cases 候選</h2>
+  <p>實作時逐一對照 <code>enhanced_report.json</code> 確認後才放上去。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>案例</th><th>要說明什麼</th></tr></thead>
+    <tbody>
+      <tr><td>Report with nothing in it<br><span class="mono" style="color:var(--ink-3)">confirmation 2-nominal-r1 rep_4</span></td><td><code>decision=report</code> 但 <code>count=0</code>，場上有兩台逆向車 → FN×2，V0 全過</td></tr>
+      <tr><td>典型 L1 fail</td><td>抽樣完全落在目標可見區間之外</td></tr>
+      <tr><td>唯一的 FP／unsupported</td><td>位於 1-challenging cell</td></tr>
+      <tr><td>Hard timeout</td><td>execution failure 是 agent 的結果，不是 infra 問題</td></tr>
+      <tr><td>Candidate 2 · 5 seeds 並排</td><td>2/5 重現，其餘漂移成 <code>abstain|L1</code>、<code>fn|L4</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Live demo</h2>
+  <div class="grid2">
+    <div class="box">
+      <h3>範圍</h3>
+      <ul>
+        <li>綁 <code>127.0.0.1:8090</code>，SSH tunnel 使用，永不公開</li>
+        <li>只選 clip（12 支）與 seed，不接受自由文字 → 沒有 prompt injection 入口</li>
+        <li>一次一個 run；模型未啟動時顯示警告</li>
+        <li>標示 “Live demo run — not experiment evidence”</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>如何不碰實驗 repo</h3>
+      <ul>
+        <li>Demo 自帶 runner，唯讀使用實驗的 prompt、tools、Pi 設定、evaluator</li>
+        <li>每次執行前比對 <code>freeze.json</code> hash，不一致就拒絕</li>
+        <li>Run 寫入 <code>live/runs/</code>（gitignored），不寫 manifest，不佔 64-run 預算</li>
+        <li>產生的指令與正式 <code>command.sh</code> 比對（run_id／seed／路徑以外必須相同）</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ask"><p><b>可能需要系統權限：</b>agent 以 <code>phase0agent</code> 執行，需要能寫 <code>live/runs/</code> 但讀不到 GT。若要改 repo 以外的 ACL，會先停下來說明。</p></div>
+</section>
+
+<section>
+  <h2>分階段與 gate</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Stage</th><th>內容</th><th>Gate</th><th>狀態</th></tr></thead>
+    <tbody>
+      <tr><td class="num">S0</td><td>建資料夾、複製舊站、清除舊內容、README／AGENTS／CLAUDE</td><td>build 通過；站上無 Video-MME／OpenCode 內容</td><td><span class="pill p-ok">完成</span></td></tr>
+      <tr><td class="num">S1</td><td>H.264 proxy、oracle export、exporter v2、schema v2、validator</td><td>12/12 proxy = 349 frames（PSNR 46–53 dB）；56/56 bundle 通過；leak guard 擋下並修正 1 個 host path</td><td><span class="pill p-ok">完成</span></td></tr>
+      <tr><td class="num">S2</td><td>Replay page：overlay、timeline、matching、outcome panel</td><td>5 個 featured case 對照 enhanced report；1400px／400px 截圖無 console error、無橫向捲動</td><td><span class="pill p-ok">完成</span></td></tr>
+      <tr><td class="num">S3</td><td>Overview：matrix、V0×Enhanced、confirmation</td><td><code>build_experiment.py --check</code>：56 runs 全部數字 = <code>final-analysis.json</code></td><td><span class="pill p-ok">完成</span></td></tr>
+      <tr><td class="num">S4</td><td>Push 與 Pages 部署</td><td>已上線 chungenyu6.github.io/video-agent-failure-demo；CI guard／build／deploy 全過；線上瀏覽器驗證：頭條數字、36 格矩陣、影片載入、GT overlay、手機寬度無橫向捲動、console 無錯誤（部署剛完成時一張 frame 出現一次 CDN 503，重抓 5/5 為 200）</td><td><span class="pill p-ok">完成</span></td></tr>
+      <tr><td class="num">S5</td><td>Live mode</td><td>研究者同意後啟用。真實 run <code>2-nominal-r1</code> seed 20260914：hash／boundary／endpoint 檢查通過；啟動指令與正式 run 逐 token 一致（prompt 解碼後相同）；63.6 s 完成，V0 34/34 pass，enhanced <code>fn|L1|count=2</code>；live bundle 通過 validator；頁面串流無錯誤</td><td><span class="pill p-ok">完成</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="ask"><p><b>需要研究者處理：</b>GitHub 上 <code>chungenyu6/video-agent-failure-demo</code> 尚未建立（<code>git ls-remote</code> 回報 Repository not found）。請在網頁上建立空的 public repo（不勾 README），並在 Settings → Pages 選 GitHub Actions。S0–S3 在本機先進行。</p></div>
+</section>
+
+<footer>docs/plan/2026-09-14_build-plan.zh-TW.html · 版控副本以 repo 為準</footer>
+</div>

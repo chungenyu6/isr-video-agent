@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#15191B"/>
+  <!-- three lanes: two arrows with the flow, one against it -->
+  <g stroke="#6E7A7D" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M9 24V9M5.5 12.5 9 9l3.5 3.5"/>
+    <path d="M23 24V9M19.5 12.5 23 9l3.5 3.5"/>
+  </g>
+  <path d="M16 8v15M12.5 19.5 16 23l3.5-3.5" stroke="#E0533D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+</svg>
