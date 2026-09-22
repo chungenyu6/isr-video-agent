@@ -200,6 +200,25 @@ def main() -> int:
 
     runs = [summary(b) for b in load_bundles()]
 
+    if args.check and "report" not in json.loads(OUT.read_text()):
+        # A line with no preregistered campaign publishes runs only, so there are
+        # no report figures to reconcile. Check what actually exists: the bundles
+        # still have to match the committed run list and the oracle files still
+        # have to cover every clip on the site.
+        committed = json.loads(OUT.read_text())
+        bad = []
+        if [r["bundle"] for r in runs] != [r["bundle"] for r in committed["runs"]]:
+            bad.append("runs list differs from committed experiment.json - rebuild it")
+        oracles = sorted(p.stem for p in ORACLE.glob("*.json"))
+        missing = sorted({r["clip_id"] for r in runs} - set(oracles))
+        if missing:
+            bad.append(f"no oracle file for clips {missing}")
+        for line in bad:
+            print(f"MISMATCH {line}")
+        print(f"checked {len(runs)} runs (no report to reconcile): "
+              f"{'OK' if not bad else f'{len(bad)} mismatch(es)'}")
+        return 1 if bad else 0
+
     if not args.check and not FINAL.exists():
         # A line with no preregistered campaign (the ISR model-swap line) has no
         # final-analysis.json to check against, and the aggregates below are

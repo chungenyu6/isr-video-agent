@@ -1,28 +1,55 @@
-# ISR Video Agent — run viewer
+# ISR Video Agent
 
-A single-page replay of one agent run: what the agent looked at, what it reported,
-and how the verifier judged it. One page, one run, a clip picker and a seed picker.
+A demo of a video agent answering surveillance queries over fixed camera footage.
 
-Forked from the Wrong-Way Failure Discovery demo site and cut down: the Overview
-page, the live-run page and the bottom-of-page "Every run on this clip" grid were
-removed. What remains is the run replay.
+The query: **which vehicles, if any, are travelling against traffic flow?**
+
+The agent gets a clip and a set of tools, and nothing else. It decides where to
+look, pulls frames, sends them to a vision model, and either reports the vehicles
+it can back with evidence or abstains. It never sees ground truth.
+
+This site replays one run at a time so you can watch it work:
+
+- the video, with the agent's regions of interest drawn on it
+- the windows it chose, against the windows it needed
+- the frames it actually sent, and what the vision model said about each one
+- its frame budget as it spends it
+- its tool calls and full reasoning trace, step by step
+- what it finally reported, and how the verifier judged it
+
+Pick a clip and a seed at the top of the page.
+
+## What is running
+
+| Role | Model |
+|---|---|
+| Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` |
+| Perception | `google/gemma-4-31B-it` |
+
+Both served locally on vLLM, on A40s. The agent harness is Pi; the twelve clips
+are fixed synthetic traffic scenes.
+
+## Reading it honestly
+
+These are engineering runs, not a measured study: no preregistration, no signed
+report. The site publishes the runs themselves and no aggregate figures, and runs
+that failed or timed out are shown as such rather than hidden. Don't read success
+rates or model comparisons off it.
 
 ## Data
 
-The viewer reads static JSON. Nothing touches an experiment directory at runtime.
+The viewer reads static JSON; nothing touches an experiment directory at runtime.
 
 ```bash
-export EXPERIMENT_ROOT=/home/isr-video-agent        # default
-python3 tools/export_oracle.py                      # content/oracle/<clip_id>.json
-python3 tools/export_run.py <run-dir>               # bundles/<name>/bundle.json
-python3 tools/build_experiment.py                   # content/experiment.json
+export EXPERIMENT_ROOT=/home/isr-video-agent
+python3 tools/export_oracle.py                 # content/oracle/<clip_id>.json
+python3 tools/export_run.py --run-dir <dir>    # bundles/<name>/bundle.json
+python3 tools/build_experiment.py              # content/experiment.json
 ```
 
-`build_experiment.py` normally cross-checks every figure against the experiment's
-`docs/report/final-analysis.json` and refuses to publish a number the experiment did
-not produce. The ISR line has no preregistered campaign and no such report, so the
-tool publishes the run list alone and says so on stdout. Do not read aggregate claims
-off this site.
+`export_run.py` scrubs host paths to placeholders and refuses outright to write a
+bundle still containing a credential-shaped string or an unrefused reference to the
+label directory. That guard is load-bearing; do not relax it to publish a run.
 
 ## Develop
 
@@ -34,4 +61,5 @@ npm run build      # tsc -b && vite build -> app/dist
 npm run preview    # http://0.0.0.0:4173
 ```
 
-`BASE_PATH` sets the base href for subdirectory hosting; it defaults to `/`.
+`BASE_PATH` sets the base href for subdirectory hosting and defaults to `/`; the
+Pages workflow sets it to `/<repo name>/`.

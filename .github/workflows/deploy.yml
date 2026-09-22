@@ -34,12 +34,27 @@ jobs:
       - name: Site figures must equal the final report
         run: python tools/build_experiment.py --check
 
-      - name: Exactly the 56 formal runs, and no live run
+      - name: Published bundles match experiment.json, and no live run
+        # The ISR line has no fixed matrix size to assert, so assert the two
+        # things that must hold however many runs there are: every bundle on
+        # disk is listed in experiment.json, and nothing live slipped in.
         run: |
-          n=$(ls -d bundles/fd-pi-discovery-*/ bundles/fd-pi-confirmation-*/ | wc -l)
-          total=$(ls -d bundles/*/ | wc -l)
-          echo "formal=$n total=$total"
-          test "$n" -eq 56 && test "$total" -eq 56
+          python - <<'PY'
+          import json, pathlib, sys
+          exp = json.loads(pathlib.Path("content/experiment.json").read_text())
+          listed = sorted(r["bundle"] for r in exp["runs"])
+          on_disk = sorted(p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json"))
+          live = [p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json")
+                  if json.loads(p.read_text()).get("live")]
+          bad = []
+          if listed != on_disk:
+              bad.append(f"listed={listed}\non_disk={on_disk}")
+          if live:
+              bad.append(f"live runs must not be published: {live}")
+          print(f"{len(on_disk)} bundles, {len(listed)} listed, {len(live)} live")
+          if bad:
+              print("\n".join(bad)); sys.exit(1)
+          PY
 
   build:
     needs: guard
