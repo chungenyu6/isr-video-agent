@@ -87,8 +87,13 @@ def validate(bundle_dir: Path, schema: dict) -> list[str]:
         for a in t["anchors"]:
             if a["file"] and not (bundle_dir / a["file"]).is_file():
                 fails.append(f"sanity: anchor frame missing {a['file']}")
-    if not b["live"] and b["enhanced"] is None:
-        fails.append("sanity: formal bundle has no enhanced report")
+    # The enhanced evaluator only runs on submitted evidence. A run that ended
+    # without submitting - killed at the hard timeout, or the agent stopping on
+    # its own - genuinely has no enhanced report, and that is an outcome worth
+    # publishing rather than a corrupt bundle. Still require one whenever
+    # evidence exists, which is the case the check was written for.
+    if not b["live"] and b["enhanced"] is None and b["evidence"].get("present"):
+        fails.append("sanity: bundle has evidence but no enhanced report")
     if not (VIDEO_DIR / Path(b["video"]["proxy"]).name).is_file():
         fails.append(f"sanity: proxy video missing {b['video']['proxy']}")
     if path.stat().st_size > MAX_BUNDLE_BYTES:

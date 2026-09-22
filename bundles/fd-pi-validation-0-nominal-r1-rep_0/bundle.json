@@ -1,0 +1,1798 @@
+{
+ "bundle_version": "2.0",
+ "run_id": "fd-pi-validation-0-nominal-r1-rep_0-20260922T040712Z",
+ "harness": "pi",
+ "live": false,
+ "exported_at": "2026-09-22T05:15:58+00:00",
+ "run": {
+  "stage": "validation",
+  "clip_id": "0-nominal-r1",
+  "replicate": 0,
+  "agent_seed": 269318313,
+  "applied_seed": 269318313,
+  "layout_block": 9943,
+  "candidate": null,
+  "locked_pattern": null,
+  "run_status": "completed",
+  "agent_exit_code": 0,
+  "created_at": "2026-09-22T04:07:12.458442+00:00",
+  "finished_at": "2026-09-22T04:11:08.115063+00:00",
+  "models": {
+   "coder": {
+    "model": "nemotron-3.5-lightning-30b-a3b",
+    "revision": "bee7596271d1495f6992ae224aefde4410e816b8"
+   },
+   "vlm": {
+    "model": "gemma-4-31b",
+    "revision": "842da3794eaa0b77d5f08bae87a17459d91ff475"
+   }
+  }
+ },
+ "task": {
+  "question": "Which vehicles, if any, are travelling against traffic flow?",
+  "oracle_exposed": false
+ },
+ "video": {
+  "id": "0-nominal-r1",
+  "duration_sec": 34.9,
+  "fps": 10.0,
+  "width": 960,
+  "height": 540,
+  "nb_frames": 349,
+  "proxy": "video/0-nominal-r1.mp4"
+ },
+ "budget": {
+  "limits": {
+   "coarse_frames": 16,
+   "dense_frames": 16,
+   "vlm_inspected_frames": 32
+  },
+  "final": {
+   "dense_frames": 16,
+   "vlm_inspected_frames": 16
+  }
+ },
+ "frames": [
+  {
+   "key": "/tmp/coarse_scan/w_000_0.000s.jpg",
+   "frame_id": 0,
+   "t": 0.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "An empty multi-lane road with a divider on the left and a fence on the right."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_001_4.971s.jpg",
+   "frame_id": 50,
+   "t": 4.971,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are traveling toward the camera: a red car in the far lane, a white car in the middle lane, and a light-colored (beige/silver) car in the near lane."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_000_5.000s.jpg",
+   "frame_id": 50,
+   "t": 5.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on the right side of the road, all facing away from the camera: a red car in the distance, a white car in the middle, and a beige/off-white car in the foreground."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_001_7.000s.jpg",
+   "frame_id": 70,
+   "t": 7.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Two vehicles are visible on the right side of the road, both facing away from the camera: a light-colored car in the distance and a purple car in the middle."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_002_9.000s.jpg",
+   "frame_id": 90,
+   "t": 9.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on the right side of the road, all facing away from the camera: a red car in the distance, a white car in the middle, and a blue car in the foreground."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_002_9.943s.jpg",
+   "frame_id": 99,
+   "t": 9.943,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are traveling toward the camera: a blue car in the far lane, a blue car in the middle lane, and a lime-green car in the near lane."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_003_11.000s.jpg",
+   "frame_id": 110,
+   "t": 11.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on the right side of the road, all facing away from the camera: a blue car in the distance, a yellow car in the middle, and a green car in the foreground."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_004_13.000s.jpg",
+   "frame_id": 130,
+   "t": 13.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on the right side of the road, all facing away from the camera: a yellow car in the distance, a green car in the middle, and a pink car in the foreground."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_003_14.914s.jpg",
+   "frame_id": 149,
+   "t": 14.914,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are traveling toward the camera: a pink car in the far lane, a pink car in the middle lane, and a purple car in the near lane."
+  },
+  {
+   "key": "/tmp/coarse_scan_2/w_005_15.000s.jpg",
+   "frame_id": 150,
+   "t": 15.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on the right side of the road, all facing away from the camera: a pink car in the distance, a light purple car in the middle, and a dark purple car in the foreground."
+  },
+  {
+   "key": "/tmp/coarse_scan_3/w_000_15.000s.jpg",
+   "frame_id": 150,
+   "t": 15.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "Three vehicles are visible on a multi-lane road. A purple car is in the foreground moving away from the camera in the rightmost lane. Further ahead, a light purple/pink car is moving toward the camera in the middle lane, and another pink car is moving toward the camera in the leftmost lane of this road section."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_004_19.886s.jpg",
+   "frame_id": 199,
+   "t": 19.886,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "The road is empty."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_005_24.857s.jpg",
+   "frame_id": 249,
+   "t": 24.857,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "The road is empty."
+  },
+  {
+   "key": "/tmp/coarse_scan_3/w_001_25.000s.jpg",
+   "frame_id": 250,
+   "t": 25.0,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "The road is visible, but no vehicles are present in the frame."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_006_29.829s.jpg",
+   "frame_id": 298,
+   "t": 29.829,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "The road is empty."
+  },
+  {
+   "key": "/tmp/coarse_scan/w_007_34.800s.jpg",
+   "frame_id": 348,
+   "t": 34.8,
+   "file": null,
+   "window": null,
+   "reason": "sent to the VLM without an extraction index",
+   "inspected": true,
+   "cited": false,
+   "observation": "The road is empty."
+  }
+ ],
+ "windows": [],
+ "events": [
+  {
+   "t": 0.0,
+   "type": "run.start"
+  },
+  {
+   "t": 2.18,
+   "type": "step.begin"
+  },
+  {
+   "t": 2.18,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/input/task.json"
+   }
+  },
+  {
+   "t": 2.197,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"video_path\": \"video.mp4\",\n  \"question\": \"Which vehicles, if any, are travelling against traffic flow?\",\n  \"oracle_exposed\": false,\n  \"video\": {\n    \"fps\": 10.0,\n    \"frames\": 349,\n    \"width\": 960,\n    \"height\": 540\n  }\n}"
+  },
+  {
+   "t": 3.055,
+   "type": "step.begin"
+  },
+  {
+   "t": 3.055,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/"
+   }
+  },
+  {
+   "t": 3.093,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 2692\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:07 .\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:07 ..\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:07 .git\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 .pi\n-rw-r--r-- 1 phase0agent phase0agent    1060 Sep 11 02:35 AGENTS.md\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 config\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 input\n-rw-r--r-- 1 phase0agent phase0agent     320 Sep 22 04:07 input-task.json\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 21 21:54 tools\n-rw-rw-r-- 1 phase0agent phase0agent 2718761 Sep 10 20:05 video.mp4"
+  },
+  {
+   "t": 4.013,
+   "type": "step.begin"
+  },
+  {
+   "t": 4.013,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/input/"
+   }
+  },
+  {
+   "t": 4.036,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 16\ndrwxr-xr-x 2 phase0agent phase0agent 4096 Sep 22 04:07 .\ndrwxr-xr-x 7 phase0agent phase0agent 4096 Sep 22 04:07 ..\n-rw-r--r-- 1 phase0agent phase0agent 2408 Sep 11 01:47 evidence.schema.json\n-rw-r--r-- 1 phase0agent phase0agent  320 Sep 22 04:07 task.json"
+  },
+  {
+   "t": 4.979,
+   "type": "step.begin"
+  },
+  {
+   "t": 4.979,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/tools/"
+   }
+  },
+  {
+   "t": 5.001,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 60\ndrwxr-xr-x 2 phase0agent phase0agent  4096 Sep 21 21:54 .\ndrwxr-xr-x 7 phase0agent phase0agent  4096 Sep 22 04:07 ..\n-rw-r--r-- 1 phase0agent phase0agent  4761 Sep 11 02:19 _budget.py\n-rw-r--r-- 1 phase0agent phase0agent  4712 Sep 11 03:33 _common.py\n-rw-r--r-- 1 phase0agent phase0agent  7788 Sep 11 03:33 crv_prepare.py\n-rw-r--r-- 1 phase0agent phase0agent  4832 Sep 11 03:33 extract_window.py\n-rw-r--r-- 1 phase0agent phase0agent  2524 Sep 11 01:56 probe_video.py\n-rw-r--r-- 1 phase0agent phase0agent  1458 Sep 11 02:24 submit_evidence.py\n-rw-r--r-- 1 phase0agent phase0agent 10407 Sep 21 21:53 vlm_inspect.py"
+  },
+  {
+   "t": 6.004,
+   "type": "step.begin"
+  },
+  {
+   "t": 6.004,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/tools/submit_evidence.py"
+   }
+  },
+  {
+   "t": 6.009,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "#!/usr/bin/env python3\n\"\"\"Structurally validate and submit one EvidenceBundle without semantic feedback.\"\"\"\nfrom __future__ import annotations\n\nimport argparse\nimport json\nimport os\nfrom pathlib import Path\n\nimport jsonschema\n\n\nREPO_ROOT = Path(__file__).resolve().parent.parent\n\n\ndef main() -> int:\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--input\", type=Path, required=True)\n    args = parser.parse_args()\n    run_dir_value = os.environ.get(\"EXPERIMENT_RUN_DIR\")\n    if not run_dir_value:\n        raise SystemExit(\"TOOL_EXEC: EXPERIMENT_RUN_DIR is not set\")\n    run_dir = Path(run_dir_value)\n    output = run_dir / \"workspace\" / \"evidence.json\"\n    if output.exists():\n        raise SystemExit(\"TOOL_EXEC: evidence already submitted; a retry is a new run\")\n    candidate = json.loads(args.input.read_text())\n    schema = json.loads((REPO_ROOT / \"config\" / \"evidence.schema.json\").read_text())\n    errors = list(jsonschema.Draft202012Validator(schema).iter_errors(candidate))\n    if errors:\n        for error in errors[:8]:\n            print(f\"SCHEMA_ERROR at {list(error.absolute_path)}: {error.message}\")\n        return 2\n    output.parent.mkdir(parents=True, exist_ok=True)\n    output.write_text(json.dumps(candidate, indent=2, ensure_ascii=False) + \"\\n\")\n    print(json.dumps({\"accepted\": True, \"written\": str(output), \"semantic_verdict\": \"not_evaluated\"}))\n    return 0\n\n\n… (+56 chars)"
+  },
+  {
+   "t": 7.186,
+   "type": "step.begin"
+  },
+  {
+   "t": 7.186,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/config/evidence.schema.json"
+   }
+  },
+  {
+   "t": 7.19,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://jalaian-lab.local/failure-discovery/evidence-v1.schema.json\",\n  \"title\": \"Wrong-Way Vehicle EvidenceBundle v1\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"schema_version\", \"sample_id\", \"clip_id\", \"decision\", \"reported_count\", \"reported_targets\", \"windows_examined\", \"frames_processed\", \"tool_trace\"],\n  \"properties\": {\n    \"schema_version\": {\"const\": 1},\n    \"sample_id\": {\"type\": \"string\", \"minLength\": 1},\n    \"clip_id\": {\"type\": \"string\", \"minLength\": 1},\n    \"decision\": {\"enum\": [\"report\", \"abstain\"]},\n    \"reported_count\": {\"type\": \"integer\", \"minimum\": 0},\n    \"reported_targets\": {\n      \"type\": \"array\",\n      \"items\": {\"$ref\": \"#/$defs/reported_target\"}\n    },\n    \"windows_examined\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"array\", \"prefixItems\": [{\"type\": \"number\", \"minimum\": 0}, {\"type\": \"number\", \"minimum\": 0}], \"minItems\": 2, \"maxItems\": 2\n      }\n    },\n    \"frames_processed\": {\"type\": \"integer\", \"minimum\": 0},\n    \"tool_trace\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}},\n    \"notes\": {\"type\": \"string\"}\n  },\n  \"$defs\": {\n    \"reported_target\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"target_ref\", \"interval_frames\", \"anchors\"],\n      \"properties\": {\n        \"target_ref\": {\"type\": \"string\n… (+1006 chars)"
+  },
+  {
+   "t": 7.894,
+   "type": "step.begin"
+  },
+  {
+   "t": 7.894,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/tools/probe_video.py"
+   }
+  },
+  {
+   "t": 7.897,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "#!/usr/bin/env python3\n\"\"\"Report duration / fps / resolution / codec for a video.\n\nFirst call in the expected loop: the controller needs the duration before it can\nreason about temporal windows at all. Costs no frame budget.\n\nUsage:\n  uv run python tools/probe_video.py --video data/working/videos/xxx.mp4\n\"\"\"\n\nfrom __future__ import annotations\n\nimport argparse\nimport sys\nimport time\nfrom pathlib import Path\n\nsys.path.insert(0, str(Path(__file__).resolve().parent))\n\nfrom _common import ToolError, die, emit, ffprobe_json, log_event  # noqa: E402\n\n\ndef _fps(rate: str | None) -> float | None:\n    \"\"\"avg_frame_rate arrives as a rational string like '30000/1001'.\"\"\"\n    if not rate or \"/\" not in rate:\n        return None\n    num, den = rate.split(\"/\", 1)\n    try:\n        num_f, den_f = float(num), float(den)\n    except ValueError:\n        return None\n    return round(num_f / den_f, 4) if den_f else None\n\n\ndef main() -> int:\n    ap = argparse.ArgumentParser(description=__doc__)\n    ap.add_argument(\"--video\", required=True)\n    args = ap.parse_args()\n\n    video = Path(args.video)\n    started = time.time()\n    try:\n        info = ffprobe_json(video)\n    except ToolError as exc:\n        die(str(exc), code=\"DATA_DECODE\")\n        return 2\n\n    streams = info.get(\"streams\", [])\n    video_streams = [s for s in streams if s.get(\"codec_type\") == \"video\"]\n    if not video_streams:\n        die(f\n… (+1122 chars)"
+  },
+  {
+   "t": 9.039,
+   "type": "step.begin"
+  },
+  {
+   "t": 9.039,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "probe_video",
+   "args": {
+    "command": "<workspace>/tools/probe_video.py --video <workspace>/video.mp4"
+   }
+  },
+  {
+   "t": 9.059,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "probe_video",
+   "detail": "/bin/bash: line 1: <workspace>/tools/probe_video.py: Permission denied\n\n\nCommand exited with code 126"
+  },
+  {
+   "t": 9.059,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "probe_video",
+   "ok": false,
+   "detail": "/bin/bash: line 1: <workspace>/tools/probe_video.py: Permission denied\n\n\nCommand exited with code 126"
+  },
+  {
+   "t": 10.236,
+   "type": "step.begin"
+  },
+  {
+   "t": 10.236,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "probe_video",
+   "args": {
+    "command": "python <workspace>/tools/probe_video.py --video <workspace>/video.mp4"
+   }
+  },
+  {
+   "t": 10.364,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "probe_video",
+   "ok": true,
+   "detail": "{\n  \"path\": \"<workspace>/video.mp4\",\n  \"duration_sec\": 34.9,\n  \"fps\": 10.0,\n  \"width\": 960,\n  \"height\": 540,\n  \"codec\": \"mpeg4\",\n  \"nb_frames\": 349,\n  \"has_audio_stream\": false,\n  \"size_bytes\": 2718761\n}"
+  },
+  {
+   "t": 11.249,
+   "type": "step.begin"
+  },
+  {
+   "t": 11.249,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/tools/extract_window.py"
+   }
+  },
+  {
+   "t": 11.252,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "#!/usr/bin/env python3\n\"\"\"Densely resample a specific temporal window.\n\nThis is the tool that makes active search observable. The coarse crv scan is\nquery-blind; this call is where the controller commits to \"I want to look harder\nHERE, because of what I just saw\". Every extraction records the requested window\nand the exact timestamp of each frame, so windows_examined in the final\nEvidenceBundle can be checked against what actually happened rather than trusted.\n\nUsage:\n  uv run python tools/extract_window.py --video <path> --start 38.0 --end 48.0 \\\n      --num-frames 8 --output <dir> --reason \"coarse frames show runners at 40s\"\n\"\"\"\n\nfrom __future__ import annotations\n\nimport argparse\nimport json\nimport sys\nfrom pathlib import Path\n\nsys.path.insert(0, str(Path(__file__).resolve().parent))\n\nimport _budget  # noqa: E402\nfrom _common import ToolError, die, emit, log_event, run_subprocess, timestamp_to_source_frame, video_duration  # noqa: E402\n\n\ndef main() -> int:\n    ap = argparse.ArgumentParser(description=__doc__)\n    ap.add_argument(\"--video\", required=True)\n    ap.add_argument(\"--start\", type=float, required=True)\n    ap.add_argument(\"--end\", type=float, required=True)\n    ap.add_argument(\"--num-frames\", type=int, required=True)\n    ap.add_argument(\"--output\", required=True)\n    ap.add_argument(\n        \"--reason\",\n        default=\"\",\n        help=\"why this window - recorded in\n… (+3430 chars)"
+  },
+  {
+   "t": 12.293,
+   "type": "step.begin"
+  },
+  {
+   "t": 12.293,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/tools/vlm_inspect.py"
+   }
+  },
+  {
+   "t": 12.297,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "#!/usr/bin/env python3\n\"\"\"Send frames to the frozen Gemma 4 perception endpoint and return structured observations.\n\nThis is the ONLY semantic vision boundary in the system. Three properties matter\nmore than convenience here:\n\n1. **The VLM is a perception tool, not a verifier and not the answerer.** It\n   reports what is visible at given timestamps. Aggregation, hypothesis choice\n   and the final answer stay with the controller, so the trace shows who decided\n   what.\n2. **Images are sent as real base64 payloads**, and the byte count of what was\n   sent is logged. A run whose \"vision\" was actually a filename in a text prompt\n   is a VISION_PLUMBING failure, and the log is how we can tell.\n3. **Every inspected frame is charged to the budget** before the request is made.\n\nUsage:\n  uv run python tools/vlm_inspect.py --question-file <f> --frames-json <f> --max-images 8\n  uv run python tools/vlm_inspect.py --question \"...\" --images a.png b.png\n\"\"\"\n\nfrom __future__ import annotations\n\nimport argparse\nimport base64\nimport json\nimport mimetypes\nimport sys\nimport time\nfrom pathlib import Path\n\nsys.path.insert(0, str(Path(__file__).resolve().parent))\n\nimport _budget  # noqa: E402\nfrom _common import die, emit, load_config, log_event  # noqa: E402\n\nSYSTEM_PROMPT = \"\"\"You are a visual perception module in a video analysis pipeline.\n\nYou report ONLY what is visible in the images you are giv\n… (+9005 chars)"
+  },
+  {
+   "t": 13.758,
+   "type": "step.begin"
+  },
+  {
+   "t": 13.758,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/tools/_budget.py"
+   }
+  },
+  {
+   "t": 13.761,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "\"\"\"Run-scoped frame budget, enforced at call time.\n\nThe original plan checked the frame budget only after the run, in V0. That means\nan over-budget run is discovered when it is already too late to do anything but\nthrow the run away. This module adds the missing half: tools refuse the call\nthat would breach the ceiling, and record the refusal.\n\nThe two layers are independent on purpose and neither replaces the other:\n\n  * here          - execution-time enforcement, can be evaded by an agent that\n                    bypasses the tools entirely (it has a shell, after all)\n  * v0_validate   - post-hoc recomputation from the artifacts, catches exactly\n                    the bypass case\n\nLedger format: <run_dir>/tool-logs/budget.jsonl, append-only, one record per\nreservation attempt including the ones that were denied.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom pathlib import Path\n\nfrom _common import ToolError, load_config, log_event, run_dir\n\nCATEGORIES = (\"coarse_frames\", \"dense_frames\", \"vlm_inspected_frames\")\n\n\nclass BudgetExceeded(ToolError):\n    \"\"\"Raised when a reservation would breach the configured ceiling.\"\"\"\n\n\ndef _ledger_path() -> Path:\n    rd = run_dir(required=True)\n    assert rd is not None\n    logs = rd / \"tool-logs\"\n    logs.mkdir(parents=True, exist_ok=True)\n    return logs / \"budget.jsonl\"\n\n\ndef limits() -> dict[str, int]:\n    budget = load_config(\n… (+3359 chars)"
+  },
+  {
+   "t": 14.774,
+   "type": "step.begin"
+  },
+  {
+   "t": 14.774,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/config"
+   }
+  },
+  {
+   "t": 14.776,
+   "type": "tool.error",
+   "tool": "read",
+   "detail": "EISDIR: illegal operation on a directory, read"
+  },
+  {
+   "t": 14.776,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": false,
+   "detail": "EISDIR: illegal operation on a directory, read"
+  },
+  {
+   "t": 15.809,
+   "type": "step.begin"
+  },
+  {
+   "t": 15.809,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/config/"
+   }
+  },
+  {
+   "t": 15.834,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 16\ndrwxr-xr-x 2 phase0agent phase0agent 4096 Sep 22 04:07 .\ndrwxr-xr-x 7 phase0agent phase0agent 4096 Sep 22 04:07 ..\n-rw-r--r-- 1 phase0agent phase0agent 2408 Sep 11 01:47 evidence.schema.json\n-rw-r--r-- 1 phase0agent phase0agent 1972 Sep 22 02:13 experiment.yaml"
+  },
+  {
+   "t": 16.911,
+   "type": "step.begin"
+  },
+  {
+   "t": 16.911,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/config/experiment.yaml"
+   }
+  },
+  {
+   "t": 16.915,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "experiment: failure-discovery-mvp\nschema_version: 1\n\ndataset:\n  root: Test_Against_Traffic\n  manifest_sha256: b8f0af4589cd56004b0c5f23786b59d6d0ad4224aead158aa8b23c3108a7c6fe\n  expected_clips: 12\n  expected_frames_per_clip: 349\n  expected_fps: 10.0\n  expected_width: 960\n  expected_height: 540\n\nsut:\n  harness: pi\n  harness_version: 0.82.1\n  archived_source_commit: 4d4b86be74117cae2dd9668a72645e5fa783810b\n  coder_model: nemotron-3.5-lightning-30b-a3b\n  coder_endpoint: http://127.0.0.1:8001/v1\n  coder_temperature: 1.0\n  coder_top_p: 0.95\n  coder_context_window: 65536\n  coder_max_output_tokens: 8192\n  vlm_model: gemma-4-31b\n  vlm_endpoint: http://127.0.0.1:8002/v1\n  vlm_temperature: 1.0\n  vlm_top_p: 0.95\n  vlm_max_tokens: 2048\n\nvlm:\n  endpoint: http://127.0.0.1:8002/v1\n  model: gemma-4-31b\n  temperature: 1.0\n  top_p: 0.95\n  max_tokens: 2048\n  max_images_per_call: 8\n\ncrv:\n  transcribe: false\n  grid: true\n\nbudget:\n  coarse_frames_max: 16\n  dense_frames_max: 16\n  vlm_inspected_frames_max: 32\n\ntimeouts:\n  # Raised from 300 s after the Gemma-4/Nemotron swap (D029). A clean run on this\n  # orchestrator costs ~48 requests at ~5 s each plus ~45 s of VLM latency, so 300 s\n  # left no margin and killed 10 of 12 clips. slow_run_seconds moves with it so the\n  # telemetry flag still means \"unusually slow\" and not \"almost every run\".\n  slow_run_seconds: 360\n  hard_timeout_seconds: 600\n  # NOTE: \n… (+570 chars)"
+  },
+  {
+   "t": 18.972,
+   "type": "step.begin"
+  },
+  {
+   "t": 18.972,
+   "type": "agent.say",
+   "text": "Now I understand the budget constraints:\n- coarse_frames_max: 16\n- dense_frames_max: 16\n- vlm_inspected_frames_max: 32\n\nLet me start with a coarse scan of the video to understand the traffic flow. I'll begin by examining the overall video structure."
+  },
+  {
+   "t": 18.972,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "probe_video",
+   "args": {
+    "command": "python <workspace>/tools/probe_video.py --video <workspace>/video.mp4"
+   }
+  },
+  {
+   "t": 19.096,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "probe_video",
+   "ok": true,
+   "detail": "{\n  \"path\": \"<workspace>/video.mp4\",\n  \"duration_sec\": 34.9,\n  \"fps\": 10.0,\n  \"width\": 960,\n  \"height\": 540,\n  \"codec\": \"mpeg4\",\n  \"nb_frames\": 349,\n  \"has_audio_stream\": false,\n  \"size_bytes\": 2718761\n}"
+  },
+  {
+   "t": 20.444,
+   "type": "step.begin"
+  },
+  {
+   "t": 20.444,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 0 --end 34.9 --num-frames 8 --output /tmp/coarse_scan_0 --reason \"initial coarse scan start of video\""
+   }
+  },
+  {
+   "t": 20.563,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "TOOL_EXEC",
+    "message": "output directory already exists and is nonempty: /tmp/coarse_scan_0"
+   }
+  },
+  {
+   "t": 20.571,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_0\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 20.571,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_0\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 20.571,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 8,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 0,
+    "limit": 16
+   }
+  },
+  {
+   "t": 20.571,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": -8,
+    "granted": true,
+    "kind": "release",
+    "used_before": null,
+    "limit": null
+   }
+  },
+  {
+   "t": 22.027,
+   "type": "step.begin"
+  },
+  {
+   "t": 22.027,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "mkdir -p /tmp/coarse_scan_0 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 0 --end 34.9 --num-frames 8 --output /tmp/coarse_scan_0 --reason \"initial coarse scan start of video\""
+   }
+  },
+  {
+   "t": 22.142,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "TOOL_EXEC",
+    "message": "output directory already exists and is nonempty: /tmp/coarse_scan_0"
+   }
+  },
+  {
+   "t": 22.151,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_0\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 22.151,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_0\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 22.151,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 8,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 0,
+    "limit": 16
+   }
+  },
+  {
+   "t": 23.626,
+   "type": "step.begin"
+  },
+  {
+   "t": 23.626,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_0 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 0 --end 34.9 --num-frames 8 --output /tmp/coarse_scan_1 --reason \"initial coarse scan start of video\""
+   }
+  },
+  {
+   "t": 23.742,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "TOOL_EXEC",
+    "message": "output directory already exists and is nonempty: /tmp/coarse_scan_1"
+   }
+  },
+  {
+   "t": 23.75,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_1\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 23.75,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"output directory already exists and is nonempty: /tmp/coarse_scan_1\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 23.75,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 6,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 8,
+    "limit": 16
+   }
+  },
+  {
+   "t": 25.257,
+   "type": "step.begin"
+  },
+  {
+   "t": 25.257,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_1 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 0 --end 34.9 --num-frames 8 --output /tmp/coarse_scan --reason \"initial coarse scan start of video\""
+   }
+  },
+  {
+   "t": 26.222,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "TOOL_EXEC",
+    "message": "ffmpeg failed to extract frame at 34.900s: "
+   }
+  },
+  {
+   "t": 26.231,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"ffmpeg failed to extract frame at 34.900s: \"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 26.231,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"TOOL_EXEC\", \"message\": \"ffmpeg failed to extract frame at 34.900s: \"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 26.231,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 6,
+    "granted": false,
+    "kind": "reserve",
+    "used_before": 14,
+    "limit": 16
+   }
+  },
+  {
+   "t": 27.754,
+   "type": "step.begin"
+  },
+  {
+   "t": 27.754,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan && mkdir -p /tmp/coarse_scan && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 0 --end 34.8 --num-frames 8 --output /tmp/coarse_scan --reason \"initial coarse scan start of video\""
+   }
+  },
+  {
+   "t": 28.754,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": true,
+   "detail": "{\n  \"video\": \"<workspace>/video.mp4\",\n  \"window\": [\n    0.0,\n    34.8\n  ],\n  \"reason\": \"initial coarse scan start of video\",\n  \"num_frames\": 8,\n  \"output_dir\": \"/tmp/coarse_scan\",\n  \"budget\": {\n    \"limits\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 16,\n      \"vlm_inspected_frames\": 32\n    },\n    \"spent\": {\n      \"coarse_frames\": 0,\n      \"dense_frames\": 8,\n      \"vlm_inspected_frames\": 0\n    },\n    \"remaining\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 8,\n      \"vlm_inspected_frames\": 32\n    }\n  },\n  \"window_json\": \"/tmp/coarse_scan/window.json\",\n  \"timestamps\": [\n    0.0,\n    4.971,\n    9.943,\n    14.914,\n    19.886,\n    24.857,\n    29.829,\n    34.8\n  ],\n  \"note\": \"Pass window.json to vlm_inspect.py --frames-json.\"\n}"
+  },
+  {
+   "t": 28.754,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 3,
+    "granted": false,
+    "kind": "reserve",
+    "used_before": 14,
+    "limit": 16
+   }
+  },
+  {
+   "t": 29.341,
+   "type": "step.begin"
+  },
+  {
+   "t": 29.341,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la /tmp/coarse_scan/"
+   }
+  },
+  {
+   "t": 29.363,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 536\ndrwxr-xr-x 2 phase0agent phase0agent  4096 Sep 22 04:07 .\ndrwxrwxrwt 1 root        root        61440 Sep 22 04:07 ..\n-rw-r--r-- 1 phase0agent phase0agent 35689 Sep 22 04:07 w_000_0.000s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 61876 Sep 22 04:07 w_001_4.971s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 62889 Sep 22 04:07 w_002_9.943s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 64529 Sep 22 04:07 w_003_14.914s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 57614 Sep 22 04:07 w_004_19.886s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 57696 Sep 22 04:07 w_005_24.857s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 57736 Sep 22 04:07 w_006_29.829s.jpg\n-rw-r--r-- 1 phase0agent phase0agent 56131 Sep 22 04:07 w_007_34.800s.jpg\n-rw-r--r-- 1 phase0agent phase0agent  1785 Sep 22 04:07 window.json"
+  },
+  {
+   "t": 30.749,
+   "type": "step.begin"
+  },
+  {
+   "t": 30.749,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "args": {
+    "command": "python <workspace>/tools/vlm_inspect.py --question \"Which vehicles are travelling against traffic flow (wrong-way)? Describe each vehicle's position, direction, colour if visible, and timestamp.\" --frames-json /tmp/coarse_scan/window.json --max-images 8 --window 0 34.8"
+   }
+  },
+  {
+   "t": 77.663,
+   "type": "observe.done",
+   "detail": {
+    "frame_ids": [
+     0,
+     50,
+     99,
+     149,
+     199,
+     249,
+     298,
+     348
+    ],
+    "latency_sec": 45.981,
+    "tokens": 3429
+   }
+  },
+  {
+   "t": 77.833,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "ok": true,
+   "detail": "{\n  \"observation_file\": \"/tmp/coarse_scan/observation_00.json\",\n  \"frames_inspected\": 8,\n  \"image_bytes_sent\": 454160,\n  \"latency_sec\": 45.981,\n  \"summary\": \"The frames show a multi-lane road where vehicles appear in groups at 4.971s, 9.943s, and 14.914s. All visible vehicles are traveling in the same direction, moving towards the camera.\",\n  \"answer_relevance\": [],\n  \"observation_count\": 8,\n  \"parse_error\": null,\n  \"note\": \"Full per-frame observations saved to /tmp/coarse_scan/observation_00.json; re-read that file instead of relying on this context.\"\n}"
+  },
+  {
+   "t": 77.833,
+   "type": "budget.spend",
+   "script": "vlm_inspect",
+   "detail": {
+    "category": "vlm_inspected_frames",
+    "n": 8,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 0,
+    "limit": 32
+   }
+  },
+  {
+   "t": 78.604,
+   "type": "step.begin"
+  },
+  {
+   "t": 78.604,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "/tmp/coarse_scan/observation_00.json"
+   }
+  },
+  {
+   "t": 78.608,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"model\": \"gemma-4-31b\",\n  \"window\": [\n    0.0,\n    34.8\n  ],\n  \"frames_sent\": [\n    {\n      \"frame\": \"/tmp/coarse_scan/w_000_0.000s.jpg\",\n      \"timestamp_sec\": 0.0,\n      \"source_frame_id\": 0\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_001_4.971s.jpg\",\n      \"timestamp_sec\": 4.971,\n      \"source_frame_id\": 50\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_002_9.943s.jpg\",\n      \"timestamp_sec\": 9.943,\n      \"source_frame_id\": 99\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_003_14.914s.jpg\",\n      \"timestamp_sec\": 14.914,\n      \"source_frame_id\": 149\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_004_19.886s.jpg\",\n      \"timestamp_sec\": 19.886,\n      \"source_frame_id\": 199\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_005_24.857s.jpg\",\n      \"timestamp_sec\": 24.857,\n      \"source_frame_id\": 249\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_006_29.829s.jpg\",\n      \"timestamp_sec\": 29.829,\n      \"source_frame_id\": 298\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_007_34.800s.jpg\",\n      \"timestamp_sec\": 34.8,\n      \"source_frame_id\": 348\n    }\n  ],\n  \"image_bytes_sent\": 454160,\n  \"latency_sec\": 45.981,\n  \"usage\": {\n    \"completion_tokens\": 725,\n    \"prompt_tokens\": 2704,\n    \"total_tokens\": 3429,\n    \"completion_tokens_details\": null,\n    \"prompt_tokens_details\": null\n  },\n  \"parse_error\": null,\n  \"raw_response\": \"```json\\n{\\n  \\\"observations\\\": [\\n    {\\n     \n… (+4061 chars)"
+  },
+  {
+   "t": 80.993,
+   "type": "step.begin"
+  },
+  {
+   "t": 80.993,
+   "type": "agent.say",
+   "text": "All vehicles observed so far are traveling *toward* the camera. Let me examine more windows to find wrong-way traffic. I need to check other parts of the video. Let me scan additional windows systematically."
+  },
+  {
+   "t": 80.993,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_2 && mkdir -p /tmp/coarse_scan_2 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 5 --end 15 --num-frames 6 --output /tmp/coarse_scan_2 --reason \"middle early window\""
+   }
+  },
+  {
+   "t": 81.804,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": true,
+   "detail": "{\n  \"video\": \"<workspace>/video.mp4\",\n  \"window\": [\n    5.0,\n    15.0\n  ],\n  \"reason\": \"middle early window\",\n  \"num_frames\": 6,\n  \"output_dir\": \"/tmp/coarse_scan_2\",\n  \"budget\": {\n    \"limits\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 16,\n      \"vlm_inspected_frames\": 32\n    },\n    \"spent\": {\n      \"coarse_frames\": 0,\n      \"dense_frames\": 14,\n      \"vlm_inspected_frames\": 8\n    },\n    \"remaining\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 2,\n      \"vlm_inspected_frames\": 24\n    }\n  },\n  \"window_json\": \"/tmp/coarse_scan_2/window.json\",\n  \"timestamps\": [\n    5.0,\n    7.0,\n    9.0,\n    11.0,\n    13.0,\n    15.0\n  ],\n  \"note\": \"Pass window.json to vlm_inspect.py --frames-json.\"\n}"
+  },
+  {
+   "t": 81.804,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 2,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 14,
+    "limit": 16
+   }
+  },
+  {
+   "t": 82.98,
+   "type": "step.begin"
+  },
+  {
+   "t": 82.98,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "args": {
+    "command": "python <workspace>/tools/vlm_inspect.py --question \"Which vehicles are travelling against traffic flow (wrong-way)? Describe each vehicle's position, direction, colour if visible, and timestamp.\" --frames-json /tmp/coarse_scan_2/window.json --max-images 6 --window 5 15"
+   }
+  },
+  {
+   "t": 127.338,
+   "type": "observe.done",
+   "detail": {
+    "frame_ids": [
+     50,
+     70,
+     90,
+     110,
+     130,
+     150
+    ],
+    "latency_sec": 43.421,
+    "tokens": 2791
+   }
+  },
+  {
+   "t": 127.511,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "ok": true,
+   "detail": "{\n  \"observation_file\": \"/tmp/coarse_scan_2/observation_00.json\",\n  \"frames_inspected\": 6,\n  \"image_bytes_sent\": 371057,\n  \"latency_sec\": 43.421,\n  \"summary\": \"Across all provided frames from 5.0s to 15.0s, multiple vehicles of various colors (red, white, beige, purple, blue, yellow, green, pink) are seen traveling on the right side of the road, all moving in the same direction away from the camera.\",\n  \"answer_relevance\": [],\n  \"observation_count\": 6,\n  \"parse_error\": null,\n  \"note\": \"Full per-frame observations saved to /tmp/coarse_scan_2/observation_00.json; re-read that file instead of relying on this context.\"\n}"
+  },
+  {
+   "t": 127.511,
+   "type": "budget.spend",
+   "script": "vlm_inspect",
+   "detail": {
+    "category": "vlm_inspected_frames",
+    "n": 6,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 8,
+    "limit": 32
+   }
+  },
+  {
+   "t": 129.131,
+   "type": "step.begin"
+  },
+  {
+   "t": 129.131,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_3 && mkdir -p /tmp/coarse_scan_3 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 15 --end 25 --num-frames 6 --output /tmp/coarse_scan_3 --reason \"middle late window\""
+   }
+  },
+  {
+   "t": 129.27,
+   "type": "tool.fault",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": null
+   }
+  },
+  {
+   "t": 129.271,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": "BUDGET_VIOLATION: extract_window requested 6 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run."
+   }
+  },
+  {
+   "t": 129.28,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 6 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 129.28,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 6 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 129.28,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 3,
+    "granted": false,
+    "kind": "reserve",
+    "used_before": 16,
+    "limit": 16
+   }
+  },
+  {
+   "t": 131.0,
+   "type": "step.begin"
+  },
+  {
+   "t": 131.0,
+   "type": "agent.say",
+   "text": "I've used up the dense_frames budget. Let me check the budget status and use VLM sparingly. Let me use fewer frames per window."
+  },
+  {
+   "t": 131.0,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 15 --end 25 --num-frames 3 --output /tmp/coarse_scan_3 --reason \"middle late window fewer frames\""
+   }
+  },
+  {
+   "t": 131.132,
+   "type": "tool.fault",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": null
+   }
+  },
+  {
+   "t": 131.133,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": "BUDGET_VIOLATION: extract_window requested 3 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run."
+   }
+  },
+  {
+   "t": 131.141,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 3 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 131.141,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 3 dense_frames, 2 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 131.141,
+   "type": "budget.spend",
+   "script": "extract_window",
+   "detail": {
+    "category": "dense_frames",
+    "n": 2,
+    "granted": false,
+    "kind": "reserve",
+    "used_before": 16,
+    "limit": 16
+   }
+  },
+  {
+   "t": 132.715,
+   "type": "step.begin"
+  },
+  {
+   "t": 132.715,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 15 --end 25 --num-frames 2 --output /tmp/coarse_scan_3 --reason \"middle late window fewer frames\""
+   }
+  },
+  {
+   "t": 133.086,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": true,
+   "detail": "{\n  \"video\": \"<workspace>/video.mp4\",\n  \"window\": [\n    15.0,\n    25.0\n  ],\n  \"reason\": \"middle late window fewer frames\",\n  \"num_frames\": 2,\n  \"output_dir\": \"/tmp/coarse_scan_3\",\n  \"budget\": {\n    \"limits\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 16,\n      \"vlm_inspected_frames\": 32\n    },\n    \"spent\": {\n      \"coarse_frames\": 0,\n      \"dense_frames\": 16,\n      \"vlm_inspected_frames\": 14\n    },\n    \"remaining\": {\n      \"coarse_frames\": 16,\n      \"dense_frames\": 0,\n      \"vlm_inspected_frames\": 18\n    }\n  },\n  \"window_json\": \"/tmp/coarse_scan_3/window.json\",\n  \"timestamps\": [\n    15.0,\n    25.0\n  ],\n  \"note\": \"Pass window.json to vlm_inspect.py --frames-json.\"\n}"
+  },
+  {
+   "t": 134.737,
+   "type": "step.begin"
+  },
+  {
+   "t": 134.737,
+   "type": "agent.say",
+   "text": "Good, now dense_frames budget is exhausted (16/16). Let me use VLM inspection on the windows I've already extracted. Let me check the middle-late window first."
+  },
+  {
+   "t": 134.737,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "args": {
+    "command": "python <workspace>/tools/vlm_inspect.py --question \"Which vehicles are travelling against traffic flow (wrong-way)? Describe each vehicle's position, direction, colour if visible, and timestamp.\" --frames-json /tmp/coarse_scan_3/window.json --max-images 2 --window 15 25"
+   }
+  },
+  {
+   "t": 155.278,
+   "type": "observe.done",
+   "detail": {
+    "frame_ids": [
+     150,
+     250
+    ],
+    "latency_sec": 19.606,
+    "tokens": 1219
+   }
+  },
+  {
+   "t": 155.45,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "vlm_inspect",
+   "ok": true,
+   "detail": "{\n  \"observation_file\": \"/tmp/coarse_scan_3/observation_00.json\",\n  \"frames_inspected\": 2,\n  \"image_bytes_sent\": 122244,\n  \"latency_sec\": 19.606,\n  \"summary\": \"At 15.0s, three cars are visible on the road: one purple car traveling away from the viewer and two pink/light purple cars traveling toward the viewer. By 25.0s, the road is empty.\",\n  \"answer_relevance\": [\n    \"source_frame_id 150 shows vehicles moving in opposite directions, which is relevant for identifying wrong-way traffic.\"\n  ],\n  \"observation_count\": 2,\n  \"parse_error\": null,\n  \"note\": \"Full per-frame observations saved to /tmp/coarse_scan_3/observation_00.json; re-read that file instead of relying on this context.\"\n}"
+  },
+  {
+   "t": 155.45,
+   "type": "budget.spend",
+   "script": "vlm_inspect",
+   "detail": {
+    "category": "vlm_inspected_frames",
+    "n": 2,
+    "granted": true,
+    "kind": "reserve",
+    "used_before": 14,
+    "limit": 32
+   }
+  },
+  {
+   "t": 156.26,
+   "type": "step.begin"
+  },
+  {
+   "t": 156.26,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "/tmp/coarse_scan_3/observation_00.json"
+   }
+  },
+  {
+   "t": 156.264,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"model\": \"gemma-4-31b\",\n  \"window\": [\n    15.0,\n    25.0\n  ],\n  \"frames_sent\": [\n    {\n      \"frame\": \"/tmp/coarse_scan_3/w_000_15.000s.jpg\",\n      \"timestamp_sec\": 15.0,\n      \"source_frame_id\": 150\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_3/w_001_25.000s.jpg\",\n      \"timestamp_sec\": 25.0,\n      \"source_frame_id\": 250\n    }\n  ],\n  \"image_bytes_sent\": 122244,\n  \"latency_sec\": 19.606,\n  \"usage\": {\n    \"completion_tokens\": 316,\n    \"prompt_tokens\": 903,\n    \"total_tokens\": 1219,\n    \"completion_tokens_details\": null,\n    \"prompt_tokens_details\": null\n  },\n  \"parse_error\": null,\n  \"raw_response\": \"```json\\n{\\n  \\\"observations\\\": [\\n    {\\n      \\\"source_frame_id\\\": 150,\\n      \\\"timestamp_sec\\\": 15.0,\\n      \\\"frame\\\": \\\"w_000_15.000s.jpg\\\",\\n      \\\"observation\\\": \\\"Three vehicles are visible on a multi-lane road. A purple car is in the foreground moving away from the camera in the rightmost lane. Further ahead, a light purple/pink car is moving toward the camera in the middle lane, and another pink car is moving toward the camera in the leftmost lane of this road section.\\\"\\n    },\\n    {\\n      \\\"source_frame_id\\\": 250,\\n      \\\"timestamp_sec\\\": 25.0,\\n      \\\"frame\\\": \\\"w_001_25.000s.jpg\\\",\\n      \\\"observation\\\": \\\"The road is visible, but no vehicles are present in the frame.\\\"\\n    }\\n  ],\\n  \\\"summary\\\": \\\"At 15.0s, three cars are visible on the road: one purple c\n… (+1363 chars)"
+  },
+  {
+   "t": 158.328,
+   "type": "step.begin"
+  },
+  {
+   "t": 158.328,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_4 && mkdir -p /tmp/coarse_scan_4 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 25 --end 34.9 --num-frames 3 --output /tmp/coarse_scan_4 --reason \"late window\""
+   }
+  },
+  {
+   "t": 158.467,
+   "type": "tool.fault",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": null
+   }
+  },
+  {
+   "t": 158.467,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": "BUDGET_VIOLATION: extract_window requested 3 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run."
+   }
+  },
+  {
+   "t": 158.477,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 3 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 158.477,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 3 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 159.936,
+   "type": "step.begin"
+  },
+  {
+   "t": 159.936,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "extract_window",
+   "args": {
+    "command": "rm -rf /tmp/coarse_scan_5 && mkdir -p /tmp/coarse_scan_5 && python <workspace>/tools/extract_window.py --video <workspace>/video.mp4 --start 25 --end 34.9 --num-frames 2 --output /tmp/coarse_scan_5 --reason \"late window 2 frames\""
+   }
+  },
+  {
+   "t": 160.073,
+   "type": "tool.fault",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": null
+   }
+  },
+  {
+   "t": 160.073,
+   "type": "tool.fault",
+   "script": "extract_window",
+   "detail": {
+    "code": "BUDGET_VIOLATION",
+    "message": "BUDGET_VIOLATION: extract_window requested 2 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run."
+   }
+  },
+  {
+   "t": 160.084,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "extract_window",
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 2 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 160.084,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "extract_window",
+   "ok": false,
+   "detail": "{\"error\": \"BUDGET_VIOLATION\", \"message\": \"BUDGET_VIOLATION: extract_window requested 2 dense_frames, 0 remaining of 16. The budget is fixed in config/experiment.yaml and cannot be raised during a run.\"}\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 161.286,
+   "type": "step.begin"
+  },
+  {
+   "t": 161.286,
+   "type": "agent.say",
+   "text": "The dense_frames budget is fully used. Let me check what I have so far and use VLM on the extracted windows. Let me examine the windows I already have.\n\nLet me check all the coarse_scan windows I've already extracted.The dense_frames budget is fully consumed (16/16). Let me review the observations I already have from the windows I extracted earlier."
+  },
+  {
+   "t": 161.286,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la /tmp/coarse_scan/observation_00.json /tmp/coarse_scan_2/observation_00.json /tmp/coarse_scan_3/observation_00.json 2>/dev/null"
+   }
+  },
+  {
+   "t": 161.309,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "-rw-r--r-- 1 phase0agent phase0agent 5461 Sep 22 04:08 /tmp/coarse_scan/observation_00.json\n-rw-r--r-- 1 phase0agent phase0agent 5686 Sep 22 04:09 /tmp/coarse_scan_2/observation_00.json\n-rw-r--r-- 1 phase0agent phase0agent 2763 Sep 22 04:09 /tmp/coarse_scan_3/observation_00.json"
+  },
+  {
+   "t": 161.799,
+   "type": "step.begin"
+  },
+  {
+   "t": 161.799,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "/tmp/coarse_scan_2/observation_00.json"
+   }
+  },
+  {
+   "t": 161.802,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"model\": \"gemma-4-31b\",\n  \"window\": [\n    5.0,\n    15.0\n  ],\n  \"frames_sent\": [\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_000_5.000s.jpg\",\n      \"timestamp_sec\": 5.0,\n      \"source_frame_id\": 50\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_001_7.000s.jpg\",\n      \"timestamp_sec\": 7.0,\n      \"source_frame_id\": 70\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_002_9.000s.jpg\",\n      \"timestamp_sec\": 9.0,\n      \"source_frame_id\": 90\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_003_11.000s.jpg\",\n      \"timestamp_sec\": 11.0,\n      \"source_frame_id\": 110\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_004_13.000s.jpg\",\n      \"timestamp_sec\": 13.0,\n      \"source_frame_id\": 130\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_2/w_005_15.000s.jpg\",\n      \"timestamp_sec\": 15.0,\n      \"source_frame_id\": 150\n    }\n  ],\n  \"image_bytes_sent\": 371057,\n  \"latency_sec\": 43.421,\n  \"usage\": {\n    \"completion_tokens\": 698,\n    \"prompt_tokens\": 2093,\n    \"total_tokens\": 2791,\n    \"completion_tokens_details\": null,\n    \"prompt_tokens_details\": null\n  },\n  \"parse_error\": null,\n  \"raw_response\": \"```json\\n{\\n  \\\"observations\\\": [\\n    {\\n      \\\"source_frame_id\\\": 50,\\n      \\\"timestamp_sec\\\": 5.0,\\n      \\\"frame\\\": \\\"w_000_5.000s.jpg\\\",\\n      \\\"observation\\\": \\\"Three vehicles are visible on the right side of the road, all facing away from the camera: a red car in the distance, a whit\n… (+4286 chars)"
+  },
+  {
+   "t": 162.532,
+   "type": "step.begin"
+  },
+  {
+   "t": 162.532,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "/tmp/coarse_scan/observation_00.json"
+   }
+  },
+  {
+   "t": 162.534,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"model\": \"gemma-4-31b\",\n  \"window\": [\n    0.0,\n    34.8\n  ],\n  \"frames_sent\": [\n    {\n      \"frame\": \"/tmp/coarse_scan/w_000_0.000s.jpg\",\n      \"timestamp_sec\": 0.0,\n      \"source_frame_id\": 0\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_001_4.971s.jpg\",\n      \"timestamp_sec\": 4.971,\n      \"source_frame_id\": 50\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_002_9.943s.jpg\",\n      \"timestamp_sec\": 9.943,\n      \"source_frame_id\": 99\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_003_14.914s.jpg\",\n      \"timestamp_sec\": 14.914,\n      \"source_frame_id\": 149\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_004_19.886s.jpg\",\n      \"timestamp_sec\": 19.886,\n      \"source_frame_id\": 199\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_005_24.857s.jpg\",\n      \"timestamp_sec\": 24.857,\n      \"source_frame_id\": 249\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_006_29.829s.jpg\",\n      \"timestamp_sec\": 29.829,\n      \"source_frame_id\": 298\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan/w_007_34.800s.jpg\",\n      \"timestamp_sec\": 34.8,\n      \"source_frame_id\": 348\n    }\n  ],\n  \"image_bytes_sent\": 454160,\n  \"latency_sec\": 45.981,\n  \"usage\": {\n    \"completion_tokens\": 725,\n    \"prompt_tokens\": 2704,\n    \"total_tokens\": 3429,\n    \"completion_tokens_details\": null,\n    \"prompt_tokens_details\": null\n  },\n  \"parse_error\": null,\n  \"raw_response\": \"```json\\n{\\n  \\\"observations\\\": [\\n    {\\n     \n… (+4061 chars)"
+  },
+  {
+   "t": 163.639,
+   "type": "step.begin"
+  },
+  {
+   "t": 163.639,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "/tmp/coarse_scan_3/observation_00.json"
+   }
+  },
+  {
+   "t": 163.641,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"model\": \"gemma-4-31b\",\n  \"window\": [\n    15.0,\n    25.0\n  ],\n  \"frames_sent\": [\n    {\n      \"frame\": \"/tmp/coarse_scan_3/w_000_15.000s.jpg\",\n      \"timestamp_sec\": 15.0,\n      \"source_frame_id\": 150\n    },\n    {\n      \"frame\": \"/tmp/coarse_scan_3/w_001_25.000s.jpg\",\n      \"timestamp_sec\": 25.0,\n      \"source_frame_id\": 250\n    }\n  ],\n  \"image_bytes_sent\": 122244,\n  \"latency_sec\": 19.606,\n  \"usage\": {\n    \"completion_tokens\": 316,\n    \"prompt_tokens\": 903,\n    \"total_tokens\": 1219,\n    \"completion_tokens_details\": null,\n    \"prompt_tokens_details\": null\n  },\n  \"parse_error\": null,\n  \"raw_response\": \"```json\\n{\\n  \\\"observations\\\": [\\n    {\\n      \\\"source_frame_id\\\": 150,\\n      \\\"timestamp_sec\\\": 15.0,\\n      \\\"frame\\\": \\\"w_000_15.000s.jpg\\\",\\n      \\\"observation\\\": \\\"Three vehicles are visible on a multi-lane road. A purple car is in the foreground moving away from the camera in the rightmost lane. Further ahead, a light purple/pink car is moving toward the camera in the middle lane, and another pink car is moving toward the camera in the leftmost lane of this road section.\\\"\\n    },\\n    {\\n      \\\"source_frame_id\\\": 250,\\n      \\\"timestamp_sec\\\": 25.0,\\n      \\\"frame\\\": \\\"w_001_25.000s.jpg\\\",\\n      \\\"observation\\\": \\\"The road is visible, but no vehicles are present in the frame.\\\"\\n    }\\n  ],\\n  \\\"summary\\\": \\\"At 15.0s, three cars are visible on the road: one purple c\n… (+1363 chars)"
+  },
+  {
+   "t": 218.49,
+   "type": "step.begin"
+  },
+  {
+   "t": 218.49,
+   "type": "agent.say",
+   "text": "Now I have key observations. Let me analyze what I've found:\n\n1. **Frames 0-14.9s (coarse_scan)**: All vehicles observed are traveling **toward** the camera (wrong-way would be opposite direction).\n2. **Frames 5.0-15.0s (coarse_scan_2)**: All vehicles are on the right side of the road, facing **away** from the camera.\n3. **Frames 15.0-25.0s (coarse_scan_3)**: At 15.0s, there are vehicles moving in **opposite directions** - one purple car moving away from camera (rightmost lane), and two pink/light purple cars moving toward the camera (middle and left lanes). This is the key observation - at 15.0s, there are vehicles moving in both directions!\n4. **Frames 25.0-34.9s**: Road is empty.\n\nThe critical finding is from window 15.0-25.0s at frame 15.0s (source_frame_id 150), where the VLM observed vehicles moving in opposite directions: one going away from camera, two coming toward camera. This suggests wrong-way traffic at that timestamp.\n\nLet me also check the coarse_scan window at 19.886s+, 24.857s+, 29.829s+, 34.8s - all empty.\n\nNow I need to construct the evidence. The key finding is:\n- At timestamp 15.0s (source_frame_id 150), there are vehicles moving in opposite directions\n- At least two vehicles moving toward camera and one moving away\n\nLet me now create the evidence-draft.json based on my findings. I need to identify wrong-way vehicles with at least two distinct frame anchors.\n\nFrom my analysis:\n- At 15.0s: Vehicles moving toward camera (wrong-way if traffic flows away from camera, or away from camera if traffic flows toward camera) - need to determine the traffic flow direction.\n\nWait, let me reconsider. The question is \"Which vehicles, if any, are travelling against traffic flow?\" I need to determine what the \"correct\" traffic direction is.\n\nFrom the observations:\n- At 4.971s, 9.943s, 14.914s: Vehicles traveling **toward** the camera\n- At 5.0s-15.0s: Vehicles on right side of road, facing **away** from the camera\n\nThese seem to be the same direction of travel, just different sides of the road. At 15.0s, there are vehicles moving in opposite directions.\n\nThe key observation from coarse_scan_3 at 15.0s: \"one purple car is in the foreground moving away from the camera in the rightmost lane. Further ahead, a light purple/pink car is moving toward the camera in the middle lane, and another pink car is moving toward the camera in the leftmost lane\"\n\nThis indicates that at 15.0s, there are vehicles moving in BOTH directions on the road. If the general traffic flow is, say, toward the camera (as seen in the earlier frames), then vehicles moving away from the camera would be wrong-way. Or if the general flow is away from the camera, then vehicles toward the camera would be wrong-way.\n\nGiven that the majority of observed vehicles (at 4.971s, 9.943s, 14.914s, 5.0-15.0s) are traveling toward the camera (or on the right side facing away, which may be the same direction), and at 15.0s there's a purple car moving away from the camera, the purple car moving away could be the wrong-way vehicle.\n\nBut wait - I need to be careful. The observations from coarse_scan_2 (5.0-15.0s) say \"all moving in the same direction away from the camera\" - but coarse_scan (0-34.8s) says at 4.971s vehicles are \"traveling toward the camera\". These seem contradictory.\n\nLet me re-examine: The coarse_scan_2 window (5.0-15.0s) observations say vehicles are \"on the right side of the road, all facing away from the camera\". The coarse_scan window (0-34.8s) at 4.971s says vehicles are \"traveling toward the camera\". \n\nThese could be different lanes or the \"facing away from the camera on the right side\" could still be traveling the same overall direction as \"toward the camera\" in other lanes. In multi-lane roads, vehicles in different lanes can travel in the same direction.\n\nThe critical finding is at 15.0s where there are vehicles moving in opposite directions. Let me make a determination.\n\nGiven the evidence:\n- General traffic flow appears to be toward the camera (based on multiple observations at 4.971s, 9.943s, 14.914s)\n- At 15.0s, there's a purple car moving **away** from the camera in the rightmost lane\n- Two pink cars moving **toward** the camera in middle and left lanes\n\nIf the normal traffic flow is toward the camera, then the purple car moving away from the camera at 15.0s would be traveling against traffic flow (wrong-way).\n\nHowever, I also need to consider that the \"away from camera\" direction on the right side (from coarse_scan_2) might be the correct flow. But given that three different time windows (4.971s, 9.943s, 14.914s) all report vehicles \"traveling toward the camera\", I'll assume that's the correct traffic flow direction.\n\nSo my determination: The purple car at source_frame_id 150, timestamp 15.0s, moving away from the camera in the rightmost lane is traveling against traffic flow.\n\nBut I need at least two distinct frame anchors showing motion. Let me check if there's additional evidence.\n\nActually, looking more carefully at the coarse_scan_3 observation: at 15.0s, there are three vehicles:\n1. Purple car moving **away** from camera (rightmost lane) - this could be wrong-way\n2. Light purple/pink car moving **toward** camera (middle lane) - correct way\n3. Pink car moving **toward** camera (leftmost lane) - correct way\n\nSo the purple car is the only one moving in potentially the wrong direction. But I need \"at least two distinct frames\" showing the wrong-way motion.\n\nLet me also check: are there other windows where wrong-way vehicles appear? I've exhausted the dense_frames budget, but I have the coarse_scan window that covered 0-34.8s with 8 frames. Let me look at those observations again.\n\nFrom coarse_scan:\n- 0.0s: empty road\n- 4.971s: 3 vehicles toward camera\n- 9.943s: 3 vehicles toward camera  \n- 14.914s: 3 vehicles toward camera\n- 19.886s: empty\n- 24.857s: empty\n- 29.829s: empty\n- 34.8s: empty\n\nSo the only window with wrong-way evidence is 15.0s from the coarse_scan_3 extraction.\n\nWait, but I also need to check if there's evidence from other windows. Let me see if I can extract a few more frames from remaining budget... Actually, the dense_frames budget is fully used at 16/16. And I've used 14/32 VLM inspected frames.\n\nLet me reconsider my approach. I have:\n- 14 VLM inspected frames used (out of 32 max)\n- 16 dense_frames used (out of 16 max - exhausted)\n- 0 coarse_frames used (the coarse_scan was done via extract_window which uses dense_frames budget)\n\nActually wait - looking at the budget output from the first extract_window call: it showed \"coarse_frames: 0\" spent. But the budget categories are \"coarse_frames\", \"dense_frames\", \"vlm_inspected_frames\". The extract_window tool uses \"dense_frames\" category.\n\nLet me re-examine: I used 8 frames for coarse_scan, 6 for coarse_scan_2, and 2 for coarse_scan_3 = 16 total dense_frames. That's the budget exhausted.\n\nFor VLM inspections: 8 (coarse_scan) + 6 (coarse_scan_2) + 2 (coarse_scan_3) = 16 VLM frames. But the budget shows 14 spent... let me check.\n\nActually, looking at the budget output after coarse_scan: vlm_inspected_frames: 0 spent (but I did run VLM on it). Wait, that can't be right. Let me look again.\n\nFrom the first coarse_scan budget output: `\"vlm_inspected_frames\": 0` - this seems wrong since I did run VLM on it. Actually, looking at the budget more carefully, the budget tracks reservations. The VLM calls may have been made but the budget tracking might have been reset or the reservations happened differently.\n\nActually, I think the budget was tracking before the VLM calls. The tool budget system records reservations when extract_window or vlm_inspect are called. The spent() function reads from the ledger. Since I made VLM calls after extract_window, the budget might have been updated.\n\nActually, looking at the budget output sequence:\n1. After coarse_scan extract: vlm_inspected_frames: 0 (because VLM hadn't been called yet)\n2. After coarse_scan_2 extract: vlm_inspected_frames: 8 (the 8 VLM frames from coarse_scan were reserved? No, that doesn't make sense)\n\nHmm, I think the budget tracking might be complex. Regardless, I've used 16 dense_frames and made 16 VLM inspection calls across the three windows.\n\nI have enough data to make my determination. Let me now create the evidence-draft.json.\n\nBased on my analysis:\n- The video has 349 frames at 10fps, duration 34.9s\n- Width 960, height 540\n- At timestamp 15.0s (source_frame_id 150), there is a purple car moving **away from the camera** in the rightmost lane, while other vehicles move toward the camera\n- Given that the majority of observed traffic moves toward the camera, the purple car moving away is traveling against traffic flow (wrong-way)\n\nHowever, I need \"at least two distinct frames\" showing the wrong-way motion. I only have one frame (15.0s, source_frame_id 150) showing a vehicle moving away from camera while others move toward.\n\nLet me reconsider. The question asks for vehicles traveling against traffic flow. I need to determine what the \"correct\" traffic flow is, and then identify vehicles going the opposite direction.\n\nFrom my observations:\n- Multiple time points (4.971s, 9.943s, 14.914s, and 5.0-15.0s window) show vehicles traveling toward the camera or on the right side facing away (which may be the same direction)\n- At 15.0s, there's a purple car moving away from the camera\n\nIf the correct traffic flow is toward the camera, then the purple car at 15.0s is wrong-way. But I only have one frame anchor for this.\n\nActually, wait - let me re-read the task requirements: \"Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\"\n\nI need at least two frame anchors. I have:\n1. 15.0s, source_frame_id 150: purple car moving away from camera\n2. But I need another frame showing wrong-way motion\n\nHmm, let me think about this differently. Maybe I should look at the data more carefully.\n\nFrom coarse_scan_3 (15.0-25.0s): At 15.0s, three vehicles visible with opposite directions. At 25.0s, road is empty.\n\nFrom coarse_scan (0-34.8s): All other windows show either empty road or vehicles traveling in the same direction.\n\nIs there any other evidence of wrong-way traffic? Let me check if the purple car moving away at 15.0s is the only instance.\n\nActually, I realize I should look at this from the perspective of the VLM observations more carefully.\n\nFrom coarse_scan_3 observation at 15.0s:\n- \"A purple car is in the foreground moving away from the camera in the rightmost lane.\"\n- \"Further ahead, a light purple/pink car is moving toward the camera in the middle lane.\"\n- \"Another pink car is moving toward the camera in the leftmost lane of this road section.\"\n\nSo at 15.0s, we have:\n- 1 vehicle moving AWAY from camera (purple, rightmost lane)\n- 2 vehicles moving TOWARD camera (pink, middle and left lanes)\n\nIf the normal traffic flow is toward the camera (as seen in all other observations), then the purple car moving away is wrong-way.\n\nBut I need two temporally separated frame anchors. I only have one timestamp (15.0s) where this occurs.\n\nWait - maybe I can consider the 15.0s observation as providing evidence, and since the road is empty at 25.0s (from the same window), the wrong-way movement might have been transient. But I still only have one frame anchor.\n\nLet me reconsider the entire analysis. Perhaps I should look at this from a different angle.\n\nActually, re-reading the task: \"Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\"\n\nMaybe \"temporally separated source-frame anchors\" means two different frames (different source_frame_ids) that both show the same vehicle or the same wrong-way behavior, not necessarily at the same timestamp.\n\nFrom my observations:\n- At 15.0s (source_frame_id 150): purple car moving away from camera\n- I need another frame where a vehicle is moving in the opposite direction\n\nBut I don't have another frame with wrong-way traffic from my inspections.\n\nAlternatively, maybe I should reconsider what \"wrong-way\" means. Perhaps the road has a defined direction, and I need to determine that direction from the video.\n\nLooking at the observations again:\n- At 4.971s, 9.943s, 14.914s (from coarse_scan): \"Three vehicles are traveling toward the camera\"\n- At 5.0-15.0s (from coarse_scan_2): \"all moving in the same direction away from the camera\"\n\nWait, these seem contradictory. Let me re-examine.\n\nFrom coarse_scan at 4.971s: \"Three vehicles are traveling toward the camera: a red car in the far lane, a white car in the middle lane, and a light-colored (beige/silver) car in the near lane.\"\n\nFrom coarse_scan_2 at 5.0-15.0s: \"multiple vehicles of various colors... are seen traveling on the right side of the road, all moving in the same direction away from the camera.\"\n\nThese are at similar timestamps (4.971s vs 5.0s). How can vehicles be traveling \"toward the camera\" in one observation and \"away from the camera\" in another, at nearly the same time?\n\nThis is confusing. Let me think about this more carefully.\n\nPossibility 1: The road has traffic flowing in both directions, and the different observations are capturing different lanes or different parts of the road.\n\nPossibility 2: There's some inconsistency in the VLM's observations, or I'm misinterpreting \"toward\" vs \"away.\"\n\nPossibility 3: The \"toward the camera\" vs \"away from the camera\" depends on which side of the road the vehicle is on. Perhaps vehicles on the near side facing the camera appear to be moving toward it, while vehicles on the far side moving in the same overall direction might appear to be moving away.\n\nActually, I think the key is in the coarse_scan_2 observation: \"all moving in the same direction away from the camera\" on the \"right side of the road.\" And coarse_scan at 4.971s: vehicles \"traveling toward the camera.\" These could be the same vehicles observed from different perspectives, or different lanes.\n\nGiven the ambiguity, let me focus on the clearest evidence: at 15.0s (coarse_scan_3), there are vehicles moving in **opposite directions** explicitly noted by the VLM. One purple car moving away, two pink cars moving toward.\n\nSince the task requires \"at least two actually inspected, temporally separated source-frame anchors showing motion,\" and I only have one timestamp (15.0s) with opposite-direction traffic, I may need to abstain or find another way.\n\nBut wait - maybe the \"two source-frame anchors\" don't both need to show wrong-way traffic. Maybe one anchor shows the wrong-way vehicle, and another anchor shows the correct traffic flow for comparison. Or maybe the two anchors are at different times but both show the same wrong-way behavior.\n\nLet me re-read: \"Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\"\n\nI think this means: for each reported wrong-way vehicle, there must be at least two frame anchors (different source_frame_ids, different timestamps) that show the vehicle moving in the wrong direction, and these anchors must be temporally separated (at different times).\n\nGiven my data, I only have one frame (15.0s, source_frame_id 150) where a vehicle is moving away from the camera while others move toward. I don't have a second frame anchor showing the same wrong-way behavior.\n\nHowever, let me consider: maybe I can look at the same vehicle across time. But the 25.0s frame is empty, so there's no second anchor there.\n\nAlternatively, maybe I should consider the observations from different windows. From coarse_scan at 4.971s and 9.943s, vehicles are moving toward the camera. From coarse_scan_2 at 5.0-15.0s, vehicles are moving away from the camera on the right side. If these are the same direction of travel (just different lane perspectives), then the \"away from camera\" direction is the correct flow, and the \"toward the camera\" direction would be wrong-way.\n\nBut this is speculative. Let me be more systematic.\n\nActually, I just realized something. Let me re-examine the coarse_scan_2 window more carefully. The window is 5.0-15.0s with frames at 5.0, 7.0, 9.0, 11.0, 13.0, 15.0s. The VLM observed vehicles on the \"right side of the road, all facing away from the camera.\"\n\nAnd the coarse_scan window at 4.971s (which is essentially the same as 5.0s) observed vehicles \"traveling toward the camera.\"\n\nThese are nearly the same timestamp but give opposite directions. This is a significant contradiction.\n\nOne possible explanation: the \"right side of the road, facing away from the camera\" in coarse_scan_2 might refer to vehicles on the right-hand side of the road traveling in the general direction away from the camera, while the vehicles observed at 4.971s in coarse_scan might be in different lanes traveling toward the camera. On a multi-lane road, you can have traffic flowing in the same direction across multiple lanes, with some vehicles in the near lane and some in the far lane.\n\nBut \"facing away from the camera\" vs \"traveling toward the camera\" seem like they should be contradictory if referring to the same vehicles and direction.\n\nI think the most reasonable interpretation is that there's some complexity in the video that the VLM is trying to describe, and I need to make a best judgment.\n\nGiven the task requirement for \"at least two actually inspected, temporally separated source-frame anchors showing motion,\" and my analysis showing that at 15.0s there are vehicles moving in opposite directions, let me proceed with what evidence I have.\n\nMy best assessment:\n- At timestamp 15.0s (source_frame_id 150), a purple car is moving away from the camera in the rightmost lane\n- This is the only instance of opposite-direction traffic I've observed\n- I have only one frame anchor for wrong-way traffic\n\nGiven the requirement for \"at least two actually inspected, temporally separated source-frame anchors,\" I should probably abstain since I don't have sufficient evidence.\n\nBut wait - let me reconsider. Maybe the two anchors can be:\n1. The purple car at 15.0s moving away from camera (source_frame_id 150)\n2. Some other evidence from my inspections\n\nActually, I just realized I might have missed something. Let me look at the coarse_scan observations more carefully.\n\nFrom coarse_scan (0-34.8s, 8 frames at 0, 4.971, 9.943, 14.914, 19.886, 24.857, 29.829, 34.8):\n- 0.0s: empty\n- 4.971s: 3 vehicles toward camera\n- 9.943s: 3 vehicles toward camera\n- 14.914s: 3 vehicles toward camera\n- 19.886s: empty\n- 24.857s: empty\n- 29.829s: empty\n- 34.8s: empty\n\nFrom coarse_scan_2 (5.0-15.0s, 6 frames at 5.0, 7.0, 9.0, 11.0, 13.0, 15.0):\n- All: vehicles on right side, facing away from camera\n\nFrom coarse_scan_3 (15.0-25.0s, 2 frames at 15.0, 25.0):\n- 15.0s: 3 vehicles, opposite directions (1 away, 2 toward)\n- 25.0s: empty\n\nSo the only place where I see potential wrong-way traffic is at 15.0s. But I need two temporally separated anchors.\n\nHmm, let me think about this differently. Maybe I can use the fact that at 14.914s (from coarse_scan), vehicles are moving toward the camera, and at 15.0s (from coarse_scan_3), a purple car is moving away from the camera. These are temporally separated (14.914s vs 15.0s, just 0.086s apart) and both are inspected frames. If the traffic direction changes or there's a discrepancy, the purple car at 15.0s could be identified as wrong-way.\n\nBut 0.086s is very close - are these \"temporally separated\" enough? The task says \"temporally separated source-frame anchors,\" which I interpret as meaning different time points.\n\nActually, 14.914s and 15.0s are different source frames (source_frame_id 149 vs 150), and they're 0.086s apart. They show different traffic directions: at 14.914s, vehicles are moving toward camera; at 15.0s, a purple car is moving away. If the normal flow is toward camera, then the purple car at 15.0s is wrong-way.\n\nBut I'm still not sure if this constitutes \"at least two anchors showing motion\" for the wrong-way vehicle. The two anchors (14.914s and 15.0s) show different directions, but they're not both showing the wrong-way vehicle - one shows the correct flow, one shows the potential wrong-way.\n\nLet me re-read the requirement once more: \"Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\"\n\nI think this means: for each wrong-way vehicle reported, there must be at least two frame anchors that show that specific vehicle moving in the wrong direction, and these anchors must be at different times.\n\nGiven my evidence, I only have one frame (15.0s, source_frame_id 150) showing a vehicle moving away from camera while the general traffic flows toward camera. I don't have a second frame showing the same vehicle or same wrong-way behavior.\n\nI think I should abstain. But let me double-check by looking at the video frames more carefully, or if there's any other evidence I missed.\n\nActually, wait. Let me reconsider the coarse_scan_2 data. That window (5.0-15.0s) showed vehicles \"on the right side of the road, all facing away from the camera.\" And the coarse_scan at 4.971s showed vehicles \"traveling toward the camera.\" These are at nearly the same time (4.971s vs 5.0s).\n\nWhat if \"facing away from the camera\" on the right side of the road is actually the correct traffic direction, and \"traveling toward the camera\" observed at 4.971s is from a different perspective or different lane? In that case, the \"toward the camera\" direction would be wrong-way.\n\nBut I'm speculating too much. Let me be more rigorous.\n\nGiven the constraints and my evidence:\n1. I've inspected 16 dense frames + done VLM on 16 frames (budget exhausted)\n2. The only place showing opposite-direction traffic is at 15.0s\n3. I have only one frame anchor for wrong-way traffic (if we assume toward-camera is correct flow)\n4. I need at least two temporally separated anchors\n\nI think the safest approach is to abstain, as I don't have sufficient evidence meeting the \"at least two actually inspected, temporally separated source-frame anchors\" requirement.\n\nBut wait - let me reconsider one more time. The task says \"at least two actually inspected, temporally separated source-frame anchors showing motion.\" Maybe \"showing motion\" means showing that vehicles are moving (as opposed to stationary), not necessarily showing wrong-way motion specifically. And \"at least two\" might refer to needing two frames to confirm motion, not two frames showing wrong-way.\n\nIf that's the interpretation, then:\n- At 15.0s, I have the purple car moving away from camera (showing motion)\n- I could potentially use another frame showing motion in the same direction\n\nBut I don't have another frame with wrong-way traffic.\n\nAlternatively, maybe the \"two anchors\" are just requiring that the evidence is based on multiple frames, not just one. In that case, having the 15.0s observation (which itself references multiple vehicles with observations) might satisfy the \"two anchors\" requirement if the VLM's observation of opposite directions at 15.0s counts as two anchors (the purple car away, and the pink cars toward).\n\nBut the requirement specifically says \"wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\" I think the two anchors need to both support the wrong-way identification.\n\nOK, I'm going to go with abstain. I don't have sufficient evidence with at least two temporally separated source-frame anchors showing wrong-way motion.\n\nActually, wait. Let me re-read the task one more time very carefully:\n\n\"Write a draft such as evidence-draft.json, then finish by running python tools/submit_evidence.py --input evidence-draft.json; the tool creates evidence.json after structural validation. Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion. If the evidence is insufficient, use decision: abstain. An explicit negative answer is decision: report with zero targets; it is not abstention. frames_processed counts images actually sent to the VLM.\"\n\nSo:\n- If evidence is insufficient: decision: abstain\n- If evidence exists but zero targets: decision: report with reported_count: 0 and reported_targets: []\n- I need at least two temporally separated source-frame anchors showing motion for each wrong-way vehicle\n\nGiven my analysis, I have evidence of potential wrong-way traffic at 15.0s, but only one frame anchor. I'll abstain.\n\nActually, wait. Let me reconsider the data one more time. \n\nFrom coarse_scan_3 at 15.0s: The VLM observed \"three vehicles are visible on a multi-lane road. A purple car is in the foreground moving away from the camera in the rightmost lane. Further ahead, a light purple/pink car is moving toward the camera in the middle lane, and another pink car is moving toward the camera in the leftmost lane of this road section.\"\n\nThis tells us:\n- Purple car: moving away from camera (rightmost lane)\n- Light purple/pink car: moving toward camera (middle lane)  \n- Pink car: moving toward camera (leftmost lane)\n\nFrom coarse_scan at 14.914s: \"Three vehicles are traveling toward the camera: a pink car in the far lane, a pink car in the middle lane, and a purple car in the near lane.\"\n\nWait! This is interesting. At 14.914s (coarse_scan), there's also a purple car, but it's described as \"traveling toward the camera\" in the near lane. And at 15.0s (coarse_scan_3), the purple car is described as \"moving away from the camera\" in the rightmost lane.\n\nThese are very close in time (14.914s vs 15.0s, only 0.086s apart), but the purple car is described as going toward camera at 14.914s and away from camera at 15.0s. This could mean:\n1. The purple car changed direction in 0.086s (unlikely)\n2. The VLM is observing the purple car from different perspectives/lanes at the two timestamps\n3. There's some inconsistency in the VLM's observations\n\nIf the purple car at 15.0s is moving away from camera while at 14.91s it was moving toward camera, and if the normal traffic flow is toward camera, then the purple car at 15.0s could be wrong-way.\n\nBut I still only have one frame anchor (15.0s) showing the purple car going away. The 14.914s observation shows the purple car going toward camera, which would be the \"correct\" direction.\n\nHmm, this is getting complex. Let me step back and think about what I can confidently report.\n\nMy evidence summary:\n- Video: 349 frames, 10fps, 34.9s duration, 960x540\n- Multiple windows inspected across the video\n- At 15.0s (source_frame_id 150): purple car moving away from camera while other vehicles move toward camera\n- This is the only instance of opposite-direction traffic observed\n- I have 16 VLM-inspected frames total, 16 dense frames extracted\n- Budget exhausted\n\nGiven the requirement for \"at least two actually inspected, temporally separated source-frame anchors showing motion\" for wrong-way vehicles, and my having only one anchor for wrong-way traffic, I should abstain.\n\nBut let me consider one more angle: maybe the \"two anchors\" can be the two pink cars moving toward camera at 15.0s, used as reference for the correct traffic direction, combined with the purple car moving away as the wrong-way vehicle. In this case, the two anchors (the two pink cars at 15.0s, source_frame_id 150's observation references them) establish the correct flow, and the purple car is identified as wrong-way.\n\nBut the requirement says \"at least two actually inspected, temporally separated source-frame anchors showing motion\" - I think this means two anchors showing the wrong-way motion, not two anchors showing the correct motion.\n\nOK, I'm going to go with abstain. Let me create the evidence-draft.json with decision: abstain.\n\nWait, actually, I want to reconsider one more time. Let me re-read the exact requirement:\n\n\"Report only wrong-way vehicles supported by at least two actually inspected, temporally separated source-frame anchors showing motion.\"\n\nMaybe this means: each reported wrong-way vehicle must be supported by at least two source-frame anchors (i.e., two different frames/timestamps) that show the vehicle's motion, and these anchors must be temporally separated. The \"showing motion\" part might just mean the anchors need to demonstrate that the vehicle is moving (as opposed to being stationary), not that they need to show wrong-way motion specifically.\n\nIf that's the case, then for the purple car at 15.0s moving away from camera:\n- I have one anchor: 15.0s, source_frame_id 150, purple car moving away from camera\n- I need another anchor showing the same purple car at a different time moving away from camera\n\nBut I don't have a second anchor for the same vehicle. The next frame at 25.0s is empty.\n\nAlternatively, maybe the \"two anchors\" can be any two frames showing motion that supports the wrong-way identification, not necessarily both showing the same wrong-way vehicle. For example:\n- Anchor 1: At 15.0s, purple car moving away from camera (potential wrong-way)\n- Anchor 2: At 14.914s, purple car moving toward camera (establishing normal direction, making the 15.0s observation wrong-way by contrast)\n\nBut this seems like a stretch.\n\nI think the most honest interpretation is that I don't have sufficient evidence with \"at least two actually inspected, temporally separated source-frame anchors showing motion\" for wrong-way vehicles. I'll abstain.\n\nLet me create the evidence-draft.json with decision: abstain.\n\nActually, wait. I want to make one more check. Let me see if there's any other data I can extract from the video within the budget constraints. The dense_frames budget is exhausted, but maybe I can use the coarse_frames budget? Let me check.\n\nLooking at the budget config: coarse_frames_max: 16, dense_frames_max: 16, vlm_inspected_frames_max: 32.\n\nI've used 16 dense_frames. I haven't used any coarse_frames explicitly. But the extract_window tool uses the dense_frames category. Is there a way to do a coarser scan?\n\nActually, looking at the tools, there's no separate \"coarse scan\" tool. The extract_window tool is for dense resampling. The probe_video tool just gives video metadata.\n\nLet me check if there's any other way to get more video insights without using more frames.\n\nActually, I think I've done sufficient investigation. Let me finalize my decision.\n\nGiven:\n1. I've inspected 16 frames via VLM across 3 windows\n2. The only potential wrong-way evidence is at 15.0s (1 frame anchor)\n3. I need at least 2 temporally separated anchors for each wrong-way vehicle\n4. Budget is exhausted, cannot inspect more frames\n\nI'll go with decision: abstain.\n\nNow let me create the evidence-draft.json file.Now I have a comprehensive view of the video. Let me summarize my findings:\n\n- Video: 349 frames at 10fps, 34.9s duration, 960x540\n- I extracted and inspected frames across 3 windows using the budget (16 dense frames total, 16 VLM-inspected frames)\n- Key observation: At timestamp 15.0s (source_frame_id 150), the VLM observed a purple car moving **away from the camera** in the rightmost lane, while other vehicles moved toward the camera\n- At all other inspected windows (0-14.9s, 5-15s excluding 15.0s, 25-34.9s), vehicles were consistently traveling in one direction or the road was empty\n- At 14.914s, the purple car was observed moving *toward* the camera; at 15.0s it was moving *away* - this is the only instance of opposite-direction traffic\n\nHowever, the task requires \"at least two actually inspected, temporally separated source-frame anchors showing motion\" for each wrong-way vehicle. I only have one frame anchor (15.0s, source_frame_id 150) showing a vehicle moving away from camera while the general flow appears toward camera. I don't have a second temporally separated anchor confirming wrong-way motion.\n\nGiven the evidence insufficiency requirement, I'll abstain."
+  },
+  {
+   "t": 218.49,
+   "type": "tool.call",
+   "tool": "write",
+   "args": {
+    "path": "<workspace>/evidence-draft.json",
+    "content": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"decision\": \"abstain"
+   }
+  },
+  {
+   "t": 218.5,
+   "type": "tool.result",
+   "tool": "write",
+   "ok": true,
+   "detail": "Successfully wrote 117 bytes to <workspace>/evidence-draft.json"
+  },
+  {
+   "t": 219.847,
+   "type": "step.begin"
+  },
+  {
+   "t": 219.847,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "args": {
+    "command": "python <workspace>/tools/submit_evidence.py --input <workspace>/evidence-draft.json"
+   }
+  },
+  {
+   "t": 219.995,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "detail": "Traceback (most recent call last):\n  File \"<workspace>/tools/submit_evidence.py\", line 41, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"<workspace>/tools/submit_evidence.py\", line 27, in main\n    candidate = json.loads(args.input.read_text())\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\njson.decoder.JSONDecodeError: Unterminated string starting at: line 5 column 15 (char 109)\n\n\nCommand exited w\n… (+10 chars)"
+  },
+  {
+   "t": 219.995,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "ok": false,
+   "detail": "Traceback (most recent call last):\n  File \"<workspace>/tools/submit_evidence.py\", line 41, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"<workspace>/tools/submit_evidence.py\", line 27, in main\n    candidate = json.loads(args.input.read_text())\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<phase0>/.cache/uv-python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\njson.decoder.JSONDecodeError: Unterminated string starting at: line 5 column 15 (char 109)\n\n\nCommand exited w\n… (+10 chars)"
+  },
+  {
+   "t": 221.172,
+   "type": "step.begin"
+  },
+  {
+   "t": 221.172,
+   "type": "agent.say",
+   "text": "I need to fix the JSON - I missed the closing brace. Let me write it properly."
+  },
+  {
+   "t": 221.172,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/evidence-draft.json"
+   }
+  },
+  {
+   "t": 221.175,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"decision\": \"abstain"
+  },
+  {
+   "t": 223.002,
+   "type": "step.begin"
+  },
+  {
+   "t": 223.002,
+   "type": "tool.call",
+   "tool": "write",
+   "args": {
+    "path": "<workspace>/evidence-draft.json",
+    "content": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"decision\": \"abstain\",\n  \"reported_count\": 0,\n  \"reported_targets\": [],\n  \"windows_examined\": [0, 34],\n  \"frames_processed\": 16,\n  \"tool_trace\": [\"probe_video\", \"extract_window\", \"vlm_inspect\"]\n}"
+   }
+  },
+  {
+   "t": 223.004,
+   "type": "tool.result",
+   "tool": "write",
+   "ok": true,
+   "detail": "Successfully wrote 292 bytes to <workspace>/evidence-draft.json"
+  },
+  {
+   "t": 224.469,
+   "type": "step.begin"
+  },
+  {
+   "t": 224.469,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "args": {
+    "command": "python <workspace>/tools/submit_evidence.py --input <workspace>/evidence-draft.json"
+   }
+  },
+  {
+   "t": 224.615,
+   "type": "tool.error",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "detail": "SCHEMA_ERROR at ['windows_examined', 0]: 0 is not of type 'array'\nSCHEMA_ERROR at ['windows_examined', 1]: 34 is not of type 'array'\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 224.615,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "ok": false,
+   "detail": "SCHEMA_ERROR at ['windows_examined', 0]: 0 is not of type 'array'\nSCHEMA_ERROR at ['windows_examined', 1]: 34 is not of type 'array'\n\n\nCommand exited with code 2"
+  },
+  {
+   "t": 226.67,
+   "type": "step.begin"
+  },
+  {
+   "t": 226.67,
+   "type": "agent.say",
+   "text": "I need to fix the windows_examined format - it needs to be an array of two arrays, each with a number."
+  },
+  {
+   "t": 226.67,
+   "type": "tool.call",
+   "tool": "write",
+   "args": {
+    "path": "<workspace>/evidence-draft.json",
+    "content": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"decision\": \"abstain\",\n  \"reported_count\": 0,\n  \"reported_targets\": [],\n  \"windows_examined\": [[0, 34]],\n  \"frames_processed\": 16,\n  \"tool_trace\": [\"probe_video\", \"extract_window\", \"vlm_inspect\"]\n}"
+   }
+  },
+  {
+   "t": 226.672,
+   "type": "tool.result",
+   "tool": "write",
+   "ok": true,
+   "detail": "Successfully wrote 294 bytes to <workspace>/evidence-draft.json"
+  },
+  {
+   "t": 228.222,
+   "type": "step.begin"
+  },
+  {
+   "t": 228.222,
+   "type": "tool.call",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "args": {
+    "command": "python <workspace>/tools/submit_evidence.py --input <workspace>/evidence-draft.json"
+   }
+  },
+  {
+   "t": 228.366,
+   "type": "tool.result",
+   "tool": "bash",
+   "script": "submit_evidence",
+   "ok": true,
+   "detail": "{\"accepted\": true, \"written\": \"<workspace>/evidence.json\", \"semantic_verdict\": \"not_evaluated\"}"
+  },
+  {
+   "t": 228.366,
+   "type": "answer.submit",
+   "detail": {
+    "decision": "abstain",
+    "reported_count": 0
+   }
+  },
+  {
+   "t": 229.541,
+   "type": "step.begin"
+  },
+  {
+   "t": 229.541,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/evidence.json"
+   }
+  },
+  {
+   "t": 229.563,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "-rw-r--r-- 1 phase0agent phase0agent 337 Sep 22 04:11 <workspace>/evidence.json"
+  },
+  {
+   "t": 230.753,
+   "type": "step.begin"
+  },
+  {
+   "t": 230.753,
+   "type": "tool.call",
+   "tool": "read",
+   "args": {
+    "path": "<workspace>/evidence.json"
+   }
+  },
+  {
+   "t": 230.756,
+   "type": "tool.result",
+   "tool": "read",
+   "ok": true,
+   "detail": "{\n  \"schema_version\": 1,\n  \"sample_id\": \"wrong-way-0-nominal-r1\",\n  \"clip_id\": \"0-nominal-r1\",\n  \"decision\": \"abstain\",\n  \"reported_count\": 0,\n  \"reported_targets\": [],\n  \"windows_examined\": [\n    [\n      0,\n      34\n    ]\n  ],\n  \"frames_processed\": 16,\n  \"tool_trace\": [\n    \"probe_video\",\n    \"extract_window\",\n    \"vlm_inspect\"\n  ]\n}"
+  },
+  {
+   "t": 234.652,
+   "type": "step.begin"
+  },
+  {
+   "t": 234.652,
+   "type": "agent.say",
+   "text": "The evidence has been successfully submitted. Here's a summary of my investigation:\n\n## Investigation Summary\n\n**Video properties:** 349 frames at 10fps, 34.9s duration, 960x540 pixels\n\n**Budget usage:**\n- 16 dense_frames extracted across 3 windows (exhausted)\n- 16 VLM-inspected frames (of 32 max)\n- Budget exhausted, could not inspect additional windows\n\n**Key findings from inspected windows:**\n- **Window 0-34.8s:** All vehicles traveling toward camera (frames at 4.971s, 9.943s, 14.914s) or road empty (frames at 19.886s+, 24.857s+, 29.829s+, 34.8s)\n- **Window 5.0-15.0s:** Vehicles on right side of road, all facing away from camera  \n- **Window 15.0-25.0s:** At 15.0s, VLM observed a purple car moving **away from camera** in rightmost lane, while two pink cars moved toward camera in middle/left lanes - the only instance of opposite-direction traffic\n\n**Decision: abstain**\n\nThe reason for abstention: while there was one frame (15.0s, source_frame_id 150) where a purple car moved away from camera while other vehicles moved toward camera (suggesting potential wrong-way traffic), the evidence did not meet the requirement of \"at least two actually inspected, temporally separated source-frame anchors showing motion\" for wrong-way vehicles. I only had one frame anchor for the opposite-direction observation. Without sufficient evidence meeting the strict evidentiary standard, I abstained rather than fabricate or guess identities/timestamps/ROIs."
+  },
+  {
+   "t": 234.652,
+   "type": "tool.call",
+   "tool": "bash",
+   "args": {
+    "command": "ls -la <workspace>/"
+   }
+  },
+  {
+   "t": 234.672,
+   "type": "tool.result",
+   "tool": "bash",
+   "ok": true,
+   "detail": "total 2700\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:11 .\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:07 ..\ndrwxr-xr-x 7 phase0agent phase0agent    4096 Sep 22 04:07 .git\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 .pi\n-rw-r--r-- 1 phase0agent phase0agent    1060 Sep 11 02:35 AGENTS.md\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 config\n-rw-r--r-- 1 phase0agent phase0agent     294 Sep 22 04:10 evidence-draft.json\n-rw-r--r-- 1 phase0agent phase0agent     337 Sep 22 04:11 evidence.json\ndrwxr-xr-x 2 phase0agent phase0agent    4096 Sep 22 04:07 input\n-rw-r--r-- 1 phase0agent phase0agent     320 Sep 22 04:07 input-task.json\ndrwxr-xr-x 3 phase0agent phase0agent    4096 Sep 22 04:07 tools\n-rw-rw-r-- 1 phase0agent phase0agent 2718761 Sep 10 20:05 video.mp4"
+  },
+  {
+   "t": 235.212,
+   "type": "step.begin"
+  },
+  {
+   "t": 235.212,
+   "type": "agent.say",
+   "text": "The task is complete. The evidence.json has been successfully submitted with `decision: abstain` since the evidence did not meet the requirement of at least two temporally separated source-frame anchors showing wrong-way motion."
+  },
+  {
+   "t": 236.157,
+   "type": "verify.result",
+   "detail": {
+    "v0_status": "pass",
+    "layers": {
+     "L0": "pass",
+     "L1": "n/a",
+     "L2": "unknown",
+     "L3": "n/a",
+     "L4": "fail"
+    },
+    "outcome": {
+     "fn": 0,
+     "fp": 0,
+     "unsupported": 0,
+     "execution_failure": 0,
+     "abstain": 1,
+     "unknown": 0
+    }
+   }
+  },
+  {
+   "t": 236.257,
+   "type": "run.end",
+   "detail": {
+    "run_status": "completed"
+   }
+  }
+ ],
+ "pipeline": {
+  "declared": [
+   "probe_video",
+   "extract_window",
+   "vlm_inspect",
+   "submit_evidence"
+  ],
+  "actual": [
+   "probe_video",
+   "probe_video",
+   "probe_video",
+   "extract_window",
+   "extract_window",
+   "extract_window",
+   "extract_window",
+   "extract_window",
+   "vlm_inspect",
+   "extract_window",
+   "vlm_inspect",
+   "extract_window",
+   "extract_window",
+   "extract_window",
+   "vlm_inspect",
+   "extract_window",
+   "extract_window",
+   "submit_evidence",
+   "submit_evidence",
+   "submit_evidence"
+  ],
+  "claimed": [
+   "probe_video",
+   "extract_window",
+   "vlm_inspect"
+  ],
+  "agrees": false
+ },
+ "evidence": {
+  "present": true,
+  "decision": "abstain",
+  "reported_count": 0,
+  "frames_processed": 16,
+  "windows_examined": [
+   [
+    0,
+    34
+   ]
+  ],
+  "notes": null,
+  "reported_targets": []
+ },
+ "v0": {
+  "status": "pass",
+  "checks": {
+   "run_json_present": true,
+   "evidence_present": true,
+   "task_input_present": true,
+   "evidence_parses": true,
+   "schema": true,
+   "sample_id_matches": true,
+   "clip_id_matches": true,
+   "reported_count_matches_targets": true,
+   "abstain_shape": true,
+   "tamper_evidence_schema": true,
+   "tamper_experiment_config": true,
+   "tamper_prompt": true,
+   "tamper_pi_sampling": true,
+   "tamper_v0": true,
+   "tamper_enhanced": true,
+   "tamper_policy": true,
+   "tamper_tools": true,
+   "frame_bounds": true,
+   "timestamp_alignment": true,
+   "roi_bounds": true,
+   "intervals_valid": true,
+   "artifact_refs_exist": true,
+   "artifact_refs_run_owned": true,
+   "windows_valid": true,
+   "budget": true,
+   "budget_ledger_agrees": true,
+   "tool_logs_present": true,
+   "agent_trace_present": true,
+   "exit_status_recorded": true,
+   "environment_snapshot": true,
+   "service_refs": true,
+   "seed_application_evidence": true,
+   "run_dir_was_new": true,
+   "manifest_pre_run": true
+  },
+  "errors": []
+ },
+ "enhanced": {
+  "primary_eligible": true,
+  "layers": {
+   "L0": "pass",
+   "L1": "n/a",
+   "L2": "unknown",
+   "L3": "n/a",
+   "L4": "fail"
+  },
+  "layer_details": {
+   "L1": [],
+   "L2": {
+    "status": "unknown",
+    "reason": "no_reliably_parseable_assertion",
+    "assertions": []
+   },
+   "L3": {
+    "status": "n/a"
+   },
+   "L4_matching": {
+    "matches": [],
+    "false_positive_reports": [],
+    "false_negative_targets": [],
+    "unknown_reports": [],
+    "unresolved_targets": [],
+    "edges": []
+   }
+  },
+  "outcome": {
+   "fn": 0,
+   "fp": 0,
+   "unsupported": 0,
+   "execution_failure": 0,
+   "abstain": 1,
+   "unknown": 0
+  },
+  "earliest_violated_layer": "L4",
+  "full_signatures": [
+   "abstain|L4|count=0|nominal"
+  ],
+  "comparison_patterns": [
+   "abstain|L4|count=0"
+  ],
+  "v0_blind_spot": true
+ },
+ "telemetry": {
+  "wall_clock_sec": 235.7,
+  "slow_run": true,
+  "vlm_calls": 3,
+  "vlm_tokens": 7439,
+  "tool_faults": 12
+ }
+}

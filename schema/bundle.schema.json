@@ -22,7 +22,7 @@
       "additionalProperties": false,
       "required": ["stage", "clip_id", "replicate", "agent_seed", "applied_seed", "layout_block", "candidate", "locked_pattern", "run_status", "agent_exit_code", "created_at", "finished_at", "models"],
       "properties": {
-        "stage": {"enum": ["discovery", "confirmation", "live"]},
+        "stage": {"enum": ["pilot", "discovery", "confirmation", "replacement", "validation", "live"]},
         "clip_id": {"type": "string", "pattern": "^[012]-(nominal|challenging)-r[12]$"},
         "replicate": {"$ref": "#/$defs/nullable_int"},
         "agent_seed": {"$ref": "#/$defs/nullable_int"},
