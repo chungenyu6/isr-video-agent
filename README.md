@@ -26,7 +26,7 @@ Pick a clip and a seed at the top of the page.
 | Role | Model |
 |---|---|
 | Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` |
-| Perception | `google/gemma-4-31B-it` |
+| Perception | `google/gemma-4-26B-A4B-it` (sparse MoE, ~4B active per token) |
 
 Both served locally on vLLM, on A40s. The agent harness is Pi; the twelve clips
 are fixed synthetic traffic scenes.
