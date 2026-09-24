@@ -28,6 +28,13 @@ Pick a clip and a seed at the top of the page.
 | Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` |
 | Perception | `google/gemma-4-26B-A4B-it` (sparse MoE, ~4B active per token) |
 
+The agent now looks in two ways. It **sweeps** a window as video — up to 32 frames
+in one call, about one a second over a 35-second clip — and then **inspects**
+narrow windows as full-resolution stills. Sweeping is cheap enough to cover the
+whole clip; inspecting is precise enough to judge what a sweep raised. Each has
+its own frame budget, so covering the video does not compete with looking closely
+at part of it.
+
 Both served locally on vLLM, on A40s. The agent harness is Pi; the twelve clips
 are fixed synthetic traffic scenes.
 

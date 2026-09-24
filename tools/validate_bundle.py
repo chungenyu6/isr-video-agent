@@ -38,7 +38,10 @@ DENIED_RE = re.compile(r"Permission denied|EACCES|Operation not permitted", re.I
 FRAME_FILE_RE = re.compile(r"frames/\d{3}_[\w.\-]+\.jpe?g")
 
 MAX_BUNDLE_BYTES = 1_500_000
-MAX_DIR_BYTES = 2_500_000
+MAX_DIR_BYTES = 8 * 1024 * 1024  # a run now shows ~4x more frames: a 32-frame video
+                                 # sweep is archived as stills so the viewer can show
+                                 # what the model actually saw. 618 of 618 frames in the
+                                 # current batch have an image, against 185 before.
 
 
 def validate(bundle_dir: Path, schema: dict) -> list[str]:
