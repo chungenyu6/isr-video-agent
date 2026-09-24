@@ -9,8 +9,87 @@
    "layout_block": 9943,
    "candidate": null,
    "locked_pattern": null,
+   "run_status": "failed",
+   "wall_clock_sec": 91.4,
+   "decision": null,
+   "reported_count": null,
+   "v0": "fail",
+   "v0_blind_spot": null,
+   "outcome": null,
+   "layers": null,
+   "earliest_violated_layer": null,
+   "comparison_patterns": null,
+   "full_signatures": null,
+   "inspected_frames": [
+    0,
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
+   ]
+  },
+  {
+   "bundle": "fd-pi-validation-0-challenging-r2-rep_0",
+   "stage": "validation",
+   "clip_id": "0-challenging-r2",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 17863,
+   "candidate": null,
+   "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 247.8,
+   "wall_clock_sec": 117.0,
+   "decision": "report",
+   "reported_count": 0,
+   "v0": "fail",
+   "v0_blind_spot": false,
+   "outcome": {
+    "fn": 0,
+    "fp": 0,
+    "unsupported": 0,
+    "execution_failure": 1,
+    "abstain": 0,
+    "unknown": 0
+   },
+   "layers": {
+    "L0": "fail",
+    "L1": "n/a",
+    "L2": "unknown",
+    "L3": "pass",
+    "L4": "pass"
+   },
+   "earliest_violated_layer": "L0",
+   "comparison_patterns": [
+    "execution_failure|L0|count=0"
+   ],
+   "full_signatures": [
+    "execution_failure|L0|count=0|challenging"
+   ],
+   "inspected_frames": [
+    0,
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
+   ]
+  },
+  {
+   "bundle": "fd-pi-validation-0-nominal-r1-rep_0",
+   "stage": "validation",
+   "clip_id": "0-nominal-r1",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 9943,
+   "candidate": null,
+   "locked_pattern": null,
+   "run_status": "completed",
+   "wall_clock_sec": 147.2,
    "decision": "report",
    "reported_count": 2,
    "v0": "fail",
@@ -37,50 +116,28 @@
     "execution_failure|L0|count=0"
    ],
    "full_signatures": [
-    "fp|L0|count=0|challenging",
-    "unsupported|L0|count=0|challenging",
-    "execution_failure|L0|count=0|challenging"
+    "fp|L0|count=0|nominal",
+    "unsupported|L0|count=0|nominal",
+    "execution_failure|L0|count=0|nominal"
    ],
    "inspected_frames": [
     0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
-   ]
-  },
-  {
-   "bundle": "fd-pi-validation-0-nominal-r1-rep_0",
-   "stage": "validation",
-   "clip_id": "0-nominal-r1",
-   "replicate": 0,
-   "agent_seed": 269318313,
-   "layout_block": 9943,
-   "candidate": null,
-   "locked_pattern": null,
-   "run_status": "failed",
-   "wall_clock_sec": 223.2,
-   "decision": null,
-   "reported_count": null,
-   "v0": "fail",
-   "v0_blind_spot": null,
-   "outcome": null,
-   "layers": null,
-   "earliest_violated_layer": null,
-   "comparison_patterns": null,
-   "full_signatures": null,
-   "inspected_frames": [
-    0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
+    47,
+    50,
+    60,
+    70,
+    80,
+    93,
+    100,
+    120,
+    140,
+    186,
+    200,
+    233,
+    250,
+    279,
+    300,
+    326
    ]
   },
   {
@@ -93,42 +150,45 @@
    "candidate": null,
    "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 73.5,
+   "wall_clock_sec": 112.4,
    "decision": "report",
    "reported_count": 0,
-   "v0": "fail",
+   "v0": "pass",
    "v0_blind_spot": false,
    "outcome": {
     "fn": 0,
     "fp": 0,
     "unsupported": 0,
-    "execution_failure": 1,
+    "execution_failure": 0,
     "abstain": 0,
     "unknown": 0
    },
    "layers": {
-    "L0": "fail",
+    "L0": "pass",
     "L1": "n/a",
     "L2": "unknown",
     "L3": "pass",
     "L4": "pass"
    },
-   "earliest_violated_layer": "L0",
-   "comparison_patterns": [
-    "execution_failure|L0|count=0"
-   ],
-   "full_signatures": [
-    "execution_failure|L0|count=0|nominal"
-   ],
+   "earliest_violated_layer": null,
+   "comparison_patterns": [],
+   "full_signatures": [],
    "inspected_frames": [
     0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
+    50,
+    80,
+    93,
+    100,
+    107,
+    120,
+    150,
+    199,
+    249,
+    299,
+    330,
+    336,
+    342,
+    348
    ]
   },
   {
@@ -140,8 +200,47 @@
    "layout_block": 9943,
    "candidate": null,
    "locked_pattern": null,
+   "run_status": "failed",
+   "wall_clock_sec": 165.8,
+   "decision": null,
+   "reported_count": null,
+   "v0": "fail",
+   "v0_blind_spot": null,
+   "outcome": null,
+   "layers": null,
+   "earliest_violated_layer": null,
+   "comparison_patterns": null,
+   "full_signatures": null,
+   "inspected_frames": [
+    0,
+    23,
+    47,
+    70,
+    93,
+    116,
+    140,
+    163,
+    186,
+    209,
+    233,
+    256,
+    279,
+    302,
+    326,
+    348
+   ]
+  },
+  {
+   "bundle": "fd-pi-validation-1-challenging-r2-rep_0",
+   "stage": "validation",
+   "clip_id": "1-challenging-r2",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 18882,
+   "candidate": null,
+   "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 180.0,
+   "wall_clock_sec": 162.8,
    "decision": "report",
    "reported_count": 1,
    "v0": "fail",
@@ -176,59 +275,21 @@
    ],
    "inspected_frames": [
     0,
-    27,
     45,
-    53,
-    80,
-    91,
+    50,
+    52,
+    58,
+    65,
     100,
-    107,
+    120,
+    127,
     133,
-    136,
-    160,
-    167,
-    181,
-    187,
-    200,
-    213,
-    227,
-    240,
-    272,
-    273,
-    307,
-    317,
-    340
-   ]
-  },
-  {
-   "bundle": "fd-pi-validation-1-challenging-r2-rep_0",
-   "stage": "validation",
-   "clip_id": "1-challenging-r2",
-   "replicate": 0,
-   "agent_seed": 269318313,
-   "layout_block": 18882,
-   "candidate": null,
-   "locked_pattern": null,
-   "run_status": "failed",
-   "wall_clock_sec": 324.1,
-   "decision": null,
-   "reported_count": null,
-   "v0": "fail",
-   "v0_blind_spot": null,
-   "outcome": null,
-   "layers": null,
-   "earliest_violated_layer": null,
-   "comparison_patterns": null,
-   "full_signatures": null,
-   "inspected_frames": [
-    0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
+    140,
+    150,
+    199,
+    249,
+    299,
+    348
    ]
   },
   {
@@ -241,44 +302,42 @@
    "candidate": null,
    "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 140.1,
+   "wall_clock_sec": 79.4,
    "decision": "report",
    "reported_count": 0,
-   "v0": "fail",
-   "v0_blind_spot": false,
+   "v0": "pass",
+   "v0_blind_spot": true,
    "outcome": {
     "fn": 1,
     "fp": 0,
     "unsupported": 0,
-    "execution_failure": 1,
+    "execution_failure": 0,
     "abstain": 0,
     "unknown": 0
    },
    "layers": {
-    "L0": "fail",
+    "L0": "pass",
     "L1": "fail",
     "L2": "unknown",
     "L3": "pass",
     "L4": "fail"
    },
-   "earliest_violated_layer": "L0",
+   "earliest_violated_layer": "L1",
    "comparison_patterns": [
-    "fn|L0|count=1",
-    "execution_failure|L0|count=1"
+    "fn|L1|count=1"
    ],
    "full_signatures": [
-    "fn|L0|count=1|nominal",
-    "execution_failure|L0|count=1|nominal"
+    "fn|L1|count=1|nominal"
    ],
    "inspected_frames": [
     0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
    ]
   },
   {
@@ -291,7 +350,109 @@
    "candidate": null,
    "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 120.4,
+   "wall_clock_sec": 152.7,
+   "decision": "report",
+   "reported_count": 0,
+   "v0": "pass",
+   "v0_blind_spot": true,
+   "outcome": {
+    "fn": 1,
+    "fp": 0,
+    "unsupported": 0,
+    "execution_failure": 0,
+    "abstain": 0,
+    "unknown": 0
+   },
+   "layers": {
+    "L0": "pass",
+    "L1": "fail",
+    "L2": "unknown",
+    "L3": "pass",
+    "L4": "fail"
+   },
+   "earliest_violated_layer": "L1",
+   "comparison_patterns": [
+    "fn|L1|count=1"
+   ],
+   "full_signatures": [
+    "fn|L1|count=1|nominal"
+   ],
+   "inspected_frames": [
+    0,
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
+   ]
+  },
+  {
+   "bundle": "fd-pi-validation-2-challenging-r1-rep_0",
+   "stage": "validation",
+   "clip_id": "2-challenging-r1",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 9943,
+   "candidate": null,
+   "locked_pattern": null,
+   "run_status": "completed",
+   "wall_clock_sec": 96.5,
+   "decision": "report",
+   "reported_count": 1,
+   "v0": "fail",
+   "v0_blind_spot": false,
+   "outcome": {
+    "fn": 2,
+    "fp": 1,
+    "unsupported": 1,
+    "execution_failure": 1,
+    "abstain": 0,
+    "unknown": 0
+   },
+   "layers": {
+    "L0": "fail",
+    "L1": "fail",
+    "L2": "unknown",
+    "L3": "fail",
+    "L4": "fail"
+   },
+   "earliest_violated_layer": "L0",
+   "comparison_patterns": [
+    "fn|L0|count=2",
+    "fp|L0|count=2",
+    "unsupported|L0|count=2",
+    "execution_failure|L0|count=2"
+   ],
+   "full_signatures": [
+    "fn|L0|count=2|challenging",
+    "fp|L0|count=2|challenging",
+    "unsupported|L0|count=2|challenging",
+    "execution_failure|L0|count=2|challenging"
+   ],
+   "inspected_frames": [
+    0,
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
+   ]
+  },
+  {
+   "bundle": "fd-pi-validation-2-challenging-r2-rep_0",
+   "stage": "validation",
+   "clip_id": "2-challenging-r2",
+   "replicate": 0,
+   "agent_seed": 269318313,
+   "layout_block": 18882,
+   "candidate": null,
+   "locked_pattern": null,
+   "run_status": "completed",
+   "wall_clock_sec": 199.0,
    "decision": "abstain",
    "reported_count": 0,
    "v0": "fail",
@@ -313,129 +474,27 @@
    },
    "earliest_violated_layer": "L0",
    "comparison_patterns": [
-    "execution_failure|L0|count=1",
-    "abstain|L0|count=1"
+    "execution_failure|L0|count=2",
+    "abstain|L0|count=2"
    ],
    "full_signatures": [
-    "execution_failure|L0|count=1|nominal",
-    "abstain|L0|count=1|nominal"
+    "execution_failure|L0|count=2|challenging",
+    "abstain|L0|count=2|challenging"
    ],
    "inspected_frames": [
     0,
-    50,
-    65,
+    23,
+    47,
     70,
-    80,
-    85,
-    90,
-    100,
-    170,
-    255,
-    300,
-    313,
-    327,
-    340
-   ]
-  },
-  {
-   "bundle": "fd-pi-validation-2-challenging-r1-rep_0",
-   "stage": "validation",
-   "clip_id": "2-challenging-r1",
-   "replicate": 0,
-   "agent_seed": 269318313,
-   "layout_block": 9943,
-   "candidate": null,
-   "locked_pattern": null,
-   "run_status": "completed",
-   "wall_clock_sec": 97.1,
-   "decision": "report",
-   "reported_count": 0,
-   "v0": "pass",
-   "v0_blind_spot": true,
-   "outcome": {
-    "fn": 2,
-    "fp": 0,
-    "unsupported": 0,
-    "execution_failure": 0,
-    "abstain": 0,
-    "unknown": 0
-   },
-   "layers": {
-    "L0": "pass",
-    "L1": "fail",
-    "L2": "unknown",
-    "L3": "pass",
-    "L4": "fail"
-   },
-   "earliest_violated_layer": "L1",
-   "comparison_patterns": [
-    "fn|L1|count=2"
-   ],
-   "full_signatures": [
-    "fn|L1|count=2|challenging"
-   ],
-   "inspected_frames": [
-    0,
-    80,
-    96,
-    112,
-    113,
-    128,
-    144,
-    160,
-    196,
-    227,
-    232,
-    268,
-    304,
-    340
-   ]
-  },
-  {
-   "bundle": "fd-pi-validation-2-challenging-r2-rep_0",
-   "stage": "validation",
-   "clip_id": "2-challenging-r2",
-   "replicate": 0,
-   "agent_seed": 269318313,
-   "layout_block": 18882,
-   "candidate": null,
-   "locked_pattern": null,
-   "run_status": "completed",
-   "wall_clock_sec": 410.6,
-   "decision": "abstain",
-   "reported_count": 0,
-   "v0": "pass",
-   "v0_blind_spot": true,
-   "outcome": {
-    "fn": 0,
-    "fp": 0,
-    "unsupported": 0,
-    "execution_failure": 0,
-    "abstain": 1,
-    "unknown": 0
-   },
-   "layers": {
-    "L0": "pass",
-    "L1": "fail",
-    "L2": "unknown",
-    "L3": "n/a",
-    "L4": "fail"
-   },
-   "earliest_violated_layer": "L1",
-   "comparison_patterns": [
-    "abstain|L1|count=2"
-   ],
-   "full_signatures": [
-    "abstain|L1|count=2|challenging"
-   ],
-   "inspected_frames": [
-    0,
-    50,
-    100,
-    150,
-    200,
-    300,
-    340
+    93,
+    116,
+    140,
+    163,
+    186,
+    209,
+    233,
+    279,
+    326
    ]
   },
   {
@@ -448,14 +507,14 @@
    "candidate": null,
    "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 138.3,
+   "wall_clock_sec": 141.3,
    "decision": "report",
-   "reported_count": 4,
+   "reported_count": 2,
    "v0": "fail",
    "v0_blind_spot": false,
    "outcome": {
     "fn": 2,
-    "fp": 4,
+    "fp": 2,
     "unsupported": 1,
     "execution_failure": 1,
     "abstain": 0,
@@ -483,20 +542,13 @@
    ],
    "inspected_frames": [
     0,
-    40,
-    49,
-    51,
-    63,
-    74,
-    86,
-    97,
-    109,
-    120,
-    146,
-    194,
-    243,
-    291,
-    340
+    50,
+    100,
+    150,
+    199,
+    249,
+    299,
+    348
    ]
   },
   {
@@ -509,42 +561,48 @@
    "candidate": null,
    "locked_pattern": null,
    "run_status": "completed",
-   "wall_clock_sec": 98.0,
+   "wall_clock_sec": 144.2,
    "decision": "report",
-   "reported_count": 0,
-   "v0": "pass",
-   "v0_blind_spot": true,
+   "reported_count": 1,
+   "v0": "fail",
+   "v0_blind_spot": false,
    "outcome": {
     "fn": 2,
-    "fp": 0,
-    "unsupported": 0,
-    "execution_failure": 0,
+    "fp": 1,
+    "unsupported": 1,
+    "execution_failure": 1,
     "abstain": 0,
     "unknown": 0
    },
    "layers": {
-    "L0": "pass",
+    "L0": "fail",
     "L1": "fail",
     "L2": "unknown",
-    "L3": "pass",
+    "L3": "fail",
     "L4": "fail"
    },
-   "earliest_violated_layer": "L1",
+   "earliest_violated_layer": "L0",
    "comparison_patterns": [
-    "fn|L1|count=2"
+    "fn|L0|count=2",
+    "fp|L0|count=2",
+    "unsupported|L0|count=2",
+    "execution_failure|L0|count=2"
    ],
    "full_signatures": [
-    "fn|L1|count=2|nominal"
+    "fn|L0|count=2|nominal",
+    "fp|L0|count=2|nominal",
+    "unsupported|L0|count=2|nominal",
+    "execution_failure|L0|count=2|nominal"
    ],
    "inspected_frames": [
     0,
-    45,
-    91,
-    136,
-    181,
-    227,
-    272,
-    317
+    47,
+    93,
+    140,
+    186,
+    233,
+    279,
+    326
    ]
   }
  ]
