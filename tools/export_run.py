@@ -24,6 +24,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import json
 import os
@@ -59,6 +60,12 @@ JSONL_SOURCES = {
     "errors": "tool-logs/errors.jsonl",
     "extraction": "tool-logs/extraction.jsonl",
     "sampling": "tool-logs/sampling.jsonl",
+    #: Every image actually sent to the VLM, with its bytes. The agent deletes the
+    #: window directories (`rm -rf coarse_scan`), so by export time the workspace
+    #: usually holds no images at all and every observation showed "image file is
+    #: missing". This archive is written into the root-owned tool-logs directory
+    #: at send time and the agent cannot unlink it (D068).
+    "vlm_frames": "tool-logs/vlm_frames.jsonl",
 }
 
 #: Strings that must never reach a published bundle, whatever their context.
@@ -212,12 +219,28 @@ def export(run_dir: Path, out_root: Path, row: dict, *, live: bool = False) -> P
     (dest / "frames").mkdir(parents=True)
 
     frame_list = []
+    # Prefer the workspace copy; fall back to the archive when the agent deleted it.
+    archived = {}
+    for archived_row in logs.get("vlm_frames", []):
+        key = archived_row.get("frame")
+        if key and archived_row.get("jpeg_b64") and key not in archived:
+            archived[key] = archived_row
+
     for i, rec in enumerate(sorted(frames.values(), key=lambda r: (r["t"], r["rel"]))):
         path = inside(workspace, rec["rel"])
         file = None
         if path and path.suffix.lower() in (".jpg", ".jpeg") and path.is_file() and not path.is_symlink():
             file = f"frames/{i:03d}_{path.name}"
             shutil.copy2(path, dest / file)
+        else:
+            # NB: not `row` -- that is this function's matrix-row parameter, and
+            # shadowing it here set it to None and broke every export.
+            kept = archived.get(rec["rel"]) or archived.get(rec["rel"].replace("<workspace>", str(workspace)))
+            if kept is not None:
+                name = kept.get("name") or f"{rec['frame_id']}.jpg"
+                file = f"frames/{i:03d}_{name}"
+                (dest / file).write_bytes(base64.b64decode(kept["jpeg_b64"]))
+                rec["reason"] = (rec["reason"] or "") + " (recovered from the sent-frame archive)"
         frame_list.append({
             "key": rec["rel"], "frame_id": rec["frame_id"], "t": rec["t"], "file": file,
             "window": rec["window"], "reason": rec["reason"], "inspected": rec["inspected"],
@@ -424,7 +447,9 @@ def main() -> int:
         rows = {d.name: row for d, row in formal_runs()} if not args.live else {}
         for rd in args.run_dir:
             path = Path(rd).resolve()
-            targets.append((path, rows.get(path.name, {})))
+            # A run outside any matrix has no row. `.get(name, {})` is not enough:
+            # a name present with a None value still yields None.
+            targets.append((path, rows.get(path.name) or {}))
     if not targets:
         ap.error("nothing to export: pass --formal or --run-dir")
 
