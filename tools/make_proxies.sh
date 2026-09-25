@@ -4,7 +4,9 @@
 # The source clips are MPEG-4 Part 2 (mp4v), which browsers do not decode. The
 # proxies keep 960x540, 10 fps and every frame, because the viewer maps video time
 # to frame index and draws ground-truth boxes in source pixel coordinates. The
-# frame count of every proxy is checked; a mismatch is a hard failure.
+# frame count of every proxy is checked against ITS OWN SOURCE; a mismatch is a hard
+# failure. It used to be checked against a literal 349, which is the frame count of a
+# dataset that was replaced on 2026-09-22 by a 199-frame regeneration.
 #
 # Usage: bash tools/make_proxies.sh [output_dir]
 set -euo pipefail
@@ -21,7 +23,8 @@ for dir in "$SRC"/*/; do
     -c:v libx264 -pix_fmt yuv420p -preset slow -crf 24 -r 10 -g 10 \
     -movflags +faststart -an "$dest"
   n="$(ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of csv=p=0 "$dest")"
-  if [ "$n" != "349" ]; then echo "FAIL $clip: $n frames, expected 349" >&2; exit 1; fi
+  want="$(ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of csv=p=0 "$dir/video.mp4")"
+  if [ "$n" != "$want" ]; then echo "FAIL $clip: $n frames, source has $want" >&2; exit 1; fi
   printf "  ok  %-18s %s frames %6s KB\n" "$clip" "$n" "$(( $(stat -c%s "$dest") / 1024 ))"
 done
 echo "total: $(du -sh "$OUT" | cut -f1)"
