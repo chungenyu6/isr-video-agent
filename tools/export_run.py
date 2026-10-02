@@ -398,6 +398,7 @@ def scrub(obj, run_dir: Path):
         (str(run_dir), "<run>"),
         (str(EXPERIMENT), "<experiment>"),
         ("/home/phase0agent", "<agent-home>"),
+        ("/home/tested-agent-user", "<agent-home>"),
         # The agent's PATH includes the archived Phase 0 venv, so tracebacks name it.
         ("/home/video-code-harness/video-agent-harness-phase0", "<phase0>"),
         ("/workspace/archive/video-code-harness/video-agent-harness-phase0", "<phase0>"),
