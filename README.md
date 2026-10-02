@@ -50,7 +50,7 @@ rates or model comparisons off it.
 The viewer reads static JSON; nothing touches an experiment directory at runtime.
 
 ```bash
-export EXPERIMENT_ROOT=/home/isr-video-agent
+export EXPERIMENT_ROOT=/workspace/archive/isr-video-agent   # b0v4 runs need an exporter update
 python3 tools/export_oracle.py                 # content/oracle/<clip_id>.json
 python3 tools/export_run.py --run-dir <dir>    # bundles/<name>/bundle.json
 python3 tools/build_experiment.py              # content/experiment.json

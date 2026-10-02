@@ -34,7 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BUNDLES = ROOT / "bundles"
 OUT = ROOT / "content" / "experiment.json"
 ORACLE = ROOT / "content" / "oracle"
-EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/home/isr-video-agent"))
+EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/workspace/archive/isr-video-agent"))
 FINAL = EXPERIMENT / "docs" / "report" / "final-analysis.json"
 
 OUTCOMES = ["fn", "fp", "unsupported", "execution_failure", "abstain", "unknown"]

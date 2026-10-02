@@ -31,7 +31,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/home/isr-video-agent"))
+EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/workspace/archive/isr-video-agent"))
 sys.path.insert(0, str(EXPERIMENT))
 
 from failure_discovery.common import load_policy  # noqa: E402

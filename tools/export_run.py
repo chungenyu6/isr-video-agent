@@ -42,7 +42,7 @@ sys.path.insert(0, str(ROOT))
 import adapters  # noqa: E402
 from adapters.base import ev  # noqa: E402
 
-EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/home/isr-video-agent"))
+EXPERIMENT = Path(os.environ.get("EXPERIMENT_ROOT", "/workspace/archive/isr-video-agent"))
 CAMPAIGN = EXPERIMENT / "experiments" / "isr-video-agent"
 
 # --- the allowlist ----------------------------------------------------------
@@ -69,7 +69,7 @@ JSONL_SOURCES = {
 }
 
 #: Strings that must never reach a published bundle, whatever their context.
-HARD_FORBIDDEN = ("/home/", "/root/", "auth.json", "apiKey", "api_key", "Authorization")
+HARD_FORBIDDEN = ("/home/", "/workspace/", "/root/", "auth.json", "apiKey", "api_key", "Authorization")
 #: Oracle paths may appear only as a refusal (the agent's own `find` hitting the
 #: boundary). An unrefused mention means something read it.
 SOFT_FORBIDDEN = ("data/labels", "oracle.json", "scenario-index.jsonl")
@@ -400,6 +400,9 @@ def scrub(obj, run_dir: Path):
         ("/home/phase0agent", "<agent-home>"),
         # The agent's PATH includes the archived Phase 0 venv, so tracebacks name it.
         ("/home/video-code-harness/video-agent-harness-phase0", "<phase0>"),
+        ("/workspace/archive/video-code-harness/video-agent-harness-phase0", "<phase0>"),
+        ("/workspace/model-serving", "<model-serving>"),
+        ("/workspace/video-agent", "<video-agent>"),
         (str(ROOT), "<demo>"),
     ]
 

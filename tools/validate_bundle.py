@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCHEMA = ROOT / "schema" / "bundle.schema.json"
 VIDEO_DIR = ROOT / "app" / "public" / "video"
 
-HARD_FORBIDDEN = ("/home/", "/root/", "auth.json", "apiKey", "api_key", "Authorization")
+HARD_FORBIDDEN = ("/home/", "/workspace/", "/root/", "auth.json", "apiKey", "api_key", "Authorization")
 SOFT_FORBIDDEN = ("data/labels", "oracle.json", "scenario-index.jsonl")
 DENIED_RE = re.compile(r"Permission denied|EACCES|Operation not permitted", re.IGNORECASE)
 FRAME_FILE_RE = re.compile(r"frames/\d{3}_[\w.\-]+\.jpe?g")
