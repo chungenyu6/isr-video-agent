@@ -1,8 +1,8 @@
 // Every Gemma call: the host-chosen frame with the TARGET box, the padded crop,
 // and Gemma's text verbatim. The agent chose only the track and the intent.
 
-import type { Loaded } from "../types";
-import { bundleFile, visualShown } from "../data";
+import type { Loaded } from "../../types";
+import { bundleFile, visualShown } from "../../data";
 import type { Focus } from "./RunView";
 
 interface Props { bundle: Loaded; t: number; focus: Focus; aliasIdx: Map<string, number> }

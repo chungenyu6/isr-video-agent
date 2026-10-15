@@ -1,4 +1,5 @@
-// Mirrors schema/bundle-v42.schema.json and tools/build_experiment.py.
+// V4.2 bundle: mirrors schema/bundle-v42.schema.json. Experiment: tools/build_experiment.py.
+// The V5.0 bundle lives in v50/types.ts.
 
 export type Box = [number, number, number, number];
 
@@ -154,23 +155,39 @@ export interface RunSummary {
   posthoc: string;
   expected_count: number;
   count_correct: boolean;
+  /** V5.0 only: count right and the exact colour strings equal the labels */
+  exact_colors?: boolean;
   goal_correct: boolean;
   complete_correct: boolean;
   visual_calls: number;
   orchestrator_calls: number;
 }
 
-export interface Experiment {
+export interface Figures {
+  attempts: number;
+  accepted: number;
+  posthoc_pass: number;
+  count_correct: number;
+  count_and_exact_colors?: number;
+  count_and_supported_colors: number;
+  complete_correct: number;
+  nemotron_calls?: number;
+  gemma_calls?: number;
+  tracking_jobs?: number;
+  promoted: boolean;
+}
+
+export type VersionKey = "v50" | "v42";
+
+export interface VersionData {
+  label: string;
   source: { batch: string; candidate_revision: string; sut_commit: string; study_commit: string; service_commit: string };
   featured: string;
-  figures: {
-    attempts: number;
-    accepted: number;
-    posthoc_pass: number;
-    count_correct: number;
-    count_and_supported_colors: number;
-    complete_correct: number;
-    promoted: boolean;
-  };
+  figures: Figures;
   runs: RunSummary[];
+}
+
+export interface Experiment {
+  current: VersionKey;
+  versions: Record<VersionKey, VersionData>;
 }

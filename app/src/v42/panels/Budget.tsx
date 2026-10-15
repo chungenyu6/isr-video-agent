@@ -1,7 +1,7 @@
 // Host-enforced budgets. The Runtime Verifier refuses a call that would exceed them.
 
-import type { Loaded } from "../types";
-import { budgetAt } from "../data";
+import type { Loaded } from "../../types";
+import { budgetAt } from "../../data";
 
 function Gauge({ label, used, limit, unit = "" }: { label: string; used: number; limit: number; unit?: string }) {
   const pct = Math.min(100, (100 * used) / limit);

@@ -3,8 +3,8 @@
 // says it moved, and which frame went to Gemma. Click to move the video there.
 
 import { useState } from "react";
-import type { Loaded, Oracle } from "../types";
-import { detectionRuns, dirClass, phaseAt, tracksShown, visualShown } from "../data";
+import type { Loaded, Oracle } from "../../types";
+import { detectionRuns, dirClass, phaseAt, tracksShown, visualShown } from "../../data";
 import type { Focus } from "./RunView";
 
 interface Props { bundle: Loaded; oracle: Oracle; t: number; focus: Focus; points: number[][][] }

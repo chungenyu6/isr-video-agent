@@ -2,89 +2,88 @@
 
 **Live: https://chungenyu6.github.io/isr-video-agent/**
 
-A replay site for the V4.2 video agent: a language model that answers a traffic
-question about a fixed camera clip without ever touching the video itself.
+A replay site for a video system that answers a traffic question about a fixed
+camera clip:
 
-The question: **how many vehicles move against the traffic around them, and what
-colour are they?**
+> How many vehicles, if any, move opposite to the prevailing nearby traffic in the
+> same roadway area? List their colours, and state if the total count remains uncertain.
 
-The agent (Nemotron, in a sandbox) sees only text. A trusted host owns the clip.
-The host runs an object detector and a tracker, measures how each track moves,
-gives the agent the result as text, and on request crops one track for a vision
-model. The agent compares tracks, decides what to inspect, and answers.
+Two versions of the system are on the site, each measured once on the same six clips.
 
-The site has two pages:
+| | V5.0 (current) | V4.2 (previous) |
+|---|---|---|
+| Design | Program-first. The host tracks every vehicle, joins broken tracks into vehicle records, applies a fixed traffic rule, asks Gemma only for each candidate's colour, and writes the answer. Pi + Nemotron start only for an investigation case. | A Nemotron agent in a sandbox reads track facts as text, picks what Gemma should look at through six tools, and writes the answer. |
+| Nemotron calls (six clips) | 0 (no case arose; the branch was not exercised live) | 98 |
+| Right count | 6/6 | 3/6 |
+| Count and colours supported by the frames | 6/6 | 1/6 |
+| Exact colour strings | 4/6 | – |
+| Complete answers | **0/6** | **0/6** |
+| Promoted | no | no |
 
-- **Run replay.** Pick one of six attempts. You can watch:
-  - the YOLO26s + ByteTrack boxes, track trails and movement arrows drawn on the clip;
-  - a per-track timeline;
-  - the track facts the agent was given;
-  - the exact images Gemma was shown and what it said;
-  - every tool call;
-  - the answer, kept separate from the Runtime Verifier, the Post-hoc Verifier and the study's scorer.
-- **How it works.** Covers:
-  - the components and their trust zones;
-  - the real call sequence of one run, step by step;
-  - what each stage hands to the next;
-  - the detector and the tracker explained in four pictures.
+The comparison describes two designs; it is not a controlled experiment. In V5.0
+every answer keeps `count_complete = false` because some detections were never
+assigned to a vehicle record. The six clips are a known regression set, not new scenes.
+
+## The site
+
+- **Run replay.** Pick a version and one of six attempts.
+  - V5.0 steps through the host pipeline (Track → Group → Traffic rule → Look →
+    Assemble → Verify). You can watch boxes change from tracker IDs to vehicle
+    records, see which tracker IDs were joined and why, where ungrouped boxes are,
+    the traffic rule as a compass, what Gemma was shown and said, and the answer.
+  - V4.2 replays the agent on its own run clock: every tool call, the track facts
+    it read, the Gemma crops it asked for.
+  - The answer is kept separate from the Runtime Verifier, the Post-hoc Verifier,
+    the study's scorer and the source review.
+- **How it works.** For each version: components and trust zones, the real call
+  sequence of one run, what each stage hands to the next, and illustrated
+  explainers (grouping and the traffic rule for V5.0; detector and tracker for V4.2).
 
 ## What is running
 
 | Role | Model |
 |---|---|
-| Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4`, thinking off |
-| Vision | `google/gemma-4-26B-A4B-it`, stateless, temperature 0.1 |
 | Detector + tracker | YOLO26s (ultralytics 8.4.176) + ByteTrack, no ReID |
-| Agent harness | Pi with the V4.2 extension: six typed tools |
+| Vision | `google/gemma-4-26B-A4B-it`, stateless, temperature 0.1 |
+| Orchestrator / investigator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4`, thinking off |
+| Agent harness | Pi: V4.2 extension with six tools; V5.0 extension with five investigation tools |
 
 All of them are served locally on A40s. The six clips are synthetic traffic scenes,
 960×540 at 10 fps and 20 s long.
-
-## Reading it honestly
-
-These are the six attempts of one bounded measurement, each run once. The six
-answers break down as follows:
-
-| Outcome | Attempts |
-|---|---|
-| Accepted by the host | 6/6 |
-| Right count | 3/6 |
-| Count and colours supported by the frames | 1/6 |
-| Complete | 0/6 |
-
-V4.2 was not promoted. The featured attempt, a002, is the best of the six, not a
-typical one, and the site says so. A Post-hoc Verifier pass means the record is
-intact, not that the answer is right. Ground truth and scores are shown only on
-cards labelled as such; the agent never saw them.
 
 ## Data
 
 The viewer reads static JSON. Nothing touches an experiment directory at runtime.
 
 ```bash
-python3 -B tools/export_v4_run.py --batch <study>/runs/20261015-06-eval-6-v4.2-direction-first
-python3 -B tools/build_experiment.py           # content/experiment.json
+B=/workspace/experiments/video-agent-capability/runs
+python3 -B tools/export_v50_run.py --batch $B/20261015-09-eval-6-v5.0-program-first
+python3 -B tools/export_v4_run.py  --batch $B/20261015-06-eval-6-v4.2-direction-first
+python3 -B tools/build_experiment.py           # content/experiment.json, both versions
 python3 -B tools/validate_bundle.py bundles/*/
-python3 -B tools/build_experiment.py --check   # site figures == the study report's
+python3 -B tools/build_experiment.py --check   # site figures == each study report's
 ```
 
-`export_v4_run.py` is an allowlist. It reads only:
+Both exporters are allowlists. The V5.0 exporter reads only:
 
-- the tracking JSON, the motion index, the gateway ledger and Pi message timestamps;
-- the verdict and score files;
+- the tracking JSON and the gateway ledger (vehicle snapshot, Gemma requests and
+  replies, the host's final answer; service endpoints dropped);
+- `run.json`, the verdict and score files, and one row of the source review;
 - the two images per Gemma call.
 
-It never opens agent commands, raw model requests, review files, the source video or
-labels. Every bundle passes `tools/publish_guard.py`, which forbids host paths,
-loopback URLs, credential-shaped strings and label paths, before it is written.
+They never open agent commands, raw model requests, audit or review files, the
+source video or labels. Every bundle passes `tools/publish_guard.py`, which forbids
+host paths, loopback URLs, credential-shaped strings and label paths, before it is
+written. `tools/validate_bundle.py` re-checks bundles on disk against
+`schema/bundle-v50.schema.json` or `schema/bundle-v42.schema.json`.
 
-Two inputs are reused from the previous site rather than re-exported:
+Two inputs are reused from an earlier site rather than re-exported:
 
 - **Ground-truth files.** `content/oracle/*.json` was exported earlier by
   `tools/export_oracle.py`.
 - **Video proxies.** `app/public/video/*.mp4` were made by `tools/make_proxies.sh`.
 
-Both are for the same six clips; their video SHA-256 matches the V4.2 runs.
+Both are for the same six clips; their video SHA-256 matches both batches.
 
 ## Develop
 
@@ -99,5 +98,5 @@ npm run preview    # http://0.0.0.0:4173
 `BASE_PATH` sets the base href for subdirectory hosting and defaults to `/`; the
 Pages workflow sets it to `/<repo name>/`.
 
-The previous site (the archived ISR agent) is preserved at the git tag
-`legacy-isr-agent-site`.
+Earlier sites are preserved as git tags: `v42-site` (V4.2 only) and
+`legacy-isr-agent-site` (the archived ISR agent).

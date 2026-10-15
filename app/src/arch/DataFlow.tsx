@@ -1,6 +1,6 @@
-// What each stage hands to the next, with the actual a002 values as payloads.
+// What each stage hands to the next, with the actual values of one run as payloads.
 
-import { FLOW } from "./content";
+import type { FlowStage } from "./types";
 
 const LANE: Record<string, string> = {
   host: "trusted host",
@@ -9,15 +9,16 @@ const LANE: Record<string, string> = {
   after: "after the run",
 };
 
-export default function DataFlow() {
+export default function DataFlow({ flow }: { flow: FlowStage[] }) {
+  const lanes = Object.entries(LANE).filter(([k]) => flow.some((s) => s.lane === k));
   return (
     <div className="flow">
       <div className="flowlegend">
-        {Object.entries(LANE).map(([k, v]) => <span key={k} className={`lanetag ln-${k}`}>{v}</span>)}
+        {lanes.map(([k, v]) => <span key={k} className={`lanetag ln-${k}`}>{v}</span>)}
       </div>
       <ol>
-        {FLOW.map((s, i) => (
-          <li key={i} className={`fstage ln-${s.lane}${s.lane === "after" && FLOW[i - 1]?.lane !== "after" ? " split" : ""}`}>
+        {flow.map((s, i) => (
+          <li key={i} className={`fstage ln-${s.lane}${s.lane === "after" && flow[i - 1]?.lane !== "after" ? " split" : ""}`}>
             <div className="fcard">
               <span className={`lanetag ln-${s.lane}`}>{LANE[s.lane]}</span>
               <b>{s.name}</b>

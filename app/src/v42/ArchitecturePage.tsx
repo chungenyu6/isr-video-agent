@@ -1,17 +1,17 @@
-// How V4.2 works: components and trust zones, one real run as a call sequence,
+// How V4.2 (the previous version) works: components and trust zones, one real run as a call sequence,
 // what each stage hands to the next, and the detector/tracker in four pictures.
 
 import { useEffect, useState } from "react";
-import type { Experiment, Loaded } from "../types";
+import type { Loaded, VersionData } from "../types";
 import { loadBundle } from "../data";
-import { runHref } from "../router";
-import { BOUNDARIES, CHANGES, SEQUENCE } from "../arch/content";
+import { archHref, runHref } from "../router";
+import { BOUNDARIES, CHANGES, COMPONENTS, FLOW, PARTICIPANTS, SEQUENCE, ZONES } from "./content";
 import ComponentMap from "../arch/ComponentMap";
 import Sequence from "../arch/Sequence";
 import DataFlow from "../arch/DataFlow";
-import TrackingExplainer from "../arch/TrackingExplainer";
+import TrackingExplainer from "./TrackingExplainer";
 
-export default function ArchitecturePage({ exp }: { exp: Experiment }) {
+export default function ArchitecturePage({ exp }: { exp: VersionData }) {
   const [bundle, setBundle] = useState<Loaded | null>(null);
   const [cur, setCur] = useState(0);
   const [selected, setSelected] = useState<string | null>("gateway");
@@ -38,6 +38,9 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
   return (
     <main className="arch">
       <section className="hero">
+        <div className="prevnote">
+          Previous version. The current system is <a href={archHref("v50")}>V5.0, program-first →</a>
+        </div>
         <span className="eyebrow">How it works · V4.2</span>
         <h1>A language model that never touches the video</h1>
         <p className="lede">
@@ -60,7 +63,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
           Three zones. The agent can reach the world only through six typed tools on the gateway; the models run as
           separate services. Highlighted cards are the ones involved in the current step of section 2.
         </p>
-        <ComponentMap selected={selected} onSelect={setSelected} highlight={msg.highlight} />
+        <ComponentMap zones={ZONES} components={COMPONENTS} selected={selected} onSelect={setSelected} highlight={msg.highlight} />
         <h3 className="ph sub">What crosses each boundary</h3>
         <div className="tbl">
           <table>
@@ -93,7 +96,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
           <p>{msg.detail}</p>
           {stepT !== undefined && <a href={runHref(exp.featured, stepT)}>see this moment in the replay →</a>}
         </div>
-        <Sequence cur={cur} onPick={(i) => { setPlaying(false); setCur(i); }} />
+        <Sequence participants={PARTICIPANTS} sequence={SEQUENCE} label="Call sequence of attempt a002" cur={cur} onPick={(i) => { setPlaying(false); setCur(i); }} />
       </section>
 
       <section>
@@ -103,7 +106,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
           from a002. Perception stays on the host side; decisions stay with the agent; checking after the run never
           feeds back.
         </p>
-        <DataFlow />
+        <DataFlow flow={FLOW} />
       </section>
 
       <section>

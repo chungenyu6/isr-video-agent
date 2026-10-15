@@ -2,8 +2,8 @@
 // trace IS the tool calls, the host's replies, and the submitted uncertainty.
 
 import { useEffect, useRef } from "react";
-import type { Loaded, Step } from "../types";
-import { stepTrack } from "../data";
+import type { Loaded, Step } from "../../types";
+import { stepTrack } from "../../data";
 import type { Focus } from "./RunView";
 
 interface Props {

@@ -2,9 +2,9 @@
 // happened yet) and the video frame (where you are looking in the clip).
 
 import { useEffect, useMemo, useState } from "react";
-import type { Loaded, Oracle } from "../types";
-import type { Clock } from "../clock";
-import { clipLabel, trackPoints } from "../data";
+import type { Loaded, Oracle } from "../../types";
+import type { Clock } from "../../clock";
+import { clipLabel, trackPoints } from "../../data";
 import VideoPanel from "./VideoPanel";
 import TrackTimeline from "./TrackTimeline";
 import TrackInventory from "./TrackInventory";

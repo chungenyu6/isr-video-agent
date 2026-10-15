@@ -2,18 +2,9 @@
 // at SUT 93d0e5b (implemented runtime), config/runtime_v42.json and
 // model-serving/vision/server.py. Results: the study's V4.2 resumed report.
 
-export type Zone = "agent" | "host" | "models";
+import type { Component, FlowStage, Participant, SeqMsg, Zone, ZoneInfo } from "../arch/types";
 
-export interface Component {
-  id: string;
-  zone: Zone;
-  name: string;
-  sub: string;
-  role: string;
-  facts: string[];
-}
-
-export const ZONES: Record<Zone, { name: string; note: string }> = {
+export const ZONES: Record<Zone, ZoneInfo> = {
   agent: { name: "Agent sandbox", note: "Unix user tested-agent-user · untrusted · no access to labels or other runs" },
   host: { name: "Trusted host", note: "root · owns the video, the tracking data, every check and every record" },
   models: { name: "Model services", note: "local GPUs · started and stopped only by model-serving" },
@@ -87,18 +78,7 @@ export const BOUNDARIES: { from: string; to: string; payload: string }[] = [
   { from: "Records", to: "Post-hoc Verifier", payload: "Ledger, requests, media and tracking data, after the run ends." },
 ];
 
-export interface SeqMsg {
-  from: string;
-  to: string;
-  label: string;
-  detail: string;
-  highlight: string[];
-  /** index into the a002 bundle's steps; the replay link jumps to its result */
-  step?: number;
-  dashed?: boolean;
-}
-
-export const PARTICIPANTS: { id: string; name: string; sub: string }[] = [
+export const PARTICIPANTS: Participant[] = [
   { id: "launcher", name: "Launcher", sub: "host" },
   { id: "agent", name: "Pi + Nemotron", sub: "agent" },
   { id: "gateway", name: "Gateway", sub: "host" },
@@ -144,13 +124,6 @@ export const SEQUENCE: SeqMsg[] = [
   { from: "launcher", to: "posthoc", label: "rebuild records → integrity pass", highlight: ["launcher", "posthoc", "store"],
     detail: "After the run, the Post-hoc Verifier rebuilds motion, requests, media, headers and budgets from the records. It passed. It says nothing about whether the answer is right; the study's scorer does that separately against ground truth." },
 ];
-
-export interface FlowStage {
-  lane: "host" | "model" | "agent" | "after";
-  name: string;
-  what: string;
-  payload: string;
-}
 
 /** a002, frames and values from the actual run */
 export const FLOW: FlowStage[] = [

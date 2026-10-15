@@ -3,8 +3,8 @@
 // (after the run, record integrity only) and the study's scorer (after the run,
 // against ground truth). Neither verifier judges traffic truth.
 
-import type { Loaded } from "../types";
-import { submitted } from "../data";
+import type { Loaded } from "../../types";
+import { submitted } from "../../data";
 
 const Mark = ({ ok }: { ok: boolean }) => <span className={`pill ${ok ? "st-pass" : "st-fail"}`}>{ok ? "yes" : "no"}</span>;
 

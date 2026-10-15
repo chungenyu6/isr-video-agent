@@ -6,10 +6,10 @@
 // seen a single detection.
 
 import { useEffect, useRef, useState } from "react";
-import type { Loaded, Oracle } from "../types";
+import type { Loaded, Oracle } from "../../types";
 import {
   asset, bundleFile, DIR_LABEL, dirClass, gtBoxesAt, phaseAt, trackColor, tracksShown, visualShown,
-} from "../data";
+} from "../../data";
 import type { Focus } from "./RunView";
 
 interface Props { bundle: Loaded; oracle: Oracle; t: number; focus: Focus; points: number[][][] }

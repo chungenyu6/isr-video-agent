@@ -1,8 +1,8 @@
 // The host's track fact index, as a table: the same facts scan_video rendered
 // as text for the agent, plus what the agent then did with each track.
 
-import type { Loaded } from "../types";
-import { DIR_LABEL, dirClass, stepDone, stepTrack, trackColor, tracksShown, visualShown } from "../data";
+import type { Loaded } from "../../types";
+import { DIR_LABEL, dirClass, stepDone, stepTrack, trackColor, tracksShown, visualShown } from "../../data";
 import type { Focus } from "./RunView";
 
 interface Props { bundle: Loaded; t: number; focus: Focus; points: number[][][] }
