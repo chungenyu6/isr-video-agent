@@ -41,7 +41,7 @@ jobs:
           python - <<'PY'
           import json, pathlib, sys
           exp = json.loads(pathlib.Path("content/experiment.json").read_text())
-          listed = sorted(r["bundle"] for r in exp["runs"])
+          listed = sorted(r["bundle"] for v in exp["versions"].values() for r in v["runs"])
           on_disk = sorted(p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json"))
           live = [p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json")
                   if json.loads(p.read_text()).get("live")]

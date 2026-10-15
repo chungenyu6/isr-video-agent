@@ -35,26 +35,16 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 
-from PIL import Image  # noqa: E402
-
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from export_common import CLASSES, jl, jpeg, r1  # noqa: E402
 from publish_guard import leaks  # noqa: E402
 
 BUNDLES = ROOT / "bundles"
 VIDEO_DIR = ROOT / "app" / "public" / "video"
-CLASSES = {1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
 BUDGET_RE = re.compile(
     r"main calls remaining (\d+); Gemma remaining (\d+); host text remaining (\d+)")
 STEP_TEXT_CAP = 6000
-
-
-def jl(path: Path) -> list[dict]:
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-
-
-def r1(x: float) -> float:
-    return round(float(x), 1)
 
 
 def export_tracking(sut: Path) -> tuple[dict, dict]:
@@ -116,11 +106,6 @@ def step_times(sut: Path, latencies: list[float]) -> list[tuple[float, float]]:
         elif m["role"] == "toolResult" and pending:
             out.append((round(pending.pop(0), 3), round((m["timestamp"] - t0) / 1000, 3)))
     return out
-
-
-def jpeg(src: Path, dst: Path) -> None:
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    Image.open(src).convert("RGB").save(dst, "JPEG", quality=85, optimize=True)
 
 
 def export_attempt(batch: Path, attempt: str, manifest: dict, review: dict) -> str:
