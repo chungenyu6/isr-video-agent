@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Gate replay bundles before they may be committed or published.
+"""Gate V4.2 replay bundles before they may be committed or published.
 
 Three independent layers:
 
-  1. SCHEMA   the bundle matches schema/bundle.schema.json
-  2. LEAK     no host path, credential file, stray file or unrefused oracle path
-  3. SANITY   frames on disk, one monotonic clock, frame ids inside the clip,
-              an enhanced report on every formal run, size under budget
+  1. SCHEMA   the bundle matches schema/bundle-v42.schema.json
+  2. LEAK     no host path, loopback URL, credential, stray file or oracle path
+  3. SANITY   frame ids inside the clip, track indexes in range, one monotonic
+              clock, every Gemma frame shows a real detection of its track,
+              proxy video present, size under budget
 
 The exporter enforces the leak rules as it writes; this re-checks what is on
 disk, because a bundle can be edited after export and CI never runs the exporter.
@@ -23,25 +24,23 @@ import re
 import sys
 from pathlib import Path
 
+sys.dont_write_bytecode = True
+
 try:
     import jsonschema
 except ImportError:
     sys.exit("jsonschema is required: pip install jsonschema")
 
-ROOT = Path(__file__).resolve().parent.parent
-SCHEMA = ROOT / "schema" / "bundle.schema.json"
-VIDEO_DIR = ROOT / "app" / "public" / "video"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from publish_guard import leaks  # noqa: E402
 
-HARD_FORBIDDEN = ("/home/", "/workspace/", "/root/", "auth.json", "apiKey", "api_key", "Authorization")
-SOFT_FORBIDDEN = ("data/labels", "oracle.json", "scenario-index.jsonl")
-DENIED_RE = re.compile(r"Permission denied|EACCES|Operation not permitted", re.IGNORECASE)
-FRAME_FILE_RE = re.compile(r"frames/\d{3}_[\w.\-]+\.jpe?g")
+ROOT = Path(__file__).resolve().parent.parent
+SCHEMA = ROOT / "schema" / "bundle-v42.schema.json"
+VIDEO_DIR = ROOT / "app" / "public" / "video"
+FRAME_FILE_RE = re.compile(r"frames/o[0-9a-f]{32}-\d+-(full|crop)\.jpg")
 
 MAX_BUNDLE_BYTES = 1_500_000
-MAX_DIR_BYTES = 8 * 1024 * 1024  # a run now shows ~4x more frames: a 32-frame video
-                                 # sweep is archived as stills so the viewer can show
-                                 # what the model actually saw. 618 of 618 frames in the
-                                 # current batch have an image, against 185 before.
+MAX_DIR_BYTES = 8 * 1024 * 1024
 
 
 def validate(bundle_dir: Path, schema: dict) -> list[str]:
@@ -56,47 +55,52 @@ def validate(bundle_dir: Path, schema: dict) -> list[str]:
 
     fails = [f"schema: {'/'.join(map(str, e.path)) or '<root>'}: {e.message[:160]}"
              for e in jsonschema.Draft202012Validator(schema).iter_errors(b)]
-
-    for needle in HARD_FORBIDDEN:
-        if needle in raw:
-            fails.append(f"leak: contains {needle!r}")
-    for needle in SOFT_FORBIDDEN:
-        start = 0
-        while (i := raw.find(needle, start)) != -1:
-            start = i + len(needle)
-            if not DENIED_RE.search(raw[max(0, i - 160): i + 240]):
-                fails.append(f"leak: unrefused reference to {needle!r}")
-                break
+    fails += [f"leak: {x}" for x in leaks(raw)]
     for f in bundle_dir.rglob("*"):
         rel = f.relative_to(bundle_dir).as_posix()
         if f.is_symlink():
             fails.append(f"leak: symlink {rel}")
         elif f.is_file() and rel != "bundle.json" and not FRAME_FILE_RE.fullmatch(rel):
             fails.append(f"leak: unexpected file {rel}")
-
     if any(x.startswith("schema") for x in fails):
         return fails
 
     nb = b["video"]["nb_frames"]
-    times = [e["t"] for e in b["events"]]
+    tr = b["tracking"]
+    nt = len(tr["tracks"])
+    if len(tr["frames"]) != nb:
+        fails.append(f"sanity: {len(tr['frames'])} tracking frames for a {nb}-frame clip")
+    for i, fr in enumerate(tr["frames"]):
+        for d in fr["d"]:
+            if not -1 <= int(d[5]) < nt:
+                fails.append(f"sanity: frame {i} detection track index {d[5]} out of range")
+        for p in fr["p"]:
+            if not 0 <= int(p[4]) < nt:
+                fails.append(f"sanity: frame {i} prediction track index {p[4]} out of range")
+    for t in tr["tracks"]:
+        s, e = t["observed"]
+        if not 0 <= s <= e < nb:
+            fails.append(f"sanity: {t['alias']} observed {s}-{e} outside the clip")
+
+    times = [x for s in b["steps"] for x in (s["t_call"], s["t_result"])]
     if times != sorted(times):
-        fails.append("sanity: events are not in clock order")
-    for fr in b["frames"]:
-        if fr["file"] and not (bundle_dir / fr["file"]).is_file():
-            fails.append(f"sanity: frame file missing {fr['file']}")
-        if fr["frame_id"] is not None and not 0 <= fr["frame_id"] < nb:
-            fails.append(f"sanity: frame id {fr['frame_id']} outside 0..{nb - 1}")
-    for t in b["evidence"]["reported_targets"]:
-        for a in t["anchors"]:
-            if a["file"] and not (bundle_dir / a["file"]).is_file():
-                fails.append(f"sanity: anchor frame missing {a['file']}")
-    # The enhanced evaluator only runs on submitted evidence. A run that ended
-    # without submitting - killed at the hard timeout, or the agent stopping on
-    # its own - genuinely has no enhanced report, and that is an outcome worth
-    # publishing rather than a corrupt bundle. Still require one whenever
-    # evidence exists, which is the case the check was written for.
-    if not b["live"] and b["enhanced"] is None and b["evidence"].get("present"):
-        fails.append("sanity: bundle has evidence but no enhanced report")
+        fails.append("sanity: steps are not in clock order")
+    if [s["i"] for s in b["steps"]] != list(range(len(b["steps"]))):
+        fails.append("sanity: step indexes are not 0..n-1")
+
+    alias_idx = {t["alias"]: i for i, t in enumerate(tr["tracks"])}
+    for v in b["visual"]:
+        for key in ("full", "crop"):
+            if not (bundle_dir / v[key]).is_file():
+                fails.append(f"sanity: visual image missing {v[key]}")
+        ti = alias_idx.get(v["track_ref"])
+        if ti is None or not 0 <= v["frame"] < nb:
+            fails.append(f"sanity: visual {v['observation_ref']} names an unknown track or frame")
+        elif not any(int(d[5]) == ti for d in tr["frames"][v["frame"]]["d"]):
+            fails.append(f"sanity: {v['track_ref']} has no real detection at frame {v['frame']}")
+        if b["steps"][v["step"]].get("visual") is None:
+            fails.append(f"sanity: visual {v['observation_ref']} is not linked from its step")
+
     if not (VIDEO_DIR / Path(b["video"]["proxy"]).name).is_file():
         fails.append(f"sanity: proxy video missing {b['video']['proxy']}")
     if path.stat().st_size > MAX_BUNDLE_BYTES:

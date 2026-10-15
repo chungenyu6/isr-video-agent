@@ -1,130 +1,121 @@
-// Mirrors schema/bundle.schema.json, content/oracle/<clip>.json and
-// content/experiment.json. The viewer knows only these shapes; it never reads a
-// run directory.
+// Mirrors schema/bundle-v42.schema.json and tools/build_experiment.py.
 
-export type EventType =
-  | "run.start" | "step.begin" | "agent.say" | "tool.call" | "tool.result"
-  | "tool.error" | "tool.fault" | "budget.spend" | "frames.ready" | "observe.done"
-  | "answer.submit" | "verify.result" | "run.end";
+export type Box = [number, number, number, number];
 
-export interface HEvent {
-  t: number;
-  type: EventType;
-  tool?: string;
-  script?: string;
-  text?: string;
-  args?: Record<string, unknown>;
-  ok?: boolean;
-  detail?: unknown;
+/** [x0, y0, x1, y1, class_id, track index or -1, detector score] */
+export type Detection = [number, number, number, number, number, number, number];
+/** [x0, y0, x1, y1, track index] - Kalman prediction for a lost track, never observed */
+export type Prediction = [number, number, number, number, number];
+
+export interface Phase {
+  start: number;
+  end: number;
+  origin: string;
+  destination: string;
+  direction: string;
 }
 
-export type LayerName = "L0" | "L1" | "L2" | "L3" | "L4";
-export type LayerStatus = "pass" | "fail" | "unknown" | "n/a";
-export type OutcomeKey = "fn" | "fp" | "unsupported" | "execution_failure" | "abstain" | "unknown";
-export type Outcome = Record<OutcomeKey, number>;
-
-export interface Frame {
-  key: string;
-  frame_id: number | null;
-  t: number;
-  file: string | null;
-  window: string | null;
-  reason: string | null;
-  inspected: boolean;
-  cited: boolean;
-  observation: string | null;
+export interface Track {
+  alias: string;
+  raw_id: number;
+  observed: [number, number];
+  phases: Phase[];
 }
 
-export interface Anchor {
-  frame_id: number | null;
-  timestamp_sec: number | null;
-  roi_xyxy: number[] | null;
-  claim: string | null;
-  file: string | null;
+export interface Step {
+  i: number;
+  tool: string;
+  args: Record<string, unknown>;
+  accepted: boolean;
+  t_call: number;
+  t_result: number;
+  agent_text: string;
+  agent_text_chars: number;
+  budget_before: { main_remaining: number; gemma_remaining: number; text_remaining: number } | null;
+  visual?: number;
 }
 
-export interface ReportedTarget {
-  target_ref: string | null;
-  color_name: string | null;
-  interval_frames: number[] | null;
-  anchors: Anchor[];
-}
-
-export interface MatchEdge {
-  report_index: number;
-  target_index: number;
-  cost: number;
-  roi_iou: number;
-  temporal_iou: number;
-  color_score: number;
-  feasible: boolean;
-  reasons: string[];
-}
-
-export interface LayerDetails {
-  L1?: { object_id: string; covered: boolean }[];
-  L2?: { status: LayerStatus; reason?: string; assertions?: unknown[]; errors?: unknown[] };
-  L3?: { status: LayerStatus; failures?: { report_index?: number; reason: string }[]; unknown?: unknown[] };
-  L4_matching?: {
-    matches: { report_index: number; target_index: number; roi_iou: number; temporal_iou: number }[];
-    false_positive_reports: number[];
-    false_negative_targets: number[];
-    unknown_reports: number[];
-    unresolved_targets: number[];
-    edges: MatchEdge[];
-  };
-}
-
-export interface Enhanced {
-  primary_eligible: boolean;
-  layers: Record<LayerName, LayerStatus>;
-  layer_details: LayerDetails;
-  outcome: Outcome;
-  earliest_violated_layer: LayerName | null;
-  full_signatures: string[];
-  comparison_patterns: string[];
-  v0_blind_spot: boolean;
+export interface Visual {
+  observation_ref: string;
+  intent: string;
+  track_ref: string;
+  frame: number;
+  target_bbox: Box;
+  crop_bounds: Box;
+  full: string;
+  crop: string;
+  text: string;
+  finish_reason: string;
+  truncated: boolean;
+  latency_sec: number;
+  step: number;
 }
 
 export interface Bundle {
-  bundle_version: string;
+  bundle_version: "4.2";
   run_id: string;
-  harness: string;
-  live: boolean;
-  run: {
-    stage: "discovery" | "confirmation" | "live";
-    clip_id: string;
-    replicate: number | null;
-    agent_seed: number | null;
-    applied_seed: number | null;
-    layout_block: number | null;
-    candidate: number | null;
-    locked_pattern: string | null;
-    run_status: string | null;
-    agent_exit_code: number | null;
-    created_at: string | null;
-    finished_at: string | null;
-    models: Record<string, { model: string; revision: string }>;
+  attempt: string;
+  clip_id: string;
+  seed: number;
+  live: false;
+  exported_at: string;
+  batch: { name: string; created: string; candidate_revision: string };
+  provenance: {
+    sut_commit: string;
+    study_commit: string;
+    service_commit: string;
+    orchestrator: { model: string; revision: string; temperature: number; top_p: number };
+    perception: { model: string; revision: string; temperature: number };
+    tracking: { contract: string; weights_sha256: string };
   };
-  task: { question: string; oracle_exposed: boolean };
-  video: { id: string; duration_sec: number; fps: number; width: number; height: number; nb_frames: number; proxy: string };
-  budget: { limits: Record<string, number>; final: Record<string, number> };
-  frames: Frame[];
-  windows: { dir: string; window: number[] | null; reason: string | null; count: number }[];
-  events: HEvent[];
-  pipeline: { declared: string[]; actual: string[]; claimed: string[]; agrees: boolean };
-  evidence: {
-    present: boolean;
-    decision: "report" | "abstain" | null;
+  task: { statement: string; system: string; tools: Record<string, string> };
+  runtime: Record<string, number | string>;
+  video: { fps: number; width: number; height: number; nb_frames: number; duration_sec: number; proxy: string };
+  tracking: {
+    classes: Record<string, string>;
+    visible_from: number;
+    tracks: Track[];
+    frames: { d: Detection[]; p: Prediction[] }[];
+  };
+  steps: Step[];
+  visual: Visual[];
+  submission: {
+    decision: string;
     reported_count: number | null;
-    frames_processed: number | null;
-    windows_examined: number[][];
-    notes: string | null;
-    reported_targets: ReportedTarget[];
+    colors: string[];
+    count_complete: boolean;
+    uncertainty: string;
+    accepted: boolean;
+    step: number;
   };
-  v0: { status: "pass" | "fail" | "not_run"; checks: Record<string, boolean>; errors: string[] };
-  enhanced: Enhanced | null;
-  telemetry: { wall_clock_sec: number | null; slow_run: boolean; vlm_calls: number; vlm_tokens: number; tool_faults: number };
+  runtime_verifier: { tool_calls: number; rejected_calls: number; submission_accepted: boolean; formal_evidence_gate: boolean };
+  posthoc_verifier: { status: string; issues: unknown[]; scope: string; semantic_correctness: string };
+  run: {
+    wall_sec: number;
+    terminal_reason: string;
+    orchestrator_calls: number;
+    visual_calls: number;
+    tracking_latency_sec: number;
+    replay_sec: number;
+  };
+  scorer: {
+    scorer_version: string;
+    wrong_way_count: number;
+    expected_color_multiset: Record<string, number>;
+    outcome: string;
+    count_numeric_match: boolean;
+    color_multiset_correct: boolean;
+    complete_count_correct: boolean;
+    partial_color_matches: number;
+    matching_scope: string;
+  };
+  review: {
+    scope: string;
+    count_correct: boolean;
+    semantic_color_support: string;
+    final_item_identity: string;
+    goal_correct: boolean;
+  };
 }
 
 export type Loaded = Bundle & { _dir: string };
@@ -134,25 +125,17 @@ export interface OracleTarget {
   color_name: string;
   color_hex: string | null;
   event_interval_frames: number[] | null;
-  answerable: boolean;
-  witness_pair: number[] | null;
-  eligible_frames: number[];
-  pairable_frames: number[];
 }
 
 export interface Oracle {
   clip_id: string;
   observability: "nominal" | "challenging";
   wrong_way_count: number;
-  layout_block: number | null;
-  primary_eligible: boolean;
   fps: number;
   width: number;
   height: number;
   frame_count: number;
-  oracle_sha256: string;
   video_sha256: string;
-  policy: Record<string, number | number[]>;
   objects: { id: string; name: string; vehicle_type: string; color_name: string; color_hex: string; wrong_way: boolean }[];
   targets: OracleTarget[];
   /** object id -> [frame, x0, y0, x1, y1, full(1)|partial(0)] for every visible frame */
@@ -161,63 +144,33 @@ export interface Oracle {
 
 export interface RunSummary {
   bundle: string;
-  stage: "discovery" | "confirmation";
+  attempt: string;
   clip_id: string;
-  replicate: number;
-  agent_seed: number;
-  layout_block: number;
-  candidate: number | null;
-  locked_pattern: string | null;
-  run_status: string;
-  wall_clock_sec: number | null;
-  decision: "report" | "abstain" | null;
+  seed: number;
   reported_count: number | null;
-  v0: "pass" | "fail" | "not_run";
-  v0_blind_spot: boolean;
-  outcome: Outcome;
-  layers: Record<LayerName, LayerStatus>;
-  earliest_violated_layer: LayerName | null;
-  comparison_patterns: string[];
-  full_signatures: string[];
-  inspected_frames: number[];
-}
-
-export interface StageAggregate {
-  n: number;
-  failure_runs: number;
-  failure_wilson_95: [number, number];
-  outcome_run_counts: Outcome;
-  v0: Record<string, number>;
-  v0_blind_spot_runs: number;
-  layer_status: Record<LayerName, Record<string, number>>;
-  run_status: Record<string, number>;
-  comparison_patterns: Record<string, number>;
-}
-
-export interface Candidate {
-  clip_id: string;
-  pattern: string;
-  n: number;
-  confirmation_recurrence: number;
-  discovery_recurrence: number;
-  observed_patterns: Record<string, number>;
-  wilson_95: [number, number];
-  confirmed_at_3_of_5: boolean;
+  colors: string[];
+  count_complete: boolean;
+  accepted: boolean;
+  posthoc: string;
+  expected_count: number;
+  count_correct: boolean;
+  goal_correct: boolean;
+  complete_correct: boolean;
+  visual_calls: number;
+  orchestrator_calls: number;
 }
 
 export interface Experiment {
-  // The Overview page is gone, so the report/derived aggregates it displayed are
-  // no longer part of the contract. `source` is present only when the runs were
-  // built against a finished experiment report; a line with no signed report
-  // (the ISR model-swap line) omits it.
-  source?: { final_analysis_sha256: string; final_analysis_path: string };
+  source: { batch: string; candidate_revision: string; sut_commit: string; study_commit: string; service_commit: string };
+  featured: string;
+  figures: {
+    attempts: number;
+    accepted: number;
+    posthoc_pass: number;
+    count_correct: number;
+    count_and_supported_colors: number;
+    complete_correct: number;
+    promoted: boolean;
+  };
   runs: RunSummary[];
-}
-
-export interface Featured {
-  id: string;
-  title: string;
-  note: string;
-  bundle: string;
-  compare?: string[];
 }

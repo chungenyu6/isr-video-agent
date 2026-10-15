@@ -1,140 +1,75 @@
-// Two verdicts on one run, side by side, then the L0-L4 ladder that explains the
-// enhanced one. Hidden until the run clock reaches evaluation, because during a
-// replay (and a live run) the evaluators have not run yet.
+// The answer and the three things that looked at it, kept apart on purpose:
+// the Runtime Verifier (live, shape and resources only), the Post-hoc Verifier
+// (after the run, record integrity only) and the study's scorer (after the run,
+// against ground truth). Neither verifier judges traffic truth.
 
-import { useState } from "react";
-import type { LayerName, LayerStatus, Loaded, Oracle } from "../types";
-import { LAYERS, LAYER_QUESTION, OUTCOMES, OUTCOME_LABEL, eventTime } from "../data";
-import { CHECKS } from "../checks";
+import type { Loaded } from "../types";
+import { submitted } from "../data";
 
-interface Props { bundle: Loaded; oracle: Oracle; t: number }
+const Mark = ({ ok }: { ok: boolean }) => <span className={`pill ${ok ? "st-pass" : "st-fail"}`}>{ok ? "yes" : "no"}</span>;
 
-const L3_REASON: Record<string, string> = {
-  unmatched_report: "the report matches no wrong-way car",
-  fewer_than_two_inspected_anchors: "fewer than two cited frames were actually inspected",
-  anchors_not_a_valid_motion_pair: "cited frames do not form a valid motion pair",
-  claim_report_contradiction: "claims contradict the reported count",
-};
+export default function Verdict({ bundle, t }: { bundle: Loaded; t: number }) {
+  const done = submitted(bundle, t);
+  const s = bundle.submission;
+  const rv = bundle.runtime_verifier;
+  const ph = bundle.posthoc_verifier;
+  const sc = bundle.scorer;
+  const rw = bundle.review;
+  const expected = Object.entries(sc.expected_color_multiset).flatMap(([c, n]) => Array(n).fill(c) as string[]);
 
-function layerDetail(L: LayerName, b: Loaded, o: Oracle): string {
-  const e = b.enhanced!;
-  const d = e.layer_details;
-  const colour = (id: string) => o.targets.find((t) => t.object_id === id)?.color_name ?? id;
-  switch (L) {
-    case "L0":
-      return `run ${b.run.run_status}${b.run.agent_exit_code === 124 ? " at the 300 s hard timeout" : ""}; V0 ${b.v0.status}`;
-    case "L1":
-      if (!d.L1?.length) return "no wrong-way car to cover";
-      return d.L1.map((c) => `${colour(c.object_id)}: ${c.covered ? "usable pair inspected" : "no usable pair inspected"}`).join(" · ");
-    case "L2":
-      if (d.L2?.status === "unknown") return "no observation parsed into a checkable claim";
-      return `${d.L2?.assertions?.length ?? 0} checkable statement(s)${d.L2?.errors?.length ? `, ${d.L2.errors.length} contradicted by ground truth` : ""}`;
-    case "L3":
-      if (e.layers.L3 === "n/a") return "nothing reported, nothing to support";
-      if (!d.L3?.failures?.length) return b.evidence.reported_targets.length ? "cited evidence supports the matched reports" : "no targets reported, no evidence required";
-      return Object.entries(
-        d.L3.failures.reduce<Record<string, number>>((acc, f) => {
-          const k = L3_REASON[f.reason] ?? f.reason;
-          acc[k] = (acc[k] ?? 0) + 1;
-          return acc;
-        }, {})
-      ).map(([k, n]) => (n > 1 ? `${k} (×${n})` : k)).join(" · ");
-    case "L4": {
-      const m = d.L4_matching;
-      const truth = o.wrong_way_count;
-      const said = b.evidence.decision === "abstain" ? "abstained" : `reported ${b.evidence.reported_count ?? 0}`;
-      const parts = [`${said}; truth ${truth}`];
-      if (m?.false_negative_targets.length) parts.push(`missed ${m.false_negative_targets.map((i) => o.targets[i]?.color_name).join(", ")}`);
-      if (m?.false_positive_reports.length) parts.push(`${m.false_positive_reports.length} false report(s)`);
-      if (m?.matches.length) parts.push(`${m.matches.length} matched`);
-      return parts.join(" · ");
-    }
-  }
-}
-
-const pill = (s: LayerStatus | string) => <span className={`pill st-${s.replace("/", "")}`}>{s}</span>;
-
-export default function Verdict({ bundle, oracle, t }: Props) {
-  const [showChecks, setShowChecks] = useState(false);
-  const at = eventTime(bundle, "verify.result");
-  const ready = at !== null && t >= at && bundle.enhanced;
-  const e = bundle.enhanced;
-  const checks = Object.entries(bundle.v0.checks).sort(([a], [b]) => a.localeCompare(b));
-  const passed = checks.filter(([, v]) => v).length;
-  const flagged = e ? OUTCOMES.some((k) => e.outcome[k]) : false;
-
-  if (!ready || !e) {
+  if (!done) {
     return (
       <div className="verdict">
-        <h3 className="ph">Verdict</h3>
+        <h3 className="ph">Answer</h3>
         <p className="pending">
-          {at === null ? "Evaluation has not run yet." : "Evaluation runs after the agent exits."} Scrub to the end of the run, or press replay.
+          No answer yet. evidence_submit returns at run t+{bundle.steps[s.step].t_result.toFixed(1)}s.
         </p>
       </div>
     );
   }
-
   return (
     <div className="verdict">
-      <div className="twoverdicts">
-        <div className={`vbox ${bundle.v0.status}`}>
-          <span className="eyebrow">V0 · structure only</span>
-          <div className="vline">{pill(bundle.v0.status)} <span className="dim">{passed}/{checks.length} checks</span></div>
-          {bundle.v0.errors.map((x) => <div className="verr" key={x}>{x}</div>)}
-          <button className="disclose" onClick={() => setShowChecks((s) => !s)} aria-expanded={showChecks}>
-            {showChecks ? "hide checks" : "what V0 checks"}
-          </button>
-        </div>
-        <div className={`vbox ${flagged ? "fail" : "pass"}`}>
-          <span className="eyebrow">Enhanced · with ground truth</span>
-          <div className="outcomes">
-            {OUTCOMES.map((k) => (
-              <span key={k} className={`oc${e.outcome[k] ? " on o-" + k : ""}`} title={OUTCOME_LABEL[k]}>
-                {OUTCOME_LABEL[k]}{e.outcome[k] > 1 ? ` ×${e.outcome[k]}` : ""}
-              </span>
-            ))}
-          </div>
-          {!flagged && <div className="vline">{pill("pass")} <span className="dim">no outcome</span></div>}
+      <h3 className="ph">Answer the agent submitted</h3>
+      <div className="answer">
+        <div className="big">{s.reported_count ?? "–"}</div>
+        <div>
+          <div className="colors">{s.colors.map((c, i) => <span key={i} className="colorchip">{c}</span>)}</div>
+          <div className="mono dim">count_complete = {String(s.count_complete)} · decision = {s.decision}</div>
         </div>
       </div>
 
-      {e.v0_blind_spot && (
-        <div className="blindnote">
-          <b>V0 blind spot.</b> V0 passed this run; scored against ground truth, it did not.
+      <div className="vboxes">
+        <div className={`vbox ${rv.rejected_calls === 0 && rv.submission_accepted ? "pass" : "fail"}`}>
+          <span className="eyebrow">Runtime Verifier · live</span>
+          <div className="vline">{rv.tool_calls - rv.rejected_calls}/{rv.tool_calls} tool calls allowed</div>
+          <div className="vline">answer shape {rv.submission_accepted ? "accepted" : "rejected"}</div>
+          <p className="vnote">Checks schema, session, frames, call budget and answer shape while the agent runs, and can refuse a call. No formal proof is required in V4.2.</p>
         </div>
-      )}
-
-      {showChecks && (
-        <div className="checklist">
-          {checks.map(([name, ok]) => (
-            <div className="ck" key={name}>
-              <span className={`chk ${ok ? "ok" : "no"}`} />
-              <div><code>{name}</code>{CHECKS[name] && <p>{CHECKS[name]}</p>}</div>
-            </div>
-          ))}
-          <p className="cknote">
-            None of these look at pixels or ground truth. V0 cannot tell whether the cars reported exist, whether a car was
-            missed, or whether the inspected frames could show motion at all.
-          </p>
+        <div className={`vbox ${ph.status === "pass" ? "pass" : "fail"}`}>
+          <span className="eyebrow">Post-hoc Verifier · after the run</span>
+          <div className="vline">integrity {ph.status}{ph.issues.length ? ` · ${ph.issues.length} issues` : ""}</div>
+          <div className="vline">semantic correctness: {ph.semantic_correctness.replace("_", " ")}</div>
+          <p className="vnote">Rebuilds motion, requests, media, headers and budgets from the records. A pass means the record is intact, not that the answer is right.</p>
         </div>
-      )}
+      </div>
 
-      <ol className="ladder">
-        {LAYERS.map((L) => (
-          <li key={L} className={`${e.layers[L]}${e.earliest_violated_layer === L ? " earliest" : ""}`}>
-            <span className="lname">{L}</span>
-            {pill(e.layers[L])}
-            <div>
-              <p className="lq">{LAYER_QUESTION[L]}</p>
-              <p className="ld">{layerDetail(L, bundle, oracle)}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-      <p className="fine">
-        Earliest failing layer: <b>{e.earliest_violated_layer ?? "none"}</b> — a location, not a cause.
-        Signature{e.full_signatures.length > 1 ? "s" : ""}: {e.full_signatures.length ? e.full_signatures.map((s) => <code key={s}>{s}</code>) : "none"}
-      </p>
+      <div className="vbox scorer">
+        <span className="eyebrow">Study scorer · ground truth, after the run</span>
+        <div className="truthline">
+          truth: <b>{sc.wrong_way_count}</b> wrong-way vehicle{sc.wrong_way_count === 1 ? "" : "s"}
+          {expected.length > 0 && <> ({expected.join(", ")})</>}
+        </div>
+        <div className="scoregrid">
+          <span>count right</span><Mark ok={sc.count_numeric_match} />
+          <span>colours right</span><Mark ok={sc.color_multiset_correct} />
+          <span>count and colours supported by the frames</span><Mark ok={rw.goal_correct} />
+          <span>complete answer</span><Mark ok={sc.complete_count_correct} />
+        </div>
+        <p className="vnote">
+          Frame review: {rw.semantic_color_support}; identity {rw.final_item_identity}. This is a coding-agent review of
+          sources and images, not an independent blind evaluation. Nothing on this card was visible to the agent.
+        </p>
+      </div>
     </div>
   );
 }

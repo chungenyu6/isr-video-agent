@@ -1,15 +1,22 @@
 // Hash routing. The static host serves one index.html, so the route lives after
-// '#' and a shared link to a run opens that run. This site has exactly one page
-// -- a run -- so every other hash falls back to "no bundle chosen yet".
+// '#'. Two pages: a run replay and the architecture explainer.
 
 import { useEffect, useState } from "react";
 
-export type Route = { page: "run"; bundle: string | null };
+export type Route =
+  | { page: "run"; bundle: string | null; t: number | null }
+  | { page: "architecture" };
 
 export function parse(hash: string): Route {
-  const [head, arg] = hash.replace(/^#\/?/, "").split("/");
-  if (head === "run") return { page: "run", bundle: arg ? decodeURIComponent(arg) : null };
-  return { page: "run", bundle: null };
+  const [path, query] = hash.replace(/^#\/?/, "").split("?");
+  const [head, arg] = path.split("/");
+  if (head === "architecture") return { page: "architecture" };
+  const t = new URLSearchParams(query ?? "").get("t");
+  return {
+    page: "run",
+    bundle: head === "run" && arg ? decodeURIComponent(arg) : null,
+    t: t !== null && Number.isFinite(Number(t)) ? Number(t) : null,
+  };
 }
 
 export function useRoute(): Route {
@@ -22,4 +29,6 @@ export function useRoute(): Route {
   return route;
 }
 
-export const runHref = (bundle: string) => `#/run/${encodeURIComponent(bundle)}`;
+export const runHref = (bundle: string, t?: number) =>
+  `#/run/${encodeURIComponent(bundle)}${t !== undefined ? `?t=${t.toFixed(2)}` : ""}`;
+export const ARCH_HREF = "#/architecture";

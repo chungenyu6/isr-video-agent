@@ -1,32 +1,31 @@
-// Frame budget, depleting on the run clock. A refused reservation is a hard limit
-// visibly biting.
+// Host-enforced budgets. The Runtime Verifier refuses a call that would exceed them.
 
-import type { Bundle } from "../types";
+import type { Loaded } from "../types";
 import { budgetAt } from "../data";
 
-const LABEL: Record<string, string> = {
-  coarse_frames: "coarse frames",
-  dense_frames: "window frames",
-  vlm_inspected_frames: "sent to vision model",
-};
+function Gauge({ label, used, limit, unit = "" }: { label: string; used: number; limit: number; unit?: string }) {
+  const pct = Math.min(100, (100 * used) / limit);
+  return (
+    <div className="gauge">
+      <div className="gauge-lab"><span>{label}</span><span>{used}{unit} / {limit}{unit}</span></div>
+      <div className="bar-bg"><div className={`bar-fg${used >= limit ? " full" : ""}`} style={{ width: `${pct}%` }} /></div>
+    </div>
+  );
+}
 
-export default function Budget({ bundle, t }: { bundle: Bundle; t: number }) {
-  const spent = budgetAt(bundle, t);
-  const denied = bundle.events.filter((e) => e.t <= t && e.type === "budget.spend" &&
-    (e.detail as { granted?: boolean }).granted === false).length;
+export default function Budget({ bundle, t }: { bundle: Loaded; t: number }) {
+  const b = budgetAt(bundle, t);
+  const rt = bundle.runtime;
   return (
     <div>
-      {Object.entries(bundle.budget.limits).map(([k, lim]) => {
-        const used = spent[k] ?? 0;
-        const p = lim > 0 ? Math.min(100, (used / lim) * 100) : 0;
-        return (
-          <div className="gauge" key={k}>
-            <div className="gauge-lab"><span>{LABEL[k] ?? k}</span><span>{used} / {lim}</span></div>
-            <div className="bar-bg"><div className={`bar-fg${p >= 100 ? " full" : ""}`} style={{ width: `${p}%` }} /></div>
-          </div>
-        );
-      })}
-      {denied > 0 && <div className="denied">{denied} reservation{denied > 1 ? "s" : ""} refused — budget exhausted</div>}
+      <Gauge label="Nemotron calls" used={b.main} limit={Number(rt.model_calls)} />
+      <Gauge label="Gemma calls" used={b.gemma} limit={Number(rt.visual_calls)} />
+      <Gauge label="tool text delivered" used={b.text} limit={Number(rt.tool_text_total)} unit=" ch" />
+      <p className="fine">
+        Tracking runs once per attempt ({bundle.run.tracking_latency_sec.toFixed(1)} s for {bundle.video.nb_frames} frames)
+        and does not count against these. One inspection covers at most {rt.max_inspect_seconds} s and{" "}
+        {rt.inspect_source_frame_cap} source frames. Four Nemotron calls are reserved for answering.
+      </p>
     </div>
   );
 }

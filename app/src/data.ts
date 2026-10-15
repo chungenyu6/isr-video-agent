@@ -1,10 +1,7 @@
-// Loading and derivation. Everything a panel renders is a pure function of
-// (bundle, oracle, run-clock position, video frame), which is what lets replay
-// and live mode share one renderer: live mode appends events, replay reveals them.
+// Loading and derivation. Every panel is a pure function of
+// (bundle, oracle, run-clock position, video frame, selected track).
 
-import type {
-  Bundle, Experiment, Featured, HEvent, LayerName, Loaded, Oracle, Outcome, OutcomeKey,
-} from "./types";
+import type { Bundle, Detection, Experiment, Loaded, Oracle, Phase, Step, Track } from "./types";
 
 const base = import.meta.env.BASE_URL;
 
@@ -24,9 +21,6 @@ async function getJSON<T>(path: string): Promise<T> {
 let experiment: Promise<Experiment> | null = null;
 export const loadExperiment = () => (experiment ??= getJSON<Experiment>("content/experiment.json"));
 
-let featured: Promise<Featured[]> | null = null;
-export const loadFeatured = () => (featured ??= getJSON<Featured[]>("content/featured.json"));
-
 const oracles = new Map<string, Promise<Oracle>>();
 export function loadOracle(clip: string): Promise<Oracle> {
   if (!oracles.has(clip)) oracles.set(clip, getJSON<Oracle>(`content/oracle/${clip}.json`));
@@ -34,175 +28,141 @@ export function loadOracle(clip: string): Promise<Oracle> {
 }
 
 const bundles = new Map<string, Promise<Loaded>>();
-export function loadBundle(name: string, prefix = "bundles"): Promise<Loaded> {
-  const key = `${prefix}/${name}`;
-  if (!bundles.has(key)) {
-    bundles.set(key, getJSON<Bundle>(`${prefix}/${name}/bundle.json`).then((b) => ({ ...b, _dir: name })));
+export function loadBundle(name: string): Promise<Loaded> {
+  if (!bundles.has(name)) {
+    bundles.set(name, getJSON<Bundle>(`bundles/${name}/bundle.json`).then((b) => ({ ...b, _dir: name })));
   }
-  return bundles.get(key)!;
+  return bundles.get(name)!;
 }
 
-export const frameUrl = (dir: string, file: string, prefix = "bundles") => asset(`${prefix}/${dir}/${file}`);
+export const bundleFile = (dir: string, file: string) => asset(`bundles/${dir}/${file}`);
 
 // --- labels ------------------------------------------------------------------
 
-export function parseClip(clip: string) {
+export function clipLabel(clip: string, expected?: number): string {
   const [count, observability, rep] = clip.split("-");
-  return { count: Number(count), observability, rep };
-}
-
-export function clipLabel(clip: string): string {
-  const { count, observability, rep } = parseClip(clip);
-  const cars = count === 0 ? "no wrong-way car" : count === 1 ? "1 wrong-way car" : `${count} wrong-way cars`;
+  const n = expected ?? Number(count);
+  const cars = n === 0 ? "no wrong-way car" : n === 1 ? "1 wrong-way car" : `${n} wrong-way cars`;
   return `${cars} · ${observability} · ${rep}`;
 }
 
-export function runLabel(stage: string, replicate: number | null): string {
-  if (stage === "live") return "live run";
-  return `${stage} · seed ${replicate === null ? "?" : replicate + 1}`;
-}
-
-export const OUTCOMES: OutcomeKey[] = ["fn", "fp", "unsupported", "execution_failure", "abstain", "unknown"];
-
-export const OUTCOME_LABEL: Record<OutcomeKey, string> = {
-  fn: "missed target",
-  fp: "false report",
-  unsupported: "unsupported report",
-  execution_failure: "execution failure",
-  abstain: "abstained",
-  unknown: "evaluator unknown",
+/** Honest one-paragraph reading of each attempt, from the study's delivered report. */
+export const RUN_NOTES: Record<string, { title: string; note: string }> = {
+  a001: {
+    title: "False report, no visual check",
+    note: "This clip has no wrong-way car. The agent re-read thirteen track summaries, never asked Gemma to look, and reported seven vehicles with unknown colours.",
+  },
+  a002: {
+    title: "Best of the six attempts: a source-backed partial success",
+    note: "T3 is the only track the host measured moving downward. The agent asked Gemma to check its appearance, got “purple car”, inspected one normal vehicle (T4, yellow) and left it out, and reported 1 purple vehicle. Count, colour and the vehicle's identity are supported by the frames. It still marked the count as possibly incomplete, so this is not a complete answer.",
+  },
+  a003: {
+    title: "Count matches, colours are not colours",
+    note: "Two purple cars travel against traffic here. The agent reported 2, but never called Gemma and wrote direction words (“upward”, “downward”) in the colour field; the scorer counts them as wrong colours and neither vehicle is identified.",
+  },
+  a004: {
+    title: "False report, no visual check",
+    note: "This clip has no wrong-way car. The agent reported three vehicles with unknown colours without any visual check.",
+  },
+  a005: {
+    title: "One real find mixed with two unsupported ones",
+    note: "One purple car travels against traffic. The agent ran eight appearance checks and reported 3 (purple, purple, pink). The purple car T4 is correctly supported. For T8, Gemma described a large purple car although the boxed target was a small vehicle at the top edge; the pink car T14 moves with traffic.",
+  },
+  a006: {
+    title: "Count matches, colours are not colours",
+    note: "A green and a purple car travel against traffic. The agent reported 2, but with direction words in the colour field and no visual check.",
+  },
 };
 
-export const OUTCOME_SHORT: Record<OutcomeKey, string> = {
-  fn: "FN", fp: "FP", unsupported: "UNSUP", execution_failure: "EXEC", abstain: "ABST", unknown: "UNK",
+// --- tracking ------------------------------------------------------------------
+
+export type DirClass = "down" | "up" | "side" | "unresolved";
+
+export function dirClass(direction: string): DirClass {
+  if (direction.includes("unresolved")) return "unresolved";
+  if (direction.startsWith("down")) return "down";
+  if (direction.startsWith("up")) return "up";
+  return "side";
+}
+
+export const DIR_LABEL: Record<DirClass, string> = {
+  down: "downward",
+  up: "upward",
+  side: "sideways",
+  unresolved: "unresolved",
 };
 
-/** One outcome to colour a cell by. Components overlap; this order puts the most
- *  specific failure first, and is used only for colour - never for counting. */
-export function primaryOutcome(o: Outcome | null | undefined): OutcomeKey | null {
-  if (!o) return null;
-  for (const k of ["fp", "unsupported", "fn", "execution_failure", "abstain", "unknown"] as OutcomeKey[]) {
-    if (o[k]) return k;
-  }
-  return null;
+export function phaseAt(track: Track, frame: number): Phase | null {
+  return track.phases.find((p) => p.start <= frame && frame <= p.end) ?? null;
 }
 
-export const LAYERS: LayerName[] = ["L0", "L1", "L2", "L3", "L4"];
+/** Fixed palette for overlays on video: bright enough over any frame. */
+export const TRACK_COLORS = [
+  "#4FD1C5", "#F6AD55", "#9F7AEA", "#68D391", "#F687B3", "#63B3ED",
+  "#FBD38D", "#B794F4", "#81E6D9", "#FC8181", "#A3BFFA", "#C6F6D5",
+];
+export const trackColor = (i: number) => (i < 0 ? "#B8C2C4" : TRACK_COLORS[i % TRACK_COLORS.length]);
 
-export const LAYER_QUESTION: Record<LayerName, string> = {
-  L0: "Did the run complete, within its contract?",
-  L1: "Did the frames it inspected contain a usable motion pair for every wrong-way car?",
-  L2: "Were the vision model's statements about those frames correct?",
-  L3: "Does the evidence it cited support what it reported?",
-  L4: "Was the final answer right?",
-};
+export const center = (d: Detection | number[]) => [(d[0] + d[2]) / 2, (d[1] + d[3]) / 2];
 
-export const fmtS = (t: number) => `${t.toFixed(1)}s`;
-export const pct = (k: number, n: number) => (n ? `${Math.round((100 * k) / n)}%` : "–");
-
-// --- run clock derivations -------------------------------------------------------
-
-export const runDuration = (b: Bundle) => (b.events.length ? b.events[b.events.length - 1].t : 0);
-
-export function eventTime(b: Bundle, type: HEvent["type"]): number | null {
-  const e = b.events.find((x) => x.type === type);
-  return e ? e.t : null;
+/** Per track: [frame, cx, cy] for every frame with a real detection. */
+export function trackPoints(b: Bundle): number[][][] {
+  const pts: number[][][] = b.tracking.tracks.map(() => []);
+  b.tracking.frames.forEach((fr, f) => {
+    for (const d of fr.d) if (d[5] >= 0) pts[d[5]].push([f, ...center(d)]);
+  });
+  return pts;
 }
 
-/** Frames extracted and frames sent to the VLM as of run-clock t. */
-export function frameProgress(b: Bundle, t: number) {
-  const dirs = new Set<string>();
-  const sent = new Set<number>();
-  for (const e of b.events) {
-    if (e.t > t) break;
-    if (e.type === "frames.ready") dirs.add((e.detail as { dir: string }).dir);
-    if (e.type === "observe.done") {
-      for (const id of (e.detail as { frame_ids: (number | null)[] }).frame_ids) if (id !== null) sent.add(id);
-    }
+/** Contiguous detection runs per track: [startFrame, endFrame]. */
+export function detectionRuns(points: number[][]): [number, number][] {
+  const runs: [number, number][] = [];
+  for (const [f] of points) {
+    const last = runs[runs.length - 1];
+    if (last && f === last[1] + 1) last[1] = f;
+    else runs.push([f, f]);
   }
-  const extracted = new Set(b.frames.filter((f) => (f.window && dirs.has(f.window)) || (f.frame_id !== null && sent.has(f.frame_id))).map((f) => f.key));
-  return { extracted, sent };
+  return runs;
 }
 
-export function budgetAt(b: Bundle, t: number): Record<string, number> {
-  const spent: Record<string, number> = {};
-  for (const k of Object.keys(b.budget.limits)) spent[k] = 0;
-  for (const e of b.events) {
-    if (e.t > t) break;
-    if (e.type !== "budget.spend") continue;
-    const d = e.detail as { category?: string; n?: number; granted?: boolean };
-    if (!d?.category || !d.granted) continue;
-    spent[d.category] = (spent[d.category] ?? 0) + (d.n ?? 0);
-  }
-  return spent;
+// --- run clock -------------------------------------------------------------------
+
+export const runDuration = (b: Bundle) => b.run.replay_sec + 0.4;
+
+export function currentStep(b: Bundle, t: number): Step | null {
+  let cur: Step | null = null;
+  for (const s of b.steps) if (s.t_call <= t) cur = s;
+  return cur;
 }
 
-export function activeScript(b: Bundle, t: number): string | null {
-  let open: string | null = null;
-  for (const e of b.events) {
-    if (e.t > t) break;
-    if (e.type === "tool.call") open = e.script ?? e.tool ?? "?";
-    else if (e.type === "tool.result" || e.type === "tool.error") open = null;
+export const stepDone = (s: Step, t: number) => t >= s.t_result;
+export const visualShown = (b: Bundle, i: number, t: number) => t >= b.steps[b.visual[i].step].t_result;
+export const tracksShown = (b: Bundle, t: number) => t >= b.tracking.visible_from;
+export const submitted = (b: Bundle, t: number) => t >= b.steps[b.submission.step].t_result;
+
+export function budgetAt(b: Bundle, t: number) {
+  const main = b.steps.filter((s) => s.t_call <= t).length;
+  const gemma = b.visual.filter((_, i) => visualShown(b, i, t)).length;
+  let text = 0;
+  const total = Number(b.runtime.tool_text_total);
+  for (const s of b.steps) {
+    if (!stepDone(s, t)) break;
+    const next = b.steps[s.i + 1]?.budget_before;
+    if (next) text = total - next.text_remaining;
   }
-  return open;
+  return { main, gemma, text };
 }
 
-export function stepLabel(e: HEvent): string {
-  switch (e.type) {
-    case "tool.call": return e.script ?? e.tool ?? "tool";
-    case "tool.result": return e.script ?? e.tool ?? "tool";
-    case "tool.error": return `${e.script ?? e.tool ?? "tool"} returned an error`;
-    case "tool.fault": {
-      const d = e.detail as { code?: string; message?: string };
-      return `${e.script ?? "tool"} fault · ${d?.code ?? ""}`;
-    }
-    case "budget.spend": {
-      const d = e.detail as { category?: string; n?: number; granted?: boolean; kind?: string };
-      if (d?.kind === "release") return `released ${Math.abs(d.n ?? 0)} ${d.category}`;
-      return `${d?.granted ? "reserved" : "DENIED"} ${d?.n} ${d?.category}`;
-    }
-    case "frames.ready": {
-      const d = e.detail as { count?: number; dir?: string };
-      return `${d?.count ?? "?"} frames extracted → ${d?.dir}`;
-    }
-    case "observe.done": {
-      const d = e.detail as { frame_ids?: number[] };
-      return `VLM looked at frames ${(d?.frame_ids ?? []).join(", ")}`;
-    }
-    case "answer.submit": {
-      const d = e.detail as { decision?: string; reported_count?: number };
-      return `submitted: ${d?.decision} · ${d?.reported_count} reported`;
-    }
-    case "verify.result": return "V0 and enhanced evaluation";
-    default: return e.type;
-  }
-}
+/** The track a step is about, if any. */
+export const stepTrack = (s: Step) => (s.args.track_ref ?? s.args.ref ?? null) as string | null;
 
-/** Frame index shown at a video time. Frame n occupies [n/fps, (n+1)/fps). */
-export const frameAt = (seconds: number, fps: number, nb: number) =>
-  Math.max(0, Math.min(nb - 1, Math.floor(seconds * fps + 1e-3)));
+// --- ground truth -----------------------------------------------------------------
 
-/** Which target, if any, a frame is useful for. */
-export function frameRole(o: Oracle | null, frameId: number | null) {
-  if (!o || frameId === null) return null;
-  for (const t of o.targets) {
-    if (t.pairable_frames.includes(frameId)) return { kind: "pairable" as const, target: t };
-  }
-  for (const t of o.targets) {
-    if (t.eligible_frames.includes(frameId)) return { kind: "visible" as const, target: t };
-  }
-  return null;
-}
-
-export function boxesAt(o: Oracle, frame: number) {
-  const out: { id: string; box: number[]; full: boolean; wrongWay: boolean; color: string; hex: string }[] = [];
-  for (const obj of o.objects) {
-    const rows = o.boxes[obj.id];
-    if (!rows) continue;
-    const row = rows.find((r) => r[0] === frame);
-    if (row) {
-      out.push({ id: obj.id, box: row.slice(1, 5), full: row[5] === 1, wrongWay: obj.wrong_way, color: obj.color_name, hex: obj.color_hex });
-    }
+export function gtBoxesAt(oracle: Oracle, frame: number) {
+  const out: { id: string; box: number[]; wrongWay: boolean; color: string }[] = [];
+  for (const o of oracle.objects) {
+    const row = oracle.boxes[o.id]?.find((r) => r[0] === frame);
+    if (row) out.push({ id: o.id, box: row.slice(1, 5), wrongWay: o.wrong_way, color: o.color_name });
   }
   return out;
 }

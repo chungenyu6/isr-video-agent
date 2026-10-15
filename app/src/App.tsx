@@ -1,34 +1,40 @@
 import { useEffect, useState } from "react";
-import type { Experiment, Featured } from "./types";
-import { loadExperiment, loadFeatured } from "./data";
-import { useRoute } from "./router";
+import type { Experiment } from "./types";
+import { loadExperiment } from "./data";
+import { ARCH_HREF, runHref, useRoute } from "./router";
 import RunPage from "./pages/RunPage";
+import ArchitecturePage from "./pages/ArchitecturePage";
 
 export default function App() {
   const route = useRoute();
   const [exp, setExp] = useState<Experiment | null>(null);
-  const [featured, setFeatured] = useState<Featured[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([loadExperiment(), loadFeatured()])
-      .then(([e, f]) => { setExp(e); setFeatured(f); })
-      .catch((e) => setErr(String(e)));
+    loadExperiment().then(setExp).catch((e) => setErr(String(e)));
   }, []);
 
-  const firstRun = featured[0]?.bundle ?? exp?.runs[0]?.bundle ?? "";
+  useEffect(() => { window.scrollTo(0, 0); }, [route.page]);
 
+  const featured = exp?.featured ?? "";
   return (
     <>
       <div className="lanebar" aria-hidden="true" />
       <div className="shell">
         <header className="mast">
-          <a className="brand" href="#/">ISR Video Agent &middot; Runs</a>
+          <a className="brand" href={runHref(featured)}>ISR Video Agent <span className="ver">V4.2</span></a>
+          <nav className="nav" aria-label="Pages">
+            <a href={runHref(featured)} aria-current={route.page === "run" ? "page" : undefined}>Run replay</a>
+            <a href={ARCH_HREF} aria-current={route.page === "architecture" ? "page" : undefined}>How it works</a>
+          </nav>
         </header>
 
         {err && <div className="error">{err}</div>}
-        {!exp && !err && <div className="loading">loading experiment&hellip;</div>}
-        {exp && <RunPage exp={exp} featured={featured} bundleName={route.bundle || firstRun} />}
+        {!exp && !err && <div className="loading">loading…</div>}
+        {exp && route.page === "run" && (
+          <RunPage exp={exp} bundleName={route.bundle || featured} startT={route.t} />
+        )}
+        {exp && route.page === "architecture" && <ArchitecturePage exp={exp} />}
       </div>
     </>
   );

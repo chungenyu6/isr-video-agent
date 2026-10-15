@@ -31,13 +31,12 @@ jobs:
       - name: Validate every bundle (schema + leak + sanity)
         run: python tools/validate_bundle.py bundles/*/
 
-      - name: Site figures must equal the final report
+      - name: Site figures must equal the study report
         run: python tools/build_experiment.py --check
 
       - name: Published bundles match experiment.json, and no live run
-        # The ISR line has no fixed matrix size to assert, so assert the two
-        # things that must hold however many runs there are: every bundle on
-        # disk is listed in experiment.json, and nothing live slipped in.
+        # Every bundle on disk is listed in experiment.json, and nothing live
+        # slipped in.
         run: |
           python - <<'PY'
           import json, pathlib, sys
@@ -80,7 +79,7 @@ jobs:
       - name: Refuse to publish host paths or credentials
         # Scans the BUILT SITE, which is what gets published.
         run: |
-          if grep -rIl -e '/home/' -e '/root/' -e 'auth.json' app/dist ; then
+          if grep -rIl -e '/home/' -e '/root/' -e '/workspace/' -e '/tmp/' -e '127.0.0.1' -e 'auth.json' app/dist ; then
             echo "::error::host path or credential reference found in the built site"
             exit 1
           fi

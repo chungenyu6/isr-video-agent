@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bundle-v42.schema.json",
+  "title": "V4.2 replay bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundle_version", "run_id", "attempt", "clip_id", "seed", "live", "exported_at",
+               "batch", "provenance", "task", "runtime", "video", "tracking", "steps", "visual",
+               "submission", "runtime_verifier", "posthoc_verifier", "run", "scorer", "review"],
+  "$defs": {
+    "box": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+    "frameIdx": {"type": "integer", "minimum": 0}
+  },
+  "properties": {
+    "bundle_version": {"const": "4.2"},
+    "run_id": {"type": "string", "pattern": "^v42-[0-9]-(nominal|challenging)-r[0-9]-s[0-9]+$"},
+    "attempt": {"type": "string", "pattern": "^a[0-9]{3}$"},
+    "clip_id": {"type": "string"},
+    "seed": {"type": "integer"},
+    "live": {"const": false},
+    "exported_at": {"type": "string"},
+    "batch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "created", "candidate_revision"],
+      "properties": {"name": {"type": "string"}, "created": {"type": "string"},
+                     "candidate_revision": {"const": "v4.2"}}
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sut_commit", "study_commit", "service_commit", "orchestrator", "perception", "tracking"],
+      "properties": {
+        "sut_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "study_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "service_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "orchestrator": {"type": "object"},
+        "perception": {"type": "object"},
+        "tracking": {"type": "object"}
+      }
+    },
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["statement", "system", "tools"],
+      "properties": {"statement": {"type": "string"}, "system": {"type": "string"},
+                     "tools": {"type": "object", "additionalProperties": {"type": "string"}}}
+    },
+    "runtime": {"type": "object"},
+    "video": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fps", "width", "height", "nb_frames", "duration_sec", "proxy"],
+      "properties": {
+        "fps": {"type": "number"}, "width": {"type": "integer"}, "height": {"type": "integer"},
+        "nb_frames": {"type": "integer"}, "duration_sec": {"type": "number"},
+        "proxy": {"type": "string", "pattern": "^video/[\\w.-]+\\.mp4$"}
+      }
+    },
+    "tracking": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classes", "tracks", "frames", "visible_from"],
+      "properties": {
+        "classes": {"type": "object"},
+        "visible_from": {"type": "number"},
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["alias", "raw_id", "observed", "phases"],
+            "properties": {
+              "alias": {"type": "string", "pattern": "^T[0-9]+$"},
+              "raw_id": {"type": "integer"},
+              "observed": {"type": "array", "items": {"$ref": "#/$defs/frameIdx"}, "minItems": 2, "maxItems": 2},
+              "phases": {
+                "type": "array",
+                "items": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["start", "end", "origin", "destination", "direction"],
+                  "properties": {
+                    "start": {"$ref": "#/$defs/frameIdx"}, "end": {"$ref": "#/$defs/frameIdx"},
+                    "origin": {"type": "string"}, "destination": {"type": "string"},
+                    "direction": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "frames": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["d", "p"],
+            "properties": {
+              "d": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 7, "maxItems": 7}},
+              "p": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 5, "maxItems": 5}}
+            }
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["i", "tool", "args", "accepted", "t_call", "t_result", "agent_text",
+                     "agent_text_chars", "budget_before"],
+        "properties": {
+          "i": {"type": "integer"},
+          "tool": {"enum": ["context_get", "scan_video", "inspect_window", "compare_windows",
+                            "observation_get", "evidence_submit"]},
+          "args": {"type": "object"},
+          "accepted": {"type": "boolean"},
+          "t_call": {"type": "number", "minimum": 0},
+          "t_result": {"type": "number", "minimum": 0},
+          "agent_text": {"type": "string"},
+          "agent_text_chars": {"type": "integer"},
+          "budget_before": {"type": ["object", "null"]},
+          "visual": {"type": "integer"}
+        }
+      }
+    },
+    "visual": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["observation_ref", "intent", "track_ref", "frame", "target_bbox", "crop_bounds",
+                     "full", "crop", "text", "finish_reason", "truncated", "latency_sec", "step"],
+        "properties": {
+          "observation_ref": {"type": "string", "pattern": "^o[0-9a-f]{32}$"},
+          "intent": {"type": "string"}, "track_ref": {"type": "string"},
+          "frame": {"$ref": "#/$defs/frameIdx"},
+          "target_bbox": {"$ref": "#/$defs/box"}, "crop_bounds": {"$ref": "#/$defs/box"},
+          "full": {"type": "string"}, "crop": {"type": "string"},
+          "text": {"type": "string"}, "finish_reason": {"type": "string"},
+          "truncated": {"type": "boolean"}, "latency_sec": {"type": "number"},
+          "step": {"type": "integer"}
+        }
+      }
+    },
+    "submission": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision", "reported_count", "colors", "count_complete", "uncertainty", "accepted", "step"],
+      "properties": {
+        "decision": {"type": "string"}, "reported_count": {"type": ["integer", "null"]},
+        "colors": {"type": "array", "items": {"type": "string"}},
+        "count_complete": {"type": "boolean"}, "uncertainty": {"type": "string"},
+        "accepted": {"type": "boolean"}, "step": {"type": "integer"}
+      }
+    },
+    "runtime_verifier": {"type": "object"},
+    "posthoc_verifier": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "issues", "scope", "semantic_correctness"],
+      "properties": {"status": {"type": "string"}, "issues": {"type": "array"},
+                     "scope": {"type": "string"}, "semantic_correctness": {"type": "string"}}
+    },
+    "run": {"type": "object"},
+    "scorer": {"type": "object"},
+    "review": {"type": "object"}
+  }
+}

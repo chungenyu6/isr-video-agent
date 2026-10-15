@@ -1,17 +1,22 @@
-// One run, end to end: what the agent looked at, what it said, and how V0 and the
-// enhanced evaluator judged it. Opens at the END of the run so the verdict is
-// the first thing on screen; the transport replays it from the start.
+// One attempt, end to end. Opens at the END of the run so the answer and the
+// full tracking picture are on screen first; the transport replays it from 0.
 
-import { useEffect, useMemo, useState } from "react";
-import type { Experiment, Featured, Loaded, Oracle } from "../types";
-import { clipLabel, loadBundle, loadOracle, parseClip, runDuration, runLabel } from "../data";
+import { useEffect, useState } from "react";
+import type { Experiment, Loaded, Oracle } from "../types";
+import { clipLabel, loadBundle, loadOracle, runDuration, RUN_NOTES } from "../data";
 import { runHref } from "../router";
 import { useClock } from "../clock";
 import RunView from "../panels/RunView";
 
-interface Props { exp: Experiment; featured: Featured[]; bundleName: string }
+interface Props { exp: Experiment; bundleName: string; startT: number | null }
 
-export default function RunPage({ exp, featured, bundleName }: Props) {
+const compact = (colors: string[]) =>
+  [...new Set(colors)].map((c) => {
+    const n = colors.filter((x) => x === c).length;
+    return n > 1 ? `${c} ×${n}` : c;
+  }).join(", ");
+
+export default function RunPage({ exp, bundleName, startT }: Props) {
   const [bundle, setBundle] = useState<Loaded | null>(null);
   const [oracle, setOracle] = useState<Oracle | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -21,7 +26,7 @@ export default function RunPage({ exp, featured, bundleName }: Props) {
     setErr(null);
     loadBundle(bundleName)
       .then(async (b) => {
-        const o = await loadOracle(b.run.clip_id);
+        const o = await loadOracle(b.clip_id);
         if (alive) { setBundle(b); setOracle(o); }
       })
       .catch((e) => alive && setErr(String(e)));
@@ -29,57 +34,42 @@ export default function RunPage({ exp, featured, bundleName }: Props) {
   }, [bundleName]);
 
   const current = bundle && bundle._dir === bundleName ? bundle : null;
-  const clip = current?.run.clip_id ?? exp.runs.find((r) => r.bundle === bundleName)?.clip_id ?? exp.runs[0].clip_id;
-  const clips = useMemo(
-    () => [...new Set(exp.runs.map((r) => r.clip_id))].sort((a, b) => {
-      const pa = parseClip(a), pb = parseClip(b);
-      return pa.count - pb.count || pb.observability.localeCompare(pa.observability) || pa.rep.localeCompare(pb.rep);
-    }),
-    [exp]
-  );
-  // Still needed for the seed chips at the top of the page: the clip picker
-  // chooses the clip, these choose which run on it. The old bottom-of-page
-  // "Every run on this clip" grid is gone.
-  const siblings = exp.runs.filter((r) => r.clip_id === clip)
-    .sort((a, b) => a.stage.localeCompare(b.stage) * -1 || a.replicate - b.replicate);
-  const note = featured.find((f) => f.bundle === bundleName) ??
-    featured.find((f) => f.compare?.includes(bundleName));
-
   const duration = current ? runDuration(current) : 0;
   const clock = useClock(duration);
   useEffect(() => {
-    if (duration > 0) clock.seek(duration);
+    if (duration > 0) clock.seek(startT ?? duration);
     // clock.seek is recreated when duration changes; this should fire once per run.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bundleName, duration]);
+  }, [bundleName, duration, startT]);
+
+  const f = exp.figures;
+  const note = current ? RUN_NOTES[current.attempt] : null;
+  const summary = exp.runs.find((r) => r.bundle === bundleName);
 
   return (
     <main className="runpage">
-      <div className="picker">
-        <label htmlFor="clip-select">
-          <span className="eyebrow">Clip</span>
-          <select
-            id="clip-select"
-            value={clip}
-            onChange={(e) => {
-              const first = exp.runs.find((r) => r.clip_id === e.target.value);
-              if (first) window.location.hash = runHref(first.bundle);
-            }}
-          >
-            {clips.map((c) => <option key={c} value={c}>{clipLabel(c)}</option>)}
-          </select>
-        </label>
-        <div className="runchips" role="group" aria-label="Runs on this clip">
-          {siblings.map((r) => (
-            <a key={r.bundle} href={runHref(r.bundle)} aria-current={r.bundle === bundleName ? "page" : undefined}>
-              {runLabel(r.stage, r.replicate)}
-            </a>
-          ))}
-        </div>
+      <div className="batchline">
+        <span className="eyebrow">V4.2 measurement · six clips, one attempt each</span>
+        <span>
+          <b>{f.accepted}/{f.attempts}</b> answers accepted · <b>{f.count_correct}/{f.attempts}</b> right count ·{" "}
+          <b>{f.count_and_supported_colors}/{f.attempts}</b> count and colours supported by the frames ·{" "}
+          <b className="bad">{f.complete_correct}/{f.attempts}</b> complete answers · not promoted
+        </span>
+      </div>
+
+      <div className="picker" role="group" aria-label="Choose an attempt">
+        {exp.runs.map((r) => (
+          <a key={r.bundle} className={`runcard${r.goal_correct ? " good" : ""}`} href={runHref(r.bundle)}
+             aria-current={r.bundle === bundleName ? "page" : undefined}>
+            <span className="rc-top"><b>{r.attempt}</b>{r.bundle === exp.featured && <span className="pill cite">featured</span>}</span>
+            <span className="rc-clip">{clipLabel(r.clip_id, r.expected_count)}</span>
+            <span className="rc-ans">answered {r.reported_count ?? "–"}{r.colors.length ? `: ${compact(r.colors)}` : ""}</span>
+          </a>
+        ))}
       </div>
 
       {note && (
-        <div className="casenote">
+        <div className={`casenote${summary?.goal_correct ? " good" : ""}`}>
           <b>{note.title}</b>
           <p>{note.note}</p>
         </div>
@@ -87,9 +77,7 @@ export default function RunPage({ exp, featured, bundleName }: Props) {
 
       {err && <div className="error">{err}</div>}
       {!current && !err && <div className="loading">loading run…</div>}
-      {current && oracle && (
-        <RunView bundle={current} oracle={oracle} clock={clock} />
-      )}
+      {current && oracle && <RunView bundle={current} oracle={oracle} clock={clock} />}
     </main>
   );
 }
