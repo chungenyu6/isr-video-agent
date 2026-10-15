@@ -2,63 +2,89 @@
 
 **Live: https://chungenyu6.github.io/isr-video-agent/**
 
-A demo of a video agent answering surveillance queries over fixed camera footage.
+A replay site for the V4.2 video agent: a language model that answers a traffic
+question about a fixed camera clip without ever touching the video itself.
 
-The query: **which vehicles, if any, are travelling against traffic flow?**
+The question: **how many vehicles move against the traffic around them, and what
+colour are they?**
 
-The agent gets a clip and a set of tools, and nothing else. It decides where to
-look, pulls frames, sends them to a vision model, and either reports the vehicles
-it can back with evidence or abstains. It never sees ground truth.
+The agent (Nemotron, in a sandbox) sees only text. A trusted host owns the clip.
+The host runs an object detector and a tracker, measures how each track moves,
+gives the agent the result as text, and on request crops one track for a vision
+model. The agent compares tracks, decides what to inspect, and answers.
 
-This site replays one run at a time so you can watch it work:
+The site has two pages:
 
-- the video, with the agent's regions of interest drawn on it
-- the windows it chose, against the windows it needed
-- the frames it actually sent, and what the vision model said about each one
-- its frame budget as it spends it
-- its tool calls and full reasoning trace, step by step
-- what it finally reported, and how the verifier judged it
-
-Pick a clip and a seed at the top of the page.
+- **Run replay.** Pick one of six attempts. You can watch:
+  - the YOLO26s + ByteTrack boxes, track trails and movement arrows drawn on the clip;
+  - a per-track timeline;
+  - the track facts the agent was given;
+  - the exact images Gemma was shown and what it said;
+  - every tool call;
+  - the answer, kept separate from the Runtime Verifier, the Post-hoc Verifier and the study's scorer.
+- **How it works.** Covers:
+  - the components and their trust zones;
+  - the real call sequence of one run, step by step;
+  - what each stage hands to the next;
+  - the detector and the tracker explained in four pictures.
 
 ## What is running
 
 | Role | Model |
 |---|---|
-| Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` |
-| Perception | `google/gemma-4-26B-A4B-it` (sparse MoE, ~4B active per token) |
+| Orchestrator | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4`, thinking off |
+| Vision | `google/gemma-4-26B-A4B-it`, stateless, temperature 0.1 |
+| Detector + tracker | YOLO26s (ultralytics 8.4.176) + ByteTrack, no ReID |
+| Agent harness | Pi with the V4.2 extension: six typed tools |
 
-The agent now looks in two ways. It **sweeps** a window as video — up to 32 frames
-in one call, about one every 0.6 s over a 20-second clip — and then **inspects**
-narrow windows as full-resolution stills. Sweeping is cheap enough to cover the
-whole clip; inspecting is precise enough to judge what a sweep raised. Each has
-its own frame budget, so covering the video does not compete with looking closely
-at part of it.
-
-Both served locally on vLLM, on A40s. The agent harness is Pi; the twelve clips
-are fixed synthetic traffic scenes.
+All of them are served locally on A40s. The six clips are synthetic traffic scenes,
+960×540 at 10 fps and 20 s long.
 
 ## Reading it honestly
 
-These are engineering runs, not a measured study: no preregistration, no signed
-report. The site publishes the runs themselves and no aggregate figures, and runs
-that failed or timed out are shown as such rather than hidden. Don't read success
-rates or model comparisons off it.
+These are the six attempts of one bounded measurement, each run once. The six
+answers break down as follows:
+
+| Outcome | Attempts |
+|---|---|
+| Accepted by the host | 6/6 |
+| Right count | 3/6 |
+| Count and colours supported by the frames | 1/6 |
+| Complete | 0/6 |
+
+V4.2 was not promoted. The featured attempt, a002, is the best of the six, not a
+typical one, and the site says so. A Post-hoc Verifier pass means the record is
+intact, not that the answer is right. Ground truth and scores are shown only on
+cards labelled as such; the agent never saw them.
 
 ## Data
 
-The viewer reads static JSON; nothing touches an experiment directory at runtime.
+The viewer reads static JSON. Nothing touches an experiment directory at runtime.
 
 ```bash
-export EXPERIMENT_ROOT=/workspace/archive/isr-video-agent   # b0v4 runs need an exporter update
-python3 tools/export_oracle.py                 # content/oracle/<clip_id>.json
-python3 tools/export_run.py --run-dir <dir>    # bundles/<name>/bundle.json
-python3 tools/build_experiment.py              # content/experiment.json
+python3 -B tools/export_v4_run.py --batch <study>/runs/20261015-06-eval-6-v4.2-direction-first
+python3 -B tools/build_experiment.py           # content/experiment.json
+python3 -B tools/validate_bundle.py bundles/*/
+python3 -B tools/build_experiment.py --check   # site figures == the study report's
 ```
 
-`export_run.py` scrubs host paths to placeholders and refuses outright to write a
-bundle still containing a credential-shaped string or an unrefused reference to the
-label directory. That guard is load-bearing; do not relax it to publish a run.
+`export_v4_run.py` is an allowlist. It reads only:
+
+- the tracking JSON, the motion index, the gateway ledger and Pi message timestamps;
+- the verdict and score files;
+- the two images per Gemma call.
+
+It never opens agent commands, raw model requests, review files, the source video or
+labels. Every bundle passes `tools/publish_guard.py`, which forbids host paths,
+loopback URLs, credential-shaped strings and label paths, before it is written.
+
+Two inputs are reused from the previous site rather than re-exported:
+
+- **Ground-truth files.** `content/oracle/*.json` was exported earlier by
+  `tools/export_oracle.py`.
+- **Video proxies.** `app/public/video/*.mp4` were made by `tools/make_proxies.sh`.
+
+Both are for the same six clips; their video SHA-256 matches the V4.2 runs.
 
 ## Develop
 
@@ -72,3 +98,6 @@ npm run preview    # http://0.0.0.0:4173
 
 `BASE_PATH` sets the base href for subdirectory hosting and defaults to `/`; the
 Pages workflow sets it to `/<repo name>/`.
+
+The previous site (the archived ISR agent) is preserved at the git tag
+`legacy-isr-agent-site`.

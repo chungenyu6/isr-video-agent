@@ -1,65 +1,61 @@
 # AGENTS.md
 
-This is the ISR line's run viewer, forked from the Wrong-Way Failure Discovery demo
-site. The source site at `/home/video-agent-failure-demo` is READ-ONLY.
+Public replay site for the V4.2 video agent (detector + tracker + Nemotron + Gemma).
+It presents results the study already produced; it never produces evidence.
+Communicate with the researcher in Traditional Chinese; keep technical terms in
+English. Site copy and `README.md` are English. Internal planning documents live in
+`docs/plan/` in Traditional Chinese.
 
-Scope: ONE page, the run replay. The Overview page, the live page and the
-"Every run on this clip" grid were deliberately removed -- do not reintroduce them.
+## Scope
 
-The experiment it reads is `/home/isr-video-agent` (`EXPERIMENT_ROOT`), which has no
-preregistered campaign and no signed report. The site therefore publishes runs only,
-never aggregate claims.
+Two pages: the **run replay** and **How it works** (architecture). Do not add an
+overview/leaderboard page, a live-run page or an "every run on this clip" grid.
+Live mode is out of scope until a runner for the current SUT exists.
 
----
+The previous site (archived ISR agent, 12 runs) is preserved at git tag
+`legacy-isr-agent-site`; do not mix its bundle format back in.
 
-## Inherited notes from the source site
+## Authorities (all read-only)
 
-# AGENTS.md
-
-## Purpose
-
-Public replay site and lab-only live demo for the Video-Agent Failure Discovery MVP.
-It presents results the experiment already produced; it never produces experiment
-evidence. Communicate with the researcher in Traditional Chinese; keep technical
-terms in English. Site copy and `README.md` are English. Internal planning documents
-live in `docs/plan/` in Traditional Chinese.
-
-## Authorities
-
-- Experiment (read-only): `/home/video-agent-failure-discovery-mvp`. Its
-  `docs/report/final-analysis.json` is the source of every number on the site.
-- Build plan: `docs/plan/2026-09-14_build-plan.zh-TW.html`.
-- Visual and structural predecessor (read-only): `/home/video-code-harness/video-harness-demo`.
+- Runs: `/workspace/experiments/video-agent-capability/runs/20261015-06-eval-6-v4.2-direction-first`
+  (six attempts, one per clip, seed 1).
+- Figures: that study's `reports/sut-v4.2-six-video-20261015-resumed.zh-TW.md`.
+  `tools/build_experiment.py` holds them as `REPORT` and `--check` fails on any
+  difference.
+- Architecture: `/workspace/video-agent/docs/sut-v4/v4.2.zh-TW.md` at SUT
+  `93d0e5b`, `config/runtime_v42.json`, `model-serving/vision/server.py`.
+  The site renders the implemented runtime, not a successful strategy.
+- Plan and decisions: `docs/plan/2026-10-15_v4.2-site.zh-TW.md`.
 
 ## Hard rules
 
-1. Never write to the experiment repository: no files, no commits, no `__pycache__`
-   (tools set `sys.dont_write_bytecode`), and never call its `run_pi.sh` or
-   `new_run.py`. Verify with `git -C /home/video-agent-failure-discovery-mvp status`.
-2. Never modify the Phase 0 demo repository.
-3. Publish only formal runs: the 36 discovery and 20 confirmation matrix rows.
-   Pilot and pre-freeze runs stay out.
-4. The exporter is an allowlist. Nothing from a run directory is published unless
-   `tools/export_run.py` names it; `auth.json`, `environment.txt`, workspace git
-   objects and source videos never leave the lab machine.
-5. A figure may appear on the site only if `tools/build_experiment.py --check`
-   reproduces it from the bundles and it equals `final-analysis.json`.
-6. Frame 0 is never motion evidence. `frames.jsonl` row index is the video frame.
-   Clips share three layouts; never describe them as twelve independent scenes.
-7. Live runs are demonstrations: written under `live/runs/`, gitignored, never
-   published, labelled as not experiment evidence, and run with the frozen prompt,
-   tools, model and decoding whose hashes match the experiment's `freeze.json`.
-8. The live server binds `127.0.0.1` by default. It starts agent runs.
-9. Report honestly. The confirmation result is negative (0/4); say so.
+1. Never write to `video-agent`, the study repository or `model-serving`: no files,
+   no commits, no `__pycache__` (run tools with `python3 -B`; they also set
+   `sys.dont_write_bytecode`). Never start models or runs from here.
+2. The exporter is an allowlist (`tools/export_v4_run.py`). It must not open
+   `agent-command.json`, `worker-request.json`, `requests/`, `TRACE*`,
+   review images, source videos or `data/`. Do not relax `tools/publish_guard.py`.
+3. Ground truth and scores may appear only on cards labelled as ground truth /
+   study scorer, after the run. Published ground truth is limited to the six
+   clips already public since 2026-09-14 (researcher decision); their video
+   SHA-256 must match the runs.
+4. Keep the Runtime Verifier, Post-hoc Verifier and study scorer visually separate.
+   Neither verifier evaluates traffic truth; a verifier pass is not correctness.
+5. Report honestly: show all six attempts, label a002 as the best of six, and keep
+   the batch line (6/6 accepted, 1/6 supported, 0/6 complete, not promoted) visible.
+6. Detector confidence scores are never presented as something the agent saw.
+   Kalman predictions are drawn only as "prediction, not observed".
+7. After adding or changing published data, run
+   `bash /workspace/video-agent/sandbox/agent_user.sh --check bundles content app/public`.
+8. No auto-push. Pushing `main` deploys the public site; ask first.
 
 ## Engineering rhythm
 
-Make a bounded change, then run the smallest applicable check:
-
 ```bash
-python3 tools/validate_bundle.py bundles/*/
-python3 tools/build_experiment.py --check
+python3 -B tools/validate_bundle.py bundles/*/
+python3 -B tools/build_experiment.py --check
 cd app && npm run build
 ```
 
+Then check the site in a browser at desktop and 400 px widths, light and dark.
 Report what changed, what was checked, and what is still unverified.
