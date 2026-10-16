@@ -1,4 +1,4 @@
-// How V5.0 works: components and trust zones, one real run as a call sequence,
+// How V5.0 works: components and trust zones, the call sequence of an attempt,
 // what each stage hands to the next, grouping and the traffic rule in four
 // pictures, and what changed from V4.2.
 
@@ -7,7 +7,7 @@ import type { Experiment } from "../types";
 import type { Loaded50 } from "./types";
 import { loadBundle50 } from "../data";
 import { archHref, stageHref } from "../router";
-import { BOUNDARIES, CHANGES, COMPONENTS, FLOW, PARTICIPANTS, SEQUENCE, VERSUS, ZONES } from "./content";
+import { BOUNDARIES, CHANGES, COMPONENTS, FLOW, PARTICIPANTS, SEQ_FRAMES, SEQUENCE, VERSUS, ZONES } from "./content";
 import ComponentMap from "../arch/ComponentMap";
 import Sequence from "../arch/Sequence";
 import DataFlow from "../arch/DataFlow";
@@ -82,8 +82,9 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
       <section>
         <h2>2 · How a run executes</h2>
         <p className="intro">
-          The real sequence of attempt a002 (clip 1-nominal-r1). Loops are host-internal steps. The dotted arrow is the
-          investigation branch that did not run.
+          The implemented call sequence of any V5.0 attempt. Self-arrows are host-internal steps; a loop box repeats per
+          candidate. The dotted opt box is the investigation branch: implemented, but no case arose in the measured batch,
+          so it never ran and Nemotron received no request.
         </p>
         <div className="stepper" role="group" aria-label="Sequence stepper">
           <button onClick={() => { setPlaying(false); setCur(Math.max(0, cur - 1)); }} aria-label="previous step">◀</button>
@@ -97,11 +98,11 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
           <b>{cur + 1}. {msg.label}</b>
           <p>{msg.detail}</p>
           {msg.stage !== undefined && msg.stage > 0 && !msg.skipped && (
-            <a href={stageHref(ver.featured, msg.stage)}>see this stage in the replay →</a>
+            <a href={stageHref(ver.featured, msg.stage)}>see this stage in a replay →</a>
           )}
         </div>
-        <Sequence participants={PARTICIPANTS} sequence={SEQUENCE} cur={cur} onPick={(i) => { setPlaying(false); setCur(i); }}
-                  label="Call sequence of attempt a002 in V5.0" />
+        <Sequence participants={PARTICIPANTS} sequence={SEQUENCE} frames={SEQ_FRAMES} cur={cur} onPick={(i) => { setPlaying(false); setCur(i); }}
+                  label="Call sequence of a V5.0 attempt" />
       </section>
 
       <section>

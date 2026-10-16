@@ -1,10 +1,10 @@
 // Architecture page content for V5.0. Source of truth: video-agent
 // docs/sut-v5/v5.0.zh-TW.md at SUT 5ff6b8a (implemented runtime, three views),
 // config/runtime_v5.json, store/vehicles_v5.py and inspection/runtime_verifier_v5.py.
-// Results: the study's sut-v5.0-six-video-20261015 report. Example values are
-// attempt a002 (clip 1-nominal-r1) as exported in bundles/v50-1-nominal-r1-s1.
+// Results: the study's sut-v5.0-six-video-20261015 report. The call sequence is
+// general; the data flow uses example values from attempt a002 (clip 1-nominal-r1) as exported in bundles/v50-1-nominal-r1-s1.
 
-import type { Component, FlowStage, Participant, SeqMsg, Zone, ZoneInfo } from "../arch/types";
+import type { Component, FlowStage, Participant, SeqFrame, SeqMsg, Zone, ZoneInfo } from "../arch/types";
 
 export const ZONES: Record<Zone, ZoneInfo> = {
   agent: { name: "Agent sandbox · optional", note: "tested-agent-user · untrusted · starts only for an investigation case · none in this batch", idle: true },
@@ -90,36 +90,61 @@ export const PARTICIPANTS: Participant[] = [
   { id: "yolo", name: "YOLO26s + ByteTrack", sub: "model" },
   { id: "gateway", name: "Gateway + rules", sub: "host" },
   { id: "gemma", name: "Gemma", sub: "model" },
-  { id: "pi", name: "Pi + Nemotron", sub: "agent", idle: true },
+  { id: "pi", name: "Pi + Nemotron", sub: "agent · optional", idle: true },
   { id: "rv", name: "Runtime Verifier", sub: "host" },
   { id: "posthoc", name: "Post-hoc Verifier", sub: "host" },
 ];
 
+/**
+ * The implemented V5.0 call sequence for any attempt, after the canonical
+ * call-sequence view in docs/sut-v5/v5.0.zh-TW.md. Messages 7-16 are the
+ * investigation branch: implemented, never started in the measured batch.
+ */
 export const SEQUENCE: SeqMsg[] = [
-  { from: "runner", to: "gateway", label: "fresh session, store, bound video", stage: 0, highlight: ["runner", "gateway", "store"],
-    detail: "A new gateway and private store for this one clip. Nothing carries over from any other attempt." },
-  { from: "runner", to: "yolo", label: "whole clip, one fresh job", stage: 1, highlight: ["runner", "yolo"],
-    detail: "All 199 frames go to YOLO26s + ByteTrack once. In a002 this took 3.39 s." },
-  { from: "yolo", to: "gateway", label: "boxes, 18 tracker IDs, 116 unmatched", stage: 1, dashed: true, highlight: ["yolo", "gateway", "store"],
-    detail: "Raw boxes and associations land in the private store unchanged." },
-  { from: "gateway", to: "gateway", label: "group: 18 T → 14 V", stage: 2, highlight: ["gateway", "vehicles"],
-    detail: "T1+T3 → V1, T8+T9 → V8, T14+T15 → V14, T16+T17 → V16. 34 unmatched boxes are attached; 82 stay ungrouped. V10 and V12 might be one car: kept apart, one vote." },
-  { from: "gateway", to: "gateway", label: "rule: V1 runs 152° against the flow", stage: 3, highlight: ["gateway", "rules"],
-    detail: "13 comparison units vote. The other 12 all flow up the screen; V1's phase from frame 14 to 44 runs down, 152° from that flow. V1 is the only candidate." },
-  { from: "gateway", to: "gemma", label: "V1 → T3 @ 43: TARGET + crop", stage: 4, highlight: ["gateway", "gemma"],
-    detail: "The host picks frame 43, where T3 (part of V1) has a real box, draws TARGET, cuts a 25%-padded crop and asks for the body colour." },
-  { from: "gemma", to: "gateway", label: "“Body color: purple”", stage: 4, dashed: true, highlight: ["gemma", "gateway", "store"],
-    detail: "Stored verbatim, bound to V1, T3, frame 43 and an observation reference. The host parses the Body color line: purple. 0.78 s." },
-  { from: "gateway", to: "pi", label: "investigation case? none → Pi not started", stage: 4, skipped: true, highlight: ["pi", "nemotron"],
-    detail: "A case opens only when a doubt could change the answer and a new look could settle it. None did, so Pi and Nemotron never ran: 0 Nemotron calls. This branch is implemented but was not exercised live." },
-  { from: "gateway", to: "gateway", label: "assemble: 1 · purple · incomplete", stage: 5, highlight: ["gateway", "assembler"],
-    detail: "One target, V1 = T1+T3, frames 14–44, “purple”. 82 ungrouped boxes remain, so count_complete is false." },
-  { from: "gateway", to: "rv", label: "answer shape + real source frames → pass", stage: 6, highlight: ["gateway", "rv"],
-    detail: "The Runtime Verifier checks count = colours = targets, that frames 14–44 are real observations of V1, and that the colour cites a stored reply. Not whether the car really drove the wrong way." },
-  { from: "gateway", to: "runner", label: "host_finalized", stage: 6, dashed: true, highlight: ["gateway", "runner"],
-    detail: "The run ends after 5.49 s: 1 tracking job, 1 Gemma call, 0 Nemotron calls." },
-  { from: "runner", to: "posthoc", label: "rebuild records → integrity pass", stage: 6, highlight: ["runner", "posthoc", "store"],
-    detail: "After the run, the Post-hoc Verifier rebuilds grouping, rule, media, colour parsing and answer from the records. It passed. Whether the answer is right is a separate question for the study's scorer." },
+  { from: "runner", to: "yolo", label: "fresh job: whole clip + SHA-256", stage: 1, highlight: ["runner", "yolo"],
+    detail: "Each attempt starts a new gateway and private store and sends the whole clip to the detector and tracker once. Nothing carries over from any other attempt." },
+  { from: "yolo", to: "gateway", label: "real boxes, tracker IDs, unmatched boxes", stage: 1, dashed: true, highlight: ["yolo", "gateway", "store"],
+    detail: "Per frame: real boxes, class and a tentative tracker ID (T), or no ID if the tracker could not link the box. Kalman predictions are flagged as not observed. All of it lands in the private store unchanged." },
+  { from: "gateway", to: "gateway", label: "group tracker IDs into vehicle records", stage: 2, highlight: ["gateway", "vehicles"],
+    detail: "Tracker IDs that are clearly one vehicle are joined into a vehicle record (V): a short gap, similar size and heading, and each the other's only candidate. Unclear pairs stay apart and vote once together. Boxes that fit no record stay ungrouped." },
+  { from: "gateway", to: "gateway", label: "movement, one vote each, traffic rule → candidates", stage: 3, highlight: ["gateway", "rules"],
+    detail: "Each record gets movement phases and one stable-direction vote. For each record, the flow is what the other votes agree on (≥ 2 units, ≥ 2/3). A phase 135° or more against that flow makes it a candidate. Too little support or a tie stays unresolved." },
+  { from: "gateway", to: "gemma", label: "host-chosen real frame: TARGET + 25% crop", stage: 4, highlight: ["gateway", "gemma"],
+    detail: "For each candidate, the host picks a frame where one of its tracker IDs has a real box, draws TARGET on the full frame, cuts a crop with 25% padding and asks one factual body-colour question. No history, no traffic question." },
+  { from: "gemma", to: "gateway", label: "free Body color + observation text", stage: 4, dashed: true, highlight: ["gemma", "gateway", "store"],
+    detail: "The reply is stored verbatim, bound to the vehicle, tracker ID, frame and an observation reference. The host parses exactly one Body color line; anything else is unknown. Host-only replies cost no agent text." },
+  { from: "runner", to: "pi", label: "fixed case prompt, five tools", skipped: true, highlight: ["runner", "pi"],
+    detail: "Only when a doubt could change the answer and a new look could settle it does the runner open a case and start Pi with Nemotron, one case at a time, at most four per attempt. Implemented; no case arose in the measured batch, so this never ran." },
+  { from: "pi", to: "rv", label: "context_get / observation_get / inspect / compare", skipped: true, highlight: ["pi", "nemotron", "rv"],
+    detail: "Every tool call goes through the Runtime Verifier first: schema, argument combination, sources from this session, real boxes, call and time budgets." },
+  { from: "rv", to: "gateway", label: "types, sources, frames, budgets checked", skipped: true, highlight: ["rv", "gateway"],
+    detail: "Only a call that passes reaches the gateway. A refused call is recorded and costs budget." },
+  { from: "gateway", to: "pi", label: "plain text, cursor, remaining budget", skipped: true, dashed: true, highlight: ["gateway", "pi"],
+    detail: "The agent reads plain text pages: the case, related records, verbatim Gemma text under a fixed source header, and what budget is left. Every delivered character is counted." },
+  { from: "gateway", to: "gemma", label: "fresh media, fixed factual question", skipped: true, highlight: ["gateway", "gemma"],
+    detail: "If a new look is useful, the gateway makes fresh media for this case and asks Gemma the same kind of factual question, at most twice per case and within the shared 12-call cap." },
+  { from: "gemma", to: "gateway", label: "verbatim text", skipped: true, dashed: true, highlight: ["gemma", "gateway", "store"],
+    detail: "Stored verbatim with its source, like every other Gemma reply." },
+  { from: "gateway", to: "pi", label: "source header + text (counted)", skipped: true, dashed: true, highlight: ["gateway", "pi"],
+    detail: "Delivered to the agent under the fixed source header; the full text counts against the agent's text budget." },
+  { from: "pi", to: "rv", label: "investigation_finish (outcome + refs)", skipped: true, highlight: ["pi", "rv"],
+    detail: "The agent closes the case as resolved or unresolved and cites the observations it relied on. It cannot submit a count or approve the whole answer." },
+  { from: "rv", to: "gateway", label: "shape, sources; co-visible records never merged", skipped: true, highlight: ["rv", "gateway"],
+    detail: "The Runtime Verifier checks the outcome's shape and sources. Two records seen in the same frame can never be declared one vehicle." },
+  { from: "gateway", to: "gateway", label: "update derived relations, keep raw facts", skipped: true, highlight: ["gateway", "vehicles"],
+    detail: "The outcome updates derived relations with its citations. Raw tracking data and earlier records are never rewritten." },
+  { from: "runner", to: "gateway", label: "main flow done → assembler writes the answer", stage: 5, highlight: ["runner", "gateway", "assembler"],
+    detail: "The host assembler writes one target per candidate vehicle: its tracker IDs, Gemma's colour as written, the frames of its opposing phases. count_complete stays false while anything is unresolved, open or ungrouped. Nemotron never writes the count." },
+  { from: "gateway", to: "rv", label: "host answer shape + real source intervals", stage: 6, highlight: ["gateway", "rv"],
+    detail: "The Runtime Verifier checks count = colours = targets, that every reported frame is a real observation of that vehicle, and that every colour cites a stored reply. It does not judge whether a car really drove the wrong way." },
+  { from: "runner", to: "posthoc", label: "after the run: rebuild ledger, grouping, rule, media, answer", stage: 6, highlight: ["runner", "posthoc", "store"],
+    detail: "After the run ends, the Post-hoc Verifier rebuilds every step from the records and checks they match. A pass means the record is intact, not that the answer is right; that is the study scorer's job." },
+];
+
+export const SEQ_FRAMES: SeqFrame[] = [
+  { first: 4, last: 5, kind: "loop", label: "each candidate · 12 Gemma calls per attempt, shared" },
+  { first: 6, last: 15, kind: "opt", label: "investigation case · ≤ 4 per attempt · not exercised live", skipped: true },
+  { first: 10, last: 12, kind: "opt", label: "new look useful · ≤ 2 per case", skipped: true },
 ];
 
 /** a002, values from the actual run */

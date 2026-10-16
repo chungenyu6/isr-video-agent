@@ -35,8 +35,8 @@ assigned to a vehicle record. The six clips are a known regression set, not new 
     it read, the Gemma crops it asked for.
   - The answer is kept separate from the Runtime Verifier, the Post-hoc Verifier,
     the study's scorer and the source review.
-- **How it works.** For each version: components and trust zones, the real call
-  sequence of one run, what each stage hands to the next, and illustrated
+- **How it works.** For each version: components and trust zones, the call
+  sequence (the general V5.0 flow; one real V4.2 run), what each stage hands to the next, and illustrated
   explainers (grouping and the traffic rule for V5.0; detector and tracker for V4.2).
 
 ## What is running

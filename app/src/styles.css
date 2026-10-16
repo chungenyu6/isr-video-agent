@@ -561,4 +561,10 @@ blockquote.uncertainty { margin: 0 0 0.7rem; padding: 0.3rem 0.6rem; border-left
 .seq .msg.skipped .mlab { fill: var(--target); font-style: italic; }
 .pv-text blockquote { white-space: pre-wrap; }
 .seq .msg path { stroke: var(--ink-2); stroke-width: 1.4; }
+.seq .seqframe rect { fill: none; stroke: var(--rule-strong); stroke-width: 1; }
+.seq .seqframe .tab { fill: var(--surface-2); stroke: var(--rule-strong); stroke-width: 1; }
+.seq .seqframe .flab { font-family: var(--mono); font-size: 10px; font-weight: 700; fill: var(--ink-2); }
+.seq .seqframe.skipped rect, .seq .seqframe.skipped .tab { stroke: var(--target); stroke-dasharray: 4 3; }
+.seq .seqframe.skipped .flab { fill: var(--target); }
 .seq .msg.hot path { stroke: var(--lane); stroke-width: 2.6; }
+.seq .msg.skipped path { stroke: var(--target); stroke-dasharray: 2 4; }

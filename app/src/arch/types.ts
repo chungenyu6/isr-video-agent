@@ -33,6 +33,16 @@ export interface SeqMsg {
   skipped?: boolean;
 }
 
+/** A UML-style box around messages first..last (indices into the sequence). */
+export interface SeqFrame {
+  first: number;
+  last: number;
+  kind: "loop" | "opt";
+  label: string;
+  /** the block is implemented but did not run in the measured batch */
+  skipped?: boolean;
+}
+
 export interface FlowStage {
   lane: "host" | "model" | "agent" | "after";
   name: string;
