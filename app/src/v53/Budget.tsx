@@ -1,7 +1,7 @@
-// What the run spent against its caps, revealed by stage. Nemotron is used only
-// inside investigation cases.
+// What the run spent against its caps, revealed by stage, and the GPU memory the
+// study sampled while it ran. Nemotron is used only inside investigation cases.
 
-import type { Loaded52 } from "./types";
+import type { Loaded53 } from "./types";
 import { gemmaUsedAt, STAGE } from "./derive";
 
 function Gauge({ label, used, limit, unit = "" }: { label: string; used: number; limit: number; unit?: string }) {
@@ -14,10 +14,13 @@ function Gauge({ label, used, limit, unit = "" }: { label: string; used: number;
   );
 }
 
-export default function Budget({ bundle, stage }: { bundle: Loaded52; stage: number }) {
+export default function Budget({ bundle, stage }: { bundle: Loaded53; stage: number }) {
   const b = bundle.budget;
   const inv = bundle.task.investigation;
   const rt = bundle.runtime;
+  const caseCap = bundle.diagnostic?.visual_cap ?? rt.case_visual_limit;
+  const gpu = bundle.run.gpu;
+  const pct = (x: number | null) => (x === null ? "–" : `${(x * 100).toFixed(1)}%`);
   return (
     <div>
       <Gauge label="Nemotron calls" used={stage >= STAGE.investigate ? b.nemotron.used : 0} limit={b.nemotron.limit} />
@@ -28,7 +31,7 @@ export default function Budget({ bundle, stage }: { bundle: Loaded52; stage: num
         <p>
           When a doubt could change the answer and a new look could settle it (which records are one car, an unreadable
           colour), the program opens a case and starts Pi with Nemotron: up to {String(rt.case_limit)} cases,
-          {" "}{String(rt.case_visual_limit)} new Gemma calls each. Nemotron closes a case; it never writes the count.
+          {" "}{String(caseCap)} new Gemma calls each (shown to the agent after every result). Nemotron closes a case; it never writes the count.
           {" "}{inv.used
             ? "Every call it made, and every refusal, is in the Investigate panel."
             : "In the stability batch this happened in 4 of 48 attempts, all on one clip."}
@@ -40,6 +43,26 @@ export default function Budget({ bundle, stage }: { bundle: Loaded52; stage: num
           </ul>
         </details>
       </div>
+      {gpu && (
+        <div className="invest gpu">
+          <span className="eyebrow">GPU memory · sampled every {gpu.interval_sec} s by the study</span>
+          <ul className="gpulist">
+            {gpu.tracking_job && (
+              <li><b>tracking job</b> peak {gpu.tracking_job.peak_allocated_mib.toFixed(0)} MiB allocated,
+                {" "}{gpu.tracking_job.peak_reserved_mib.toFixed(0)} MiB reserved, {gpu.tracking_job.seconds.toFixed(1)} s</li>
+            )}
+            {Object.entries(gpu.services).filter(([, v]) => v.kv_cache_usage_max !== null).map(([name, v]) => (
+              <li key={name}><b>{name}</b> {(v.nvidia_smi_used_max_mib / 1024).toFixed(1)} of {(v.total_mib / 1024).toFixed(0)} GB
+                {" "}per GPU · KV cache in use: max {pct(v.kv_cache_usage_max)}, mean {pct(v.kv_cache_usage_mean)}</li>
+            ))}
+          </ul>
+          <p className="fine">
+            vLLM reserves 90% of each GPU when it starts, so the Gemma and Nemotron figures barely move between runs; what
+            changes with a request is the KV-cache share. The tracking peak is that job's own use. Short Gemma requests can
+            fall between two samples.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

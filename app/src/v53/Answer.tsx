@@ -4,13 +4,20 @@
 // and the source review (a coding agent reading the frames). Neither verifier
 // judges traffic truth.
 
-import type { Loaded52 } from "./types";
-import type { Focus52 } from "./RunView";
+import type { Loaded53 } from "./types";
+import type { Focus53 } from "./RunView";
 import { STAGE } from "./derive";
+
+const CAL: Record<string, string> = {
+  justified_true: "true, and the count is right",
+  conservative_false: "false, though the count is right",
+  false_and_wrong: "false, and the count is wrong",
+  overclaim: "true, but the count is wrong",
+};
 
 const Mark = ({ ok }: { ok: boolean }) => <span className={`pill ${ok ? "st-pass" : "st-fail"}`}>{ok ? "yes" : "no"}</span>;
 
-interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
+interface Props { bundle: Loaded53; stage: number; focus: Focus53 }
 
 export default function Answer({ bundle, stage, focus }: Props) {
   const a = bundle.answer;
@@ -19,6 +26,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
   const ph = bundle.posthoc_verifier;
   const sc = bundle.scorer;
   const rw = bundle.review;
+  const pe = bundle.property_eval;
   const expected = sc ? Object.entries(sc.expected_color_multiset).flatMap(([c, n]) => Array(n).fill(c) as string[]) : [];
   const diag = bundle.diagnostic;
   const vIdx = new Map(bundle.vehicles.map((v, i) => [v.ref, i]));
@@ -76,7 +84,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
             </div>
           </div>
 
-          {sc && (
+          {sc && pe && (
             <div className="vbox scorer">
               <span className="eyebrow">Property Evaluator · automatic, ground truth, after the run</span>
               <div className="truthline">
@@ -84,31 +92,48 @@ export default function Answer({ bundle, stage, focus }: Props) {
                 {expected.length > 0 && <> ({expected.join(", ")})</>}
               </div>
               <div className="scoregrid">
-                <span>count right</span><Mark ok={sc.count_numeric_match} />
-                <span>colour strings equal the labels</span><Mark ok={sc.color_multiset_correct} />
-                <span>complete answer</span><Mark ok={sc.complete_count_correct} />
+                <span>count right</span><Mark ok={pe.count_match} />
+                <span>colour words match each vehicle (v1)</span><Mark ok={pe.color_token.all_targets_matched} />
+                <span>colour strings equal the labels (v42)</span><Mark ok={sc.color_multiset_correct} />
+                <span>every reported vehicle is a labelled one (v1 geometry)</span><Mark ok={pe.geometry.false_positive_vehicles.length === 0} />
+                <span>count_complete is</span>
+                <span className={`pill ${pe.count_complete_calibration === "false_and_wrong" || pe.count_complete_calibration === "overclaim" ? "st-fail" : pe.count_complete_calibration === "justified_true" ? "st-pass" : "st-warn"}`}>
+                  {CAL[pe.count_complete_calibration]}
+                </span>
               </div>
-              <p className="vnote">Exact strings only: “light purple” is not “purple” here. Nothing on this card was visible to the system.</p>
+              {pe.geometry.false_positive_vehicles.length > 0 && (
+                <p className="vnote bad">
+                  {pe.geometry.false_positive_vehicles.join(", ")} matches no labelled wrong-way object over its cited frames
+                  (IoU ≥ {pe.geometry.iou_threshold}).
+                </p>
+              )}
+              {pe.geometry.matched.length > 0 && (
+                <p className="vnote">
+                  Event frames covered: {pe.geometry.matched.map((m) => `${m.vehicle_ref} → ${m.object_id} ${m.covered_event_frames}/${m.event_frames}`).join(" · ")}.
+                </p>
+              )}
+              <p className="vnote">
+                v1 matches colour words (“Green and white” has green), not exact strings; v42 is the original exact-string
+                scorer. Geometry is a box overlap, not proof of physical identity. Nothing on this card was visible to the system.
+              </p>
             </div>
           )}
 
           {rw && (
             <div className="vbox scorer review">
               <span className="eyebrow">Property Evaluator · source review, coding agent, not blind</span>
-              <ul className="targets">
-                <li>count: {rw.count_review}</li>
-                {rw.targets.length > 0 && <li>identity: {rw.identity_review} ({rw.targets.map((t) => `${t.vehicle_ref} → ${t.object_id}`).join(", ")})</li>}
-                {rw.targets.length > 0 && <li>colour: {rw.color_review}</li>}
-              </ul>
-              <p className="vnote">A coding agent compared the reported vehicles, frames and crops with the ground-truth frames, once per clip for all four repeats. It is not an independent blind evaluation.</p>
+              {rw.changed_from_v52
+                ? <p className="vnote bad">Changed from V5.2 on this attempt: {rw.changed_reason}</p>
+                : <p className="vnote">Same answer as V5.2 on this attempt, word for word; the V5.2 frame review carries over.</p>}
+              <p className="vnote">{rw.method} It is not an independent blind evaluation.</p>
             </div>
           )}
 
           {diag && (
             <div className="vbox scorer review">
               <span className="eyebrow">Property Evaluator · case review, coding agent, not blind</span>
-              <div className="vline">Pi's case result judged correct: <Mark ok={diag.review.pi_correct} /></div>
-              <p className="vnote">Judged against the saved frames and the scenario's design, after the run. The count above is the host's; the case changes it only through cited, checked relations.</p>
+              <p className="vnote">{diag.review.item}</p>
+              <p className="vnote">Judged against the saved frames and an expected answer written down before V5.2. The count above is the host's; the case changes it only through cited, checked relations.</p>
             </div>
           )}
         </>

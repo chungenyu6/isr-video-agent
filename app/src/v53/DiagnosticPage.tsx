@@ -1,15 +1,16 @@
-// A V5.2 controlled diagnostic: one saved-state scenario run three ways, once
-// each. No controller saw another's new Gemma replies. Shown: the scenario, the
-// three outcomes side by side, then the Pi attempt replayed in full. This is not
+// A V5.3 controlled diagnostic: one saved-state scenario run four ways, once
+// each (no follow-up, fixed check, Pi with a per-case Gemma cap of 2, and of 4).
+// No arm saw another's new Gemma replies. Shown: the scenario, the four outcomes
+// side by side, then the cap-2 Pi attempt replayed in full. This is not
 // a natural trigger: the state was saved from earlier runs and, for some
 // scenarios, a join was held back or a case assigned so that a case would open.
 
 import { useEffect, useState } from "react";
 import type { Controller, Experiment, Oracle } from "../types";
-import type { Loaded52 } from "./types";
-import { loadBundle52, loadOracle } from "../data";
-import { archHref, caseHref, runHref } from "../router";
-import { DIAG_NOTES_V52 } from "./notes";
+import type { Loaded53 } from "./types";
+import { loadBundle53, loadOracle } from "../data";
+import { archHref, caseHref, runHref, upgradeLink } from "../router";
+import { DIAG_NOTES_V53 } from "./notes";
 import { STAGE } from "./derive";
 import RunView from "./RunView";
 
@@ -18,29 +19,33 @@ interface Props { exp: Experiment; bundleName: string | null; startStage: number
 const CTL_LABEL: Record<Controller, string> = {
   none: "No follow-up",
   fixed: "Fixed check (scripted)",
-  pi: "Pi + Nemotron",
+  "pi-cap2": "Pi + Nemotron · cap 2",
+  "pi-cap4": "Pi + Nemotron · cap 4",
 };
 
 export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
-  const diag = exp.versions.v52.diagnostic!;
+  const diag = exp.versions.v53.diagnostic!;
+  const asked = bundleName ? upgradeLink(bundleName) : null;
   const replays = Object.entries(diag.replays);
-  const hit = replays.find(([, n]) => n === bundleName);
+  const hit = replays.find(([, n]) => n === asked);
   const [scen, name] = hit ?? replays[0];
-  const [bundle, setBundle] = useState<Loaded52 | null>(null);
+  const [bundle, setBundle] = useState<Loaded53 | null>(null);
   const [oracle, setOracle] = useState<Oracle | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     let alive = true;
     setErr(null);
-    loadBundle52(name)
+    loadBundle53(name)
       .then(async (b) => { const o = await loadOracle(b.clip_id); if (alive) { setBundle(b); setOracle(o); } })
       .catch((e) => alive && setErr(String(e)));
     return () => { alive = false; };
   }, [name]);
   const cur = bundle && bundle._dir === name ? bundle : null;
   const cells = diag.cells[scen];
-  const note = DIAG_NOTES_V52[scen];
-  const sib = (c: Controller) => cur?.diagnostic?.siblings.find((s) => s.controller === c);
+  const note = DIAG_NOTES_V53[scen];
+  const ctls = diag.controllers;
+  const main = cur?.diagnostic?.arm;
+  const sib = (c: Controller) => cur?.diagnostic?.siblings.find((s) => s.arm === c);
 
   return (
     <main className="runpage">
@@ -48,25 +53,27 @@ export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
         <div className="notice">No diagnostic replay named <code>{bundleName}</code>. Showing {scen}.</div>
       )}
       <div className="batchline">
-        <span className="eyebrow">V5.2 controlled diagnostic · saved state, not a natural trigger</span>
+        <span className="eyebrow">V5.3 controlled diagnostic · saved state, not a natural trigger</span>
         <span>
-          Seven scenarios, each run once three ways: no follow-up, a fixed scripted check, and Pi with Nemotron.
-          Pi's case results were right in <b className="bad">{diag.pi_correct}/{diag.pi_cases}</b>.{" "}
-          <a href={`${archHref("v52")}#agent-value`}>All 21 results →</a>{" "}
-          <a href={runHref(exp.versions.v52.featured)}>The natural case →</a>
+          Seven scenarios, each run once four ways: no follow-up, a fixed scripted check, and Pi with Nemotron at a
+          per-case Gemma cap of 2 and of 4. Pi was right in <b>{diag.pi_correct["pi-cap2"]}/{diag.pi_cases}</b> at
+          both caps (V5.2: {diag.pi_correct.v52_pi}/{diag.pi_cases}).{" "}
+          <a href={`${archHref("v53")}#agent-value`}>All 28 results →</a>{" "}
+          <a href={runHref(exp.versions.v53.featured)}>The natural case, where it went wrong →</a>
         </span>
       </div>
 
       <div className="versions" role="group" aria-label="Diagnostic scenario">
         {replays.map(([s, n]) => (
           <a key={s} href={caseHref(n)} aria-current={s === scen ? "page" : undefined}>
-            <b>{s}</b> · Pi replay<span>{diag.scenarios[s]}</span>
+            <b>{s}</b> · Pi cap 2 replay<span>{diag.scenarios[s]}</span>
           </a>
         ))}
       </div>
 
       <div className="casenote">
         <b>{scen}: {note.title}</b>
+        <p className="fine">Expected answer, written down before V5.2: <b>{diag.expected[scen]}</b>. V5.2's Pi: {diag.v52_pi[scen] ? "right" : "wrong"}.</p>
         <p>{note.note}</p>
         {cur?.diagnostic && (
           <p className="fine">
@@ -74,7 +81,7 @@ export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
             runs of that clip; no new tracking job.{" "}
             {cur.diagnostic.packet.case ? `Case assigned by the packet: ${cur.diagnostic.packet.case.type} of ${cur.diagnostic.packet.case.refs.join(" / ")}.` : "The program proposed the case from the saved state."}
             {cur.diagnostic.packet.deferred_links.length ? ` Join held back: ${cur.diagnostic.packet.deferred_links.map((l) => l.join("–")).join(", ")}.` : ""}
-            {" "}Caps for this item: {cur.diagnostic.limits.main} Nemotron, {cur.diagnostic.limits.visual} Gemma calls.
+            {" "}Caps for this replay: {cur.diagnostic.limits.main} Nemotron calls, {cur.diagnostic.visual_cap} Gemma calls for the case.
           </p>
         )}
       </div>
@@ -82,27 +89,27 @@ export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
       <div className="tablewrap">
         <table className="diag3">
           <thead>
-            <tr><th />{(["none", "fixed", "pi"] as Controller[]).map((c) => <th key={c}>{CTL_LABEL[c]}</th>)}</tr>
+            <tr><th />{ctls.map((c) => <th key={c}>{CTL_LABEL[c]}</th>)}</tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">calls</th>
-              {(["none", "fixed", "pi"] as Controller[]).map((c) => <td key={c} className="mono">{cells[c].nemotron} Nemotron · {cells[c].gemma} Gemma</td>)}
+              {ctls.map((c) => <td key={c} className="mono">{cells[c].nemotron} Nemotron · {cells[c].gemma} Gemma</td>)}
             </tr>
             <tr>
               <th scope="row">case</th>
-              {(["none", "fixed", "pi"] as Controller[]).map((c) => <td key={c}>{cells[c].case ?? "none"}</td>)}
+              {ctls.map((c) => <td key={c}>{cells[c].case ?? "none"}</td>)}
             </tr>
             <tr>
               <th scope="row">answer</th>
-              {(["none", "fixed", "pi"] as Controller[]).map((c) => {
-                const s = c === "pi" ? cur?.answer.submission : sib(c)?.submission;
+              {ctls.map((c) => {
+                const s = c === main ? cur?.answer.submission : sib(c)?.submission;
                 return <td key={c}>{s ? `${s.reported_count ?? "–"}${s.colors.length ? `: ${s.colors.join(", ")}` : ""}` : "…"}</td>;
               })}
             </tr>
             <tr>
               <th scope="row">what happened</th>
-              {(["none", "fixed", "pi"] as Controller[]).map((c) => (
+              {ctls.map((c) => (
                 <td key={c}>
                   {cells[c].note}
                   {cells[c].correct !== undefined && (
@@ -113,8 +120,8 @@ export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
             </tr>
             <tr>
               <th scope="row">new Gemma text</th>
-              {(["none", "fixed", "pi"] as Controller[]).map((c) => {
-                const texts = c === "pi"
+              {ctls.map((c) => {
+                const texts = c === main
                   ? (cur?.appearance.filter((a) => a.origin !== "imported").map((a) => a.text) ?? [])
                   : (sib(c)?.gemma_texts ?? []);
                 return (
@@ -128,8 +135,9 @@ export default function DiagnosticPage({ exp, bundleName, startStage }: Props) {
         </table>
       </div>
       <p className="fine">
-        Only Pi's results carry a verdict (the coding-agent case review). The none and fixed columns are described as
-        the report describes them, not scored. By design the fixed check never turns free Gemma text into “same”.
+        Only Pi's columns carry a verdict (the report's table, coding-agent review, not blind). The none and fixed columns
+        are described, not scored. By design the fixed check never turns free Gemma text into “same” or “different”.
+        The replay below is the cap-2 attempt.
       </p>
 
       {err && <div className="error">{err}</div>}

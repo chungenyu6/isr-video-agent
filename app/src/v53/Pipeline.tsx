@@ -1,12 +1,12 @@
-// The V5.2 transport. The run is stepped by pipeline stage: each panel reveals
+// The V5.3 transport. The run is stepped by pipeline stage: each panel reveals
 // what exists after the current stage. Stage 5 (Investigate) is the optional
 // agent branch; it lights up only when the program proposed a case.
 
 import { useEffect, useState } from "react";
-import type { Loaded52 } from "./types";
+import type { Loaded53 } from "./types";
 import { gemmaUsedAt, LAST_STAGE, STAGE, STAGES } from "./derive";
 
-interface Props { bundle: Loaded52; stage: number; setStage: (s: number) => void }
+interface Props { bundle: Loaded53; stage: number; setStage: (s: number) => void }
 
 export default function Pipeline({ bundle, stage, setStage }: Props) {
   const [playing, setPlaying] = useState(false);

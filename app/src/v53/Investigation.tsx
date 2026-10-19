@@ -1,16 +1,17 @@
 // Stage 5. The cases the program proposed (or a diagnostic packet assigned),
-// and, when Pi started, every Nemotron turn: the one tool call it made, whether
-// the Runtime Verifier let it through, what text came back, and the images Gemma
-// was shown on its behalf. Nemotron wrote no free text in these runs (thinking
-// off, tool calls only), so the calls are the whole trace.
+// and, when Pi started, every Nemotron turn: either the one tool call it made
+// (whether the Runtime Verifier let it through, what text came back, the images
+// Gemma was shown on its behalf) or the text it answered with instead of a tool
+// call. When Pi stops without a legal finish, the host sends one continuation
+// prompt in the same session; that row is the host speaking, not Nemotron.
 
 import { useEffect, useState } from "react";
-import type { AgentStep, Loaded52 } from "./types";
+import type { AgentStep, Loaded53 } from "./types";
 import { bundleFile } from "../data";
 import { STAGE } from "./derive";
-import type { Focus52 } from "./RunView";
+import type { Focus53 } from "./RunView";
 
-interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
+interface Props { bundle: Loaded53; stage: number; focus: Focus53 }
 
 function argText(args: Record<string, unknown>): string {
   const parts = Object.entries(args).map(([k, v]) => {
@@ -29,6 +30,16 @@ const OUTCOME: Record<AgentStep["outcome"], string> = {
   accepted: "accepted",
   refused: "refused by the Runtime Verifier",
   pi_error: "rejected by Pi before it left the sandbox",
+  message: "Nemotron answered in text instead of calling a tool",
+  nudge: "the host's continuation prompt (not a model call)",
+};
+
+const PILL: Record<AgentStep["outcome"], [string, string]> = {
+  accepted: ["st-pass", "ok"],
+  refused: ["st-fail", ""],
+  pi_error: ["st-fail", "Pi error"],
+  message: ["st-warn", "text reply"],
+  nudge: ["", "host prompt"],
 };
 
 export default function Investigation({ bundle, stage, focus }: Props) {
@@ -105,23 +116,29 @@ export default function Investigation({ bundle, stage, focus }: Props) {
             <button onClick={() => { setPlaying(false); setCur(Math.min(steps.length - 1, cur + 1)); }} aria-label="next call">▶</button>
             <span className="clock">
               call {cur + 1} / {steps.length} · {steps[cur]?.t_result.toFixed(1)} s after Pi started ·
-              {" "}{ag.refused} refused{ag.pi_errors ? ` · ${ag.pi_errors} rejected by Pi` : ""}
+              {" "}{ag.calls} Nemotron calls · {ag.refused} refused{ag.pi_errors ? ` · ${ag.pi_errors} rejected by Pi` : ""}
+              {ag.continuations ? ` · ${ag.continuations} host continuation` : ""}
             </span>
           </div>
           <ol className="agentsteps">
             {steps.map((s) => {
               const later = s.i > shownUpTo;
               return (
-                <li key={s.i} className={`as-${s.outcome}${s.i === cur ? " cur" : ""}${later ? " later" : ""}`}>
+                <li key={s.i} className={`as-${s.outcome} k-${s.kind}${s.i === cur ? " cur" : ""}${later ? " later" : ""}`}>
                   <button className="as-row" onClick={() => { setPlaying(false); setCur(s.i); setOpen(open === s.i ? null : s.i); }}
                           aria-expanded={open === s.i}>
                     <span className="as-n">{s.i + 1}</span>
-                    <code className="as-tool">{s.tool}</code>
-                    <span className="as-args">{argText(s.args)}</span>
-                    <span className={`pill ${s.outcome === "accepted" ? "st-pass" : "st-fail"}`}>
-                      {s.outcome === "refused" ? s.code : s.outcome === "pi_error" ? "Pi error" : "ok"}
-                    </span>
-                    {s.budget_before && <span className="as-budget mono dim">{s.budget_before.main_remaining} calls · {s.budget_before.gemma_remaining} Gemma left</span>}
+                    <code className="as-tool">{s.tool ?? (s.kind === "nudge" ? "host →" : "Nemotron says")}</code>
+                    <span className="as-args">{s.kind === "tool" ? argText(s.args) : `“${s.text.slice(0, 140)}${s.text.length > 140 ? "…" : ""}”`}</span>
+                    <span className={`pill ${PILL[s.outcome][0]}`}>{s.outcome === "refused" ? s.code : PILL[s.outcome][1]}</span>
+                    {s.budget_before && (
+                      <span className="as-budget mono dim">
+                        {s.budget_before.main_remaining} calls ·{" "}
+                        {s.budget_before.case_ref
+                          ? `${s.budget_before.case_ref} Gemma ${s.budget_before.case_gemma_remaining}/${s.budget_before.case_gemma_cap}`
+                          : `${s.budget_before.gemma_remaining} Gemma`} left
+                      </span>
+                    )}
                   </button>
                   {s.visuals.length > 0 && !later && (
                     <div className="as-vis">
@@ -136,7 +153,7 @@ export default function Investigation({ bundle, stage, focus }: Props) {
                   )}
                   {open === s.i && (
                     <div className="as-detail">
-                      <div className="fine">{OUTCOME[s.outcome]}{s.detail ? `: ${s.detail}` : ""} · {s.text_chars} characters returned to the agent</div>
+                      <div className="fine">{OUTCOME[s.outcome]}{s.detail ? `: ${s.detail}` : ""} · {s.text_chars} characters{s.kind === "tool" ? " returned to the agent" : ""}</div>
                       <pre className="as-text">{s.text}</pre>
                     </div>
                   )}
@@ -149,9 +166,10 @@ export default function Investigation({ bundle, stage, focus }: Props) {
             <pre className="as-text">{ag.initial_user}</pre>
           </details>
           <p className="fine">
-            Each row is one Nemotron call and the one tool call it produced. Refusals come from the Runtime Verifier:
-            unknown references, a used-up visual budget, a finish whose fields do not fit the case. They cost a call.
-            Click a row to read exactly what the agent got back.
+            Each row is one Nemotron call: a tool call, or a text reply instead of one. Refusals come from the Runtime
+            Verifier (unknown references, a used-up Gemma budget, media already seen, a finish whose fields do not fit
+            the case) and cost a call. The budget column is what the agent saw before that call; since V5.3 it includes
+            the active case's own Gemma budget. Click a row to read the full text.
           </p>
         </>
       )}

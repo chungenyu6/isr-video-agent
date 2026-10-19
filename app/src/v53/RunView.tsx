@@ -1,11 +1,11 @@
-// The V5.2 run layout. Two positions: the pipeline stage (what the host has
+// The V5.3 run layout. Two positions: the pipeline stage (what the host has
 // done so far) and the video frame (where you are looking in the clip).
 
 import { useEffect, useMemo, useState } from "react";
 import type { Oracle } from "../types";
 import { clipLabel } from "../data";
-import type { Loaded52 } from "./types";
-import { LAST_STAGE, trackPoints52, vehiclePoints } from "./derive";
+import type { Loaded53 } from "./types";
+import { LAST_STAGE, trackPoints53, vehiclePoints } from "./derive";
 import Pipeline from "./Pipeline";
 import VideoPanel from "./VideoPanel";
 import VehicleTimeline from "./VehicleTimeline";
@@ -17,9 +17,9 @@ import Budget from "./Budget";
 import Investigation from "./Investigation";
 import Stability from "./Stability";
 
-interface Props { bundle: Loaded52; oracle: Oracle; startStage: number | null }
+interface Props { bundle: Loaded53; oracle: Oracle; startStage: number | null }
 
-export interface Focus52 {
+export interface Focus53 {
   frame: number;
   setFrame: (f: number) => void;
   veh: number | null;
@@ -30,7 +30,7 @@ export interface Focus52 {
 
 export default function RunView({ bundle, oracle, startStage }: Props) {
   const vpts = useMemo(() => vehiclePoints(bundle), [bundle]);
-  const tpts = useMemo(() => trackPoints52(bundle), [bundle]);
+  const tpts = useMemo(() => trackPoints53(bundle), [bundle]);
   const firstTarget = bundle.answer.targets[0];
   const look = bundle.appearance.find((a) => a.media.length)?.media[0];
   const startVeh = firstTarget ? bundle.vehicles.findIndex((v) => v.ref === firstTarget.vehicle_ref) : null;
@@ -42,7 +42,7 @@ export default function RunView({ bundle, oracle, startStage }: Props) {
   const [veh, setVeh] = useState<number | null>(startVeh !== null && startVeh >= 0 ? startVeh : null);
   const [hover, setHover] = useState<number | null>(null);
   useEffect(() => { setStage(clampStage(startStage)); }, [startStage]);
-  const focus: Focus52 = { frame, setFrame, veh, setVeh, hover, setHover };
+  const focus: Focus53 = { frame, setFrame, veh, setVeh, hover, setHover };
 
   const r = bundle.run;
   const q = bundle.query;

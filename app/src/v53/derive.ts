@@ -1,7 +1,7 @@
-// Derivations for the V5.2 replay. Every panel is a pure function of
+// Derivations for the V5.3 replay. Every panel is a pure function of
 // (bundle, pipeline stage, video frame, selected vehicle).
 
-import type { Appearance, Bundle52, Vehicle } from "./types";
+import type { Appearance, Bundle53, Vehicle } from "./types";
 import { center } from "../data";
 
 /**
@@ -20,11 +20,11 @@ export const STAGES = [
 export const STAGE = { track: 1, group: 2, rule: 3, look: 4, investigate: 5, assemble: 6, verify: 7 } as const;
 export const LAST_STAGE = STAGES.length;
 
-export const vIndexMap = (b: Bundle52) => new Map(b.vehicles.map((v, i) => [v.ref, i]));
-export const tIndexMap = (b: Bundle52) => new Map(b.tracking.tracks.map((t, i) => [t.alias, i]));
+export const vIndexMap = (b: Bundle53) => new Map(b.vehicles.map((v, i) => [v.ref, i]));
+export const tIndexMap = (b: Bundle53) => new Map(b.tracking.tracks.map((t, i) => [t.alias, i]));
 
 /** Per vehicle record: [frame, cx, cy] for every box it owns (tracked or joined). */
-export function vehiclePoints(b: Bundle52): number[][][] {
+export function vehiclePoints(b: Bundle53): number[][][] {
   const pts: number[][][] = b.vehicles.map(() => []);
   b.tracking.frames.forEach((fr, f) => {
     for (const d of fr.d) if (d[6] >= 0) pts[d[6]].push([f, ...center(d)]);
@@ -33,7 +33,7 @@ export function vehiclePoints(b: Bundle52): number[][][] {
 }
 
 /** Per tracker ID: [frame, cx, cy] for every box the tracker associated. */
-export function trackPoints52(b: Bundle52): number[][][] {
+export function trackPoints53(b: Bundle53): number[][][] {
   const pts: number[][][] = b.tracking.tracks.map(() => []);
   b.tracking.frames.forEach((fr, f) => {
     for (const d of fr.d) if (d[5] >= 0) pts[d[5]].push([f, ...center(d)]);
@@ -42,7 +42,7 @@ export function trackPoints52(b: Bundle52): number[][][] {
 }
 
 /** Ungrouped boxes per frame (after grouping), or tracker-unmatched (before). */
-export function looseBoxes(b: Bundle52, grouped: boolean): number[] {
+export function looseBoxes(b: Bundle53, grouped: boolean): number[] {
   return b.tracking.frames.map((fr) => fr.d.filter((d) => (grouped ? d[6] < 0 : d[5] < 0)).length);
 }
 
@@ -58,7 +58,7 @@ export function compassWord(v: [number, number]): string {
   return words[Math.round(((deg + 360) % 360) / 45) % 8];
 }
 
-export const phaseAt52 = (v: Vehicle, f: number) => v.phases.find((p) => p.start <= f && f <= p.end) ?? null;
+export const phaseAt53 = (v: Vehicle, f: number) => v.phases.find((p) => p.start <= f && f <= p.end) ?? null;
 
 export const STATUS_LABEL: Record<Vehicle["status"], string> = {
   normal: "with traffic",
@@ -87,7 +87,7 @@ export function maxAngle(v: Vehicle): number | null {
 }
 
 /** Member tracker IDs in observed order, with their spans. */
-export function memberSpans(b: Bundle52, v: Vehicle) {
+export function memberSpans(b: Bundle53, v: Vehicle) {
   return b.tracking.tracks
     .filter((t) => t.vehicle === v.ref)
     .sort((x, y) => x.observed[0] - y.observed[0])
@@ -110,7 +110,7 @@ export interface LookFrame {
   bbox: [number, number, number, number];
   bounds: [number, number, number, number] | null;
 }
-export function lookFrames(b: Bundle52, stage: number): LookFrame[] {
+export function lookFrames(b: Bundle53, stage: number): LookFrame[] {
   const out: LookFrame[] = [];
   b.appearance.forEach((a, obs) => {
     if (lookStage(a) > stage) return;
@@ -125,5 +125,5 @@ export function lookFrames(b: Bundle52, stage: number): LookFrame[] {
 }
 
 /** Gemma calls made by a stage. */
-export const gemmaUsedAt = (b: Bundle52, stage: number) =>
+export const gemmaUsedAt = (b: Bundle53, stage: number) =>
   b.appearance.filter((a) => a.origin !== "imported" && lookStage(a) <= stage).length;

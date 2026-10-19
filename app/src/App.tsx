@@ -3,8 +3,8 @@ import type { Experiment } from "./types";
 import { loadExperiment } from "./data";
 import { archHref, runHref, useRoute, versionOf } from "./router";
 import RunPage from "./pages/RunPage";
-import ArchitecturePage52 from "./v52/ArchitecturePage";
-import DiagnosticPage from "./v52/DiagnosticPage";
+import ArchitecturePage53 from "./v53/ArchitecturePage";
+import DiagnosticPage from "./v53/DiagnosticPage";
 import ArchitecturePage42 from "./v42/ArchitecturePage";
 
 export default function App() {
@@ -21,8 +21,8 @@ export default function App() {
   // The version on screen: the bundle's for a run, the page's for architecture.
   const shownVersion = route.page === "architecture"
     ? route.version
-    : route.page === "case" ? "v52"
-    : (route.bundle && versionOf(route.bundle)) || exp?.current || "v52";
+    : route.page === "case" ? "v53"
+    : (route.bundle && versionOf(route.bundle)) || exp?.current || "v53";
   const ver = exp?.versions[shownVersion];
   const featured = exp ? exp.versions[exp.current].featured : "";
   return (
@@ -31,7 +31,7 @@ export default function App() {
       <div className="shell">
         <header className="mast">
           <a className="brand" href={runHref(featured)}>
-            ISR Video Agent <span className="ver">{ver?.label ?? "V5.2"}</span>
+            ISR Video Agent <span className="ver">{ver?.label ?? "V5.3"}</span>
           </a>
           <nav className="nav" aria-label="Pages">
             <a href={runHref(ver?.featured ?? featured)} aria-current={route.page === "run" || route.page === "case" ? "page" : undefined}>Run replay</a>
@@ -45,7 +45,7 @@ export default function App() {
           <RunPage exp={exp} bundleName={route.bundle} startT={route.t} startStage={route.stage} />
         )}
         {exp && route.page === "case" && <DiagnosticPage exp={exp} bundleName={route.bundle} startStage={route.stage} />}
-        {exp && route.page === "architecture" && route.version === "v52" && <ArchitecturePage52 exp={exp} />}
+        {exp && route.page === "architecture" && route.version === "v53" && <ArchitecturePage53 exp={exp} />}
         {exp && route.page === "architecture" && route.version === "v42" && <ArchitecturePage42 exp={exp.versions.v42} />}
       </div>
     </>

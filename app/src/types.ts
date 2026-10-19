@@ -1,5 +1,5 @@
 // V4.2 bundle: mirrors schema/bundle-v42.schema.json. Experiment: tools/build_experiment.py.
-// The V5.2 bundle lives in v52/types.ts.
+// The V5.3 bundle lives in v53/types.ts.
 
 export type Box = [number, number, number, number];
 
@@ -155,11 +155,13 @@ export interface RunSummary {
   posthoc: string;
   expected_count: number;
   count_correct: boolean;
-  /** V5.2 only: count right and the exact colour strings equal the labels */
+  /** V5.3 only: count right and the exact colour strings equal the labels */
   exact_colors?: boolean;
-  /** V5.2 only: the review found a white-only answer that omits a visible colour */
-  underdescribed?: boolean;
-  /** V5.2 only: the program opened a case and Pi ran */
+  /** V5.3 only: Property Evaluator v1 geometry found vehicles matching no labelled object */
+  false_positive_vehicles?: string[];
+  /** V5.3 only: the answer differs from V5.2's on the same attempt */
+  changed_from_v52?: boolean;
+  /** V5.3 only: the program opened a case and Pi ran */
   investigation?: boolean;
   repeats?: number;
   identical_answers?: boolean;
@@ -176,37 +178,42 @@ export interface Figures {
   posthoc_pass: number;
   count_correct: number;
   count_and_exact_colors?: number;
-  count_and_supported_colors: number;
+  count_and_supported_colors?: number;
   complete_correct?: number;
-  white_only_underdescribed?: number;
+  color_tokens_matched?: number;
+  false_positive_vehicles?: number;
+  false_negative_objects?: number;
   count_complete_true?: number;
+  count_complete_conservative_false?: number;
+  count_complete_false_and_wrong?: number;
   natural_investigations?: number;
   nemotron_calls?: number;
   gemma_calls?: number;
   tracking_jobs?: number;
-  identical_answers_clips?: number;
-  identical_gemma_text_clips?: number;
   promoted: boolean;
 }
 
 export interface DiagCell { nemotron: number; gemma: number; case: string | null; note: string; correct?: boolean }
-export type Controller = "none" | "fixed" | "pi";
+export type Controller = "none" | "fixed" | "pi-cap2" | "pi-cap4";
 
 export interface Diagnostic {
   batch: string;
+  controllers: Controller[];
   replays: Record<string, string>;
   scenarios: Record<string, string>;
+  expected: Record<string, string>;
+  v52_pi: Record<string, boolean>;
   assigned: string[];
   cells: Record<string, Record<Controller, DiagCell>>;
-  totals: Record<Controller, { nemotron: number; gemma: number; wall_sec: number }>;
+  totals: Record<Controller, { nemotron: number; gemma: number }>;
   pi_cases: number;
-  pi_correct: number;
+  pi_correct: Record<"pi-cap2" | "pi-cap4" | "v52_pi", number>;
   wrong_different_adopted: number;
   wrong_same_adopted: number;
-  all_totals: { nemotron: number; gemma: number; items: number };
+  all_totals: { nemotron: number; gemma: number; jobs: number };
 }
 
-export type VersionKey = "v52" | "v42";
+export type VersionKey = "v53" | "v42";
 
 export interface VersionData {
   label: string;

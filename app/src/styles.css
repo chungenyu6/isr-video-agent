@@ -477,7 +477,7 @@ svg .inspected text { fill: #FFE14D; }
 svg .det.joined rect { stroke-dasharray: 2 2; stroke-width: 2.5; }
 svg .motion.opp line { stroke-width: 4.5; stroke-dasharray: none; }
 svg .trail.ghost { opacity: 0.45; stroke-width: 2; }
-svg .joinmark { fill: #FFE14D; stroke: #000; stroke-width: 1.5; }
+svg .joinmark { fill: none; stroke: #5FE0D2; stroke-width: 3; paint-order: stroke; filter: drop-shadow(0 0 1.5px #000); }
 
 /* vehicle timeline */
 .timeline.v5 .d-raw { fill: var(--accent); opacity: 0.75; }
@@ -487,12 +487,12 @@ svg .joinmark { fill: #FFE14D; stroke: #000; stroke-width: 1.5; }
 .timeline .trow.unres .rowlab { fill: var(--unk); font-style: italic; }
 .timeline .rowlab .poss { fill: var(--unk); font-size: 9px; }
 .timeline .tlab { font-family: var(--mono); font-size: 8.5px; fill: #fff; font-weight: 700; pointer-events: none; paint-order: stroke; stroke: rgba(0, 0, 0, 0.45); stroke-width: 2px; }
-.timeline .linkmark { fill: #FFE14D; stroke: var(--ink); stroke-width: 0.8; cursor: help; }
+.timeline .linkmark { fill: var(--surface); stroke: var(--accent); stroke-width: 2.2; cursor: help; }
 .timeline .joinedtick { fill: var(--ink-2); }
 .timeline .reported { fill: none; stroke: var(--target); stroke-width: 1.6; }
 .timeline .loosebar { fill: var(--ink-3); opacity: 0.7; }
 .legend i.sw.oppband { background: transparent; border: 2px solid var(--target); }
-.legend i.sw.linkmark { width: 9px; height: 9px; background: #FFE14D; transform: rotate(45deg); border: 1px solid var(--ink); }
+.legend i.sw.linkmark { width: 9px; height: 9px; background: var(--surface); border: 2px solid var(--accent); border-radius: 50%; }
 .legend i.sw.joinedtick { height: 3px; background: var(--ink-2); }
 .legend i.sw.reported { height: 5px; background: transparent; border: 1.6px solid var(--target); border-bottom: none; }
 
@@ -652,3 +652,5 @@ svg .inspected.agent text { fill: #FF8A5C; }
 .diagmatrix th[scope="row"] b { font-family: var(--mono); }
 .diagmatrix th[scope="row"] .pill { margin-left: 0.3rem; }
 .diagmatrix tfoot td, .diagmatrix tfoot th { background: var(--ground); font-size: 0.72rem; }
+.vnote.bad { color: var(--fail); }
+.gpulist { margin: 0.3rem 0 0; padding-left: 1.1rem; font-size: 0.8rem; color: var(--ink-2); } .gpulist b { font-family: var(--mono); font-size: 0.72rem; }

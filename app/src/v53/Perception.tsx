@@ -4,12 +4,12 @@
 // host parsed. Agent requests use other intents (visibility, compare) and are not
 // colour-parsed.
 
-import type { Loaded52 } from "./types";
+import type { Loaded53 } from "./types";
 import { bundleFile } from "../data";
 import { lookStage, STAGE } from "./derive";
-import type { Focus52 } from "./RunView";
+import type { Focus53 } from "./RunView";
 
-interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
+interface Props { bundle: Loaded53; stage: number; focus: Focus53 }
 
 const WHO: Record<string, string> = {
   host: "host colour check",

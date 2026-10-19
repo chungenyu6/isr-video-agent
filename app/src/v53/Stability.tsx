@@ -2,9 +2,9 @@
 // run in opposite order. Fresh tracking job, store and session each time. What
 // stayed the same, and Gemma's words where they changed.
 
-import type { Loaded52 } from "./types";
+import type { Loaded53 } from "./types";
 
-export default function Stability({ bundle }: { bundle: Loaded52 }) {
+export default function Stability({ bundle }: { bundle: Loaded53 }) {
   const st = bundle.stability;
   if (!st) return null;
   const texts = new Map<string, string[]>();

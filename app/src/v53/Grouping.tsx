@@ -2,11 +2,11 @@
 // evidence, every pair that might be one vehicle but was kept apart, and what
 // happened to the boxes the tracker could not match.
 
-import type { Loaded52 } from "./types";
+import type { Loaded53 } from "./types";
 import { fmt } from "./derive";
-import type { Focus52 } from "./RunView";
+import type { Focus53 } from "./RunView";
 
-interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
+interface Props { bundle: Loaded53; stage: number; focus: Focus53 }
 
 // Before grouping, record Vn holds exactly tracker ID Tn.
 const tOf = (v: string) => `T${v.slice(1)}`;

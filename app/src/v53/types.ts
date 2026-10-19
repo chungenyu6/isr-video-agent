@@ -1,15 +1,15 @@
-// V5.2 bundle: mirrors schema/bundle-v52.schema.json (tools/export_v52_run.py).
+// V5.3 bundle: mirrors schema/bundle-v53.schema.json (tools/export_v53_run.py).
 // bundle_kind "run": one attempt of the stability batch; "diagnostic": one Pi
 // attempt of the saved-state diagnostic batch.
 
 import type { Box } from "../types";
 
 /** [x0, y0, x1, y1, class_id, track index or -1, vehicle index or -1] */
-export type Det52 = [number, number, number, number, number, number, number];
+export type Det53 = [number, number, number, number, number, number, number];
 /** [x0, y0, x1, y1, track index] - Kalman prediction for a lost track, never observed */
-export type Pred52 = [number, number, number, number, number];
+export type Pred53 = [number, number, number, number, number];
 
-export interface Phase52 {
+export interface Phase53 {
   start: number;
   end: number;
   origin: string;
@@ -27,7 +27,7 @@ export interface Vehicle {
   frames_observed: number;
   attached_unmatched: number;
   status: "normal" | "opposing" | "stationary" | "unresolved";
-  phases: Phase52[];
+  phases: Phase53[];
   opposing: [number, number][];
   vote: [number, number] | null;
   vote_shared_with: string[];
@@ -52,7 +52,7 @@ export interface Appearance {
   intent: string;
   /** host: the main flow's colour check; agent: asked by Pi in a case;
    *  imported: a saved reply from an earlier run (diagnostic, text only) */
-  origin: "host" | "agent" | "imported" | "diagnostic";
+  origin: "host" | "agent" | "imported" | "fixed";
   case_ref: string | null;
   compare?: boolean;
   asked_ref: string | string[] | null;
@@ -83,20 +83,64 @@ export interface Case {
   result: { case_ref: string; outcome: string; finding?: string; observation_refs?: string[] } | null;
 }
 
+export interface Budget53 {
+  main_remaining: number;
+  gemma_remaining: number;
+  text_remaining: number;
+  /** V5.3: the active case's own Gemma budget, shown to the agent */
+  case_ref?: string;
+  case_gemma_remaining?: number;
+  case_gemma_cap?: number;
+}
+
 export interface AgentStep {
   i: number;
-  tool: string;
+  /** tool: one Nemotron call that made a tool call; message: one Nemotron call that
+   *  answered in text instead; nudge: the host's continuation prompt (not a model call) */
+  kind: "tool" | "message" | "nudge";
+  tool: string | null;
   args: Record<string, unknown>;
   t_call: number;
   t_result: number;
-  /** accepted by the gateway; refused by the Runtime Verifier / gateway; or rejected by Pi itself */
-  outcome: "accepted" | "refused" | "pi_error";
+  /** accepted by the gateway; refused by the Runtime Verifier; rejected by Pi itself; or a message/nudge */
+  outcome: "accepted" | "refused" | "pi_error" | "message" | "nudge";
   code: string | null;
   detail?: string;
   visuals: number[];
   text: string;
   text_chars: number;
-  budget_before: { main_remaining: number; gemma_remaining: number; text_remaining: number } | null;
+  budget_before: Budget53 | null;
+}
+
+export interface PropertyEval {
+  evaluator_version: "property_eval_v1";
+  answer_shape_valid: boolean;
+  count_match: boolean;
+  color_exact: boolean;
+  count_complete: boolean;
+  count_complete_calibration: "justified_true" | "conservative_false" | "false_and_wrong" | "overclaim";
+  color_token: {
+    matched_targets: number;
+    expected_targets: number;
+    all_targets_matched: boolean;
+    pairs: { reported_color: string; object_id: string; expected_color: string; extra_hues: string[] }[];
+    unmatched_reported_colors: string[];
+    scope: string;
+  };
+  geometry: {
+    iou_threshold: number;
+    matched: { vehicle_ref: string; object_id: string; event_frames: number; covered_event_frames: number; event_coverage: number; cited_frames_outside_event: number }[];
+    false_positive_vehicles: string[];
+    false_negative_objects: string[];
+    scope: string;
+  };
+}
+
+export interface Gpu {
+  interval_sec: number;
+  samples: number;
+  services: Record<string, { gpus: string[]; nvidia_smi_used_max_mib: number; total_mib: number; kv_cache_usage_max: number | null; kv_cache_usage_mean: number | null }>;
+  tracking_job: { seconds: number; peak_allocated_mib: number; peak_reserved_mib: number; matches_this_run: boolean } | null;
 }
 
 export interface AttemptSummary {
@@ -104,6 +148,8 @@ export interface AttemptSummary {
   pass?: number | null;
   query_id?: string | null;
   controller?: string | null;
+  arm?: string | null;
+  visual_cap?: number | null;
   submission: { decision: string; reported_count: number | null; colors: string[]; count_complete: boolean };
   pi_started?: boolean;
   nemotron: number;
@@ -114,6 +160,7 @@ export interface AttemptSummary {
   query_text?: string;
   query_delivered_to?: string[];
   scorer?: { count_numeric_match: boolean; color_multiset_correct: boolean; complete_count_correct: boolean } | null;
+  property_eval?: PropertyEval | null;
 }
 
 export interface Target {
@@ -124,8 +171,8 @@ export interface Target {
   source_frame_intervals: [number, number][];
 }
 
-export interface Bundle52 {
-  bundle_version: "5.2";
+export interface Bundle53 {
+  bundle_version: "5.3";
   bundle_kind: "run" | "diagnostic";
   run_id: string;
   attempt: string;
@@ -157,7 +204,7 @@ export interface Bundle52 {
   tracking: {
     classes: Record<string, string>;
     tracks: { alias: string; raw_id: number; observed: [number, number]; vehicle: string }[];
-    frames: { d: Det52[]; p: Pred52[] }[];
+    frames: { d: Det53[]; p: Pred53[] }[];
   };
   vehicles: Vehicle[];
   links: { first: string; second: string; kind: string; evidence: LinkEvidence }[];
@@ -166,7 +213,7 @@ export interface Bundle52 {
   votes: { vector: [number, number]; vehicles: string[] }[];
   appearance: Appearance[];
   cases: Case[];
-  agent: { initial_user: string; steps: AgentStep[]; refused: number; pi_errors: number } | null;
+  agent: { initial_user: string; steps: AgentStep[]; calls: number; refused: number; pi_errors: number; continuations: number } | null;
   answer: {
     status: string;
     scope: string;
@@ -188,6 +235,7 @@ export interface Bundle52 {
     /** false when tracking was imported from a saved run (diagnostic) */
     tracking_new_inference: boolean;
     gemma_sec: number[];
+    gpu: Gpu | null;
   };
   budget: {
     nemotron: { used: number; limit: number };
@@ -206,13 +254,15 @@ export interface Bundle52 {
     partial_color_matches: number;
     matching_scope: string;
   };
+  /** Property Evaluator v1: count, colour words and geometry against ground truth */
+  property_eval?: PropertyEval;
   review?: {
     reviewer: "coding-agent";
     independent: false;
-    count_review: string;
-    identity_review: string;
-    color_review: string;
-    targets: { vehicle_ref: string; object_id: string; review_frame: number }[];
+    method: string;
+    scope: string;
+    changed_from_v52: boolean;
+    changed_reason: string | null;
   };
   stability?: {
     attempts: AttemptSummary[];
@@ -225,12 +275,14 @@ export interface Bundle52 {
   diagnostic?: {
     scenario: string;
     controller: "pi";
+    arm: "pi-cap2" | "pi-cap4";
+    visual_cap: number;
     packet: { case: { refs: string[]; type: string } | null; deferred_links: string[][]; media_available: boolean; used_frames: number[] };
     limits: { main: number; visual: number };
     fixed_policy: string;
     siblings: AttemptSummary[];
-    review: { reviewer: "coding-agent"; independent: false; pi_correct: boolean };
+    review: { reviewer: "coding-agent"; independent: false; item: string };
   };
 }
 
-export type Loaded52 = Bundle52 & { _dir: string };
+export type Loaded53 = Bundle53 & { _dir: string };

@@ -1,6 +1,7 @@
 // One row per vehicle record over the whole clip. Bars are frames with a real
 // box; colour is the movement phase. Inside each row the member tracker IDs are
-// labelled, a diamond marks where two IDs were joined, and hollow ticks mark
+// labelled, a hollow ring marks where two IDs were joined, a filled diamond a frame
+// sent to Gemma, and hollow ticks mark
 // unmatched boxes the host attached. Under the rows, a strip counts the boxes
 // that belong to no vehicle record: the reason no answer is called complete.
 // Before grouping, rows are the raw tracker IDs.
@@ -8,11 +9,11 @@
 import { useState } from "react";
 import type { Oracle } from "../types";
 import { detectionRuns, dirClass } from "../data";
-import type { Loaded52, Vehicle } from "./types";
-import { fmt, lookFrames, looseBoxes, memberSpans, phaseAt52, STAGE } from "./derive";
-import type { Focus52 } from "./RunView";
+import type { Loaded53, Vehicle } from "./types";
+import { fmt, lookFrames, looseBoxes, memberSpans, phaseAt53, STAGE } from "./derive";
+import type { Focus53 } from "./RunView";
 
-interface Props { bundle: Loaded52; oracle: Oracle; stage: number; focus: Focus52; vpts: number[][][]; tpts: number[][][] }
+interface Props { bundle: Loaded53; oracle: Oracle; stage: number; focus: Focus53; vpts: number[][][]; tpts: number[][][] }
 
 const W = 1000, LAB = 74, R = 8, ROW = 17, TOP = 20, STRIP = 26;
 
@@ -64,7 +65,7 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
   const segsFor = (v: Vehicle, pts: number[][]) => {
     const segs: { a: number; b: number; dc: string }[] = [];
     const cls = (f: number) => {
-      const ph = phaseAt52(v, f);
+      const ph = phaseAt53(v, f);
       return ph && ph.valid ? dirClass(ph.direction) : "unresolved";
     };
     for (const [s, e] of detectionRuns(pts)) {
@@ -132,11 +133,11 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
                   const fx = (x(prev.span[1] + 1) + x(m.span[0])) / 2;
                   const ev = myLinks[k]?.evidence;
                   return (
-                    <path key={`l${m.alias}`} className="linkmark" d={`M${fx},${y + 1} l4,7.5 l-4,7.5 l-4,-7.5 z`}>
+                    <circle key={`l${m.alias}`} className="linkmark" cx={fx} cy={y + ROW / 2} r={4.2}>
                       <title>
                         {`${prev.alias} → ${m.alias} joined: gap ${ev ? ev.missing_frames : "?"} frame(s), IoU ${fmt(ev?.iou ?? null)}, size ratio ${fmt(ev?.area_ratio ?? null)}, prediction error ${fmt(ev?.prediction_error_diagonals ?? null)} diagonals; each was the other's only candidate`}
                       </title>
-                    </path>
+                    </circle>
                   );
                 })}
                 {joined[i].map((f) => <rect key={`j${f}`} className="joinedtick" x={x(f) + fw * 0.2} y={y + ROW - 3} width={fw * 0.6} height={2.5} />)}

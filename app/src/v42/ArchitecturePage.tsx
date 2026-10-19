@@ -39,7 +39,7 @@ export default function ArchitecturePage({ exp }: { exp: VersionData }) {
     <main className="arch">
       <section className="hero">
         <div className="prevnote">
-          Previous version. The current system is <a href={archHref("v52")}>V5.2, program-first →</a>
+          Previous version. The current system is <a href={archHref("v53")}>V5.3, program-first →</a>
         </div>
         <span className="eyebrow">How it works · V4.2</span>
         <h1>A language model that never touches the video</h1>
