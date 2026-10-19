@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Gate V4.2 and V5.0 replay bundles before they may be committed or published.
+"""Gate V4.2 and V5.2 replay bundles before they may be committed or published.
 
 Three independent layers:
 
-  1. SCHEMA   the bundle matches schema/bundle-v42 or bundle-v50, chosen by
+  1. SCHEMA   the bundle matches schema/bundle-v42 or bundle-v52, chosen by
               its bundle_version
   2. LEAK     no host path, loopback URL, credential, stray file or oracle path
   3. SANITY   frame ids inside the clip, track indexes in range, every Gemma
               frame shows a real detection of its track, proxy video present,
-              size under budget; V4.2: one monotonic clock; V5.0: vehicle
+              size under budget; V4.2: one monotonic clock; V5.2: vehicle
               members are real tracks, reported intervals lie on observed
-              frames, the ungrouped count matches the detections
+              frames, the ungrouped count matches the detections, agent steps
+              are ordered, linked to their Gemma images and equal the Nemotron
+              budget, every case and colour cites something the bundle holds
 
 The exporter enforces the leak rules as it writes; this re-checks what is on
 disk, because a bundle can be edited after export and CI never runs the exporter.
@@ -39,9 +41,9 @@ from publish_guard import leaks  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMAS = {"4.2": ROOT / "schema" / "bundle-v42.schema.json",
-           "5.0": ROOT / "schema" / "bundle-v50.schema.json"}
+           "5.2": ROOT / "schema" / "bundle-v52.schema.json"}
 VIDEO_DIR = ROOT / "app" / "public" / "video"
-FRAME_FILE_RE = re.compile(r"frames/o[0-9a-f]{32}-\d+-(full|crop)\.jpg")
+FRAME_FILE_RE = re.compile(r"frames/o[0-9a-f]{32}-\d+-(full|crop\d*)\.jpg")
 
 MAX_BUNDLE_BYTES = 1_500_000
 MAX_DIR_BYTES = 8 * 1024 * 1024
@@ -90,9 +92,12 @@ def validate(bundle_dir: Path, schemas: dict[str, dict]) -> list[str]:
             fails.append(f"sanity: {t['alias']} observed {s}-{e} outside the clip")
 
     alias_idx = {t["alias"]: i for i, t in enumerate(tr["tracks"])}
-    if b["bundle_version"] == "5.0":
-        fails += sanity_v50(b)
-        visuals = b["appearance"]
+    if b["bundle_version"] == "5.2":
+        fails += sanity_v52(b)
+        visuals = [{"observation_ref": o["observation_ref"], "track_ref": t["track_ref"],
+                    "frame": m["frame"], "full": m["full"], "crop": c["path"]}
+                   for o in b["appearance"] for m in o["media"]
+                   for t, c in zip(m["targets"], m["crops"])]
     else:
         times = [x for s in b["steps"] for x in (s["t_call"], s["t_result"])]
         if times != sorted(times):
@@ -109,7 +114,7 @@ def validate(bundle_dir: Path, schemas: dict[str, dict]) -> list[str]:
             fails.append(f"sanity: visual {v['observation_ref']} names an unknown track or frame")
         elif not any(int(d[5]) == ti for d in tr["frames"][v["frame"]]["d"]):
             fails.append(f"sanity: {v['track_ref']} has no real detection at frame {v['frame']}")
-        if "step" in v and b["steps"][v["step"]].get("visual") is None:
+        if b["bundle_version"] == "4.2" and "step" in v and b["steps"][v["step"]].get("visual") is None:
             fails.append(f"sanity: visual {v['observation_ref']} is not linked from its step")
 
     if not (VIDEO_DIR / Path(b["video"]["proxy"]).name).is_file():
@@ -122,7 +127,7 @@ def validate(bundle_dir: Path, schemas: dict[str, dict]) -> list[str]:
     return fails
 
 
-def sanity_v50(b: dict) -> list[str]:
+def sanity_v52(b: dict) -> list[str]:
     fails = []
     tr = b["tracking"]
     vrefs = [v["ref"] for v in b["vehicles"]]
@@ -171,8 +176,40 @@ def sanity_v50(b: dict) -> list[str]:
     for x in b["appearance"]:
         if tracks.get(x["track_ref"], {}).get("vehicle") != x["vehicle_ref"]:
             fails.append(f"sanity: appearance {x['observation_ref']} track/vehicle mismatch")
-    if b["budget"]["nemotron"]["used"] != 0 and not b["run"]["pi_started"]:
-        fails.append("sanity: Nemotron calls without an investigation")
+        if (x["origin"] == "imported") != (not x["media"]):
+            fails.append(f"sanity: appearance {x['observation_ref']} images do not match its origin")
+    if sum(x["origin"] != "imported" for x in b["appearance"]) != b["budget"]["gemma"]["used"]:
+        fails.append("sanity: Gemma observations differ from the Gemma budget")
+
+    ag = b["agent"]
+    if (ag is not None) != b["run"]["pi_started"]:
+        fails.append("sanity: agent trace present without Pi, or Pi without a trace")
+    steps = ag["steps"] if ag else []
+    if len(steps) != b["budget"]["nemotron"]["used"]:
+        fails.append(f"sanity: {len(steps)} agent steps, {b['budget']['nemotron']['used']} Nemotron calls")
+    if [s["i"] for s in steps] != list(range(len(steps))):
+        fails.append("sanity: step indexes are not 0..n-1")
+    times = [t for s in steps for t in (s["t_call"], s["t_result"])]
+    if times != sorted(times):
+        fails.append("sanity: agent steps are not in clock order")
+    for s in steps:
+        if (s["outcome"] == "refused") != (s["code"] is not None):
+            fails.append(f"sanity: step {s['i']} refusal code does not match its outcome")
+        for v in s["visuals"]:
+            if not 0 <= v < len(b["appearance"]) or b["appearance"][v].get("step") != s["i"]:
+                fails.append(f"sanity: step {s['i']} links a visual that does not link back")
+    if ag and (ag["refused"] != sum(s["outcome"] == "refused" for s in steps)
+               or b["runtime_verifier"]["agent_refused"] != ag["refused"]):
+        fails.append("sanity: refusal totals disagree")
+    refs = set(vrefs) | set(tracks)
+    for c in b["cases"]:
+        if not set(c["refs"]) <= refs:
+            fails.append(f"sanity: case {c['case_ref']} names unknown records {c['refs']}")
+        for o in (c["result"] or {}).get("observation_refs", []):
+            if o not in obs:
+                fails.append(f"sanity: case {c['case_ref']} cites unknown observation {o}")
+    if set(a["pending_cases"]) - {c["case_ref"] for c in b["cases"]}:
+        fails.append("sanity: pending case missing from cases")
     return fails
 
 

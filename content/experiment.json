@@ -1,32 +1,36 @@
 {
- "current": "v50",
+ "current": "v52",
  "versions": {
-  "v50": {
-   "label": "V5.0",
+  "v52": {
+   "label": "V5.2",
    "source": {
-    "batch": "20261015-09-eval-6-v5.0-program-first",
-    "candidate_revision": "v5.0",
-    "sut_commit": "5ff6b8a8988aa167df415fb3da5d50416d8f64f3",
-    "study_commit": "47e7d8354b0f583513c00d0d1f05297800e00695",
+    "batch": "20261016-06-eval-12x2x2-v5.2-stability",
+    "candidate_revision": "v5.2",
+    "sut_commit": "d55f235fc909d8a064be1183026a390ec19ac97d",
+    "study_commit": "d4071795c3bf77383ba04fd99b63c0066c983ccf",
     "service_commit": "7ffc6a8a805019ee64f2e646df50b2136411d5b9"
    },
-   "featured": "v50-1-nominal-r1-s1",
+   "featured": "v52-2-challenging-r2-s1",
    "figures": {
-    "attempts": 6,
-    "accepted": 6,
-    "posthoc_pass": 6,
-    "count_correct": 6,
-    "count_and_exact_colors": 4,
-    "count_and_supported_colors": 6,
-    "complete_correct": 0,
-    "nemotron_calls": 0,
-    "gemma_calls": 6,
-    "tracking_jobs": 6,
+    "attempts": 48,
+    "accepted": 48,
+    "posthoc_pass": 48,
+    "count_correct": 48,
+    "count_and_exact_colors": 28,
+    "count_and_supported_colors": 48,
+    "white_only_underdescribed": 8,
+    "complete_property_true": 8,
+    "natural_investigations": 4,
+    "nemotron_calls": 68,
+    "gemma_calls": 56,
+    "tracking_jobs": 48,
+    "identical_answers_clips": 12,
+    "identical_gemma_text_clips": 9,
     "promoted": false
    },
    "runs": [
     {
-     "bundle": "v50-0-nominal-r1-s1",
+     "bundle": "v52-0-nominal-r1-s1",
      "attempt": "a001",
      "clip_id": "0-nominal-r1",
      "seed": 1,
@@ -39,13 +43,87 @@
      "count_correct": true,
      "exact_colors": true,
      "goal_correct": true,
+     "underdescribed": false,
      "complete_correct": false,
      "visual_calls": 0,
-     "orchestrator_calls": 0
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
     },
     {
-     "bundle": "v50-1-nominal-r1-s1",
+     "bundle": "v52-0-nominal-r2-s1",
      "attempt": "a002",
+     "clip_id": "0-nominal-r2",
+     "seed": 1,
+     "reported_count": 0,
+     "colors": [],
+     "count_complete": true,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 0,
+     "count_correct": true,
+     "exact_colors": true,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": true,
+     "visual_calls": 0,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-0-challenging-r1-s1",
+     "attempt": "a003",
+     "clip_id": "0-challenging-r1",
+     "seed": 1,
+     "reported_count": 0,
+     "colors": [],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 0,
+     "count_correct": true,
+     "exact_colors": true,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": false,
+     "visual_calls": 0,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-0-challenging-r2-s1",
+     "attempt": "a004",
+     "clip_id": "0-challenging-r2",
+     "seed": 1,
+     "reported_count": 0,
+     "colors": [],
+     "count_complete": true,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 0,
+     "count_correct": true,
+     "exact_colors": true,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": true,
+     "visual_calls": 0,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-1-nominal-r1-s1",
+     "attempt": "a005",
      "clip_id": "1-nominal-r1",
      "seed": 1,
      "reported_count": 1,
@@ -59,13 +137,93 @@
      "count_correct": true,
      "exact_colors": true,
      "goal_correct": true,
+     "underdescribed": false,
      "complete_correct": false,
      "visual_calls": 1,
-     "orchestrator_calls": 0
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
     },
     {
-     "bundle": "v50-2-nominal-r1-s1",
-     "attempt": "a003",
+     "bundle": "v52-1-nominal-r2-s1",
+     "attempt": "a006",
+     "clip_id": "1-nominal-r2",
+     "seed": 1,
+     "reported_count": 1,
+     "colors": [
+      "purple and white"
+     ],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 1,
+     "count_correct": true,
+     "exact_colors": false,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": false,
+     "visual_calls": 1,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": false
+    },
+    {
+     "bundle": "v52-1-challenging-r1-s1",
+     "attempt": "a007",
+     "clip_id": "1-challenging-r1",
+     "seed": 1,
+     "reported_count": 1,
+     "colors": [
+      "purple"
+     ],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 1,
+     "count_correct": true,
+     "exact_colors": true,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": false,
+     "visual_calls": 1,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-1-challenging-r2-s1",
+     "attempt": "a008",
+     "clip_id": "1-challenging-r2",
+     "seed": 1,
+     "reported_count": 1,
+     "colors": [
+      "white"
+     ],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 1,
+     "count_correct": true,
+     "exact_colors": false,
+     "goal_correct": true,
+     "underdescribed": true,
+     "complete_correct": false,
+     "visual_calls": 1,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": false
+    },
+    {
+     "bundle": "v52-2-nominal-r1-s1",
+     "attempt": "a009",
      "clip_id": "2-nominal-r1",
      "seed": 1,
      "reported_count": 2,
@@ -80,51 +238,18 @@
      "count_correct": true,
      "exact_colors": false,
      "goal_correct": true,
+     "underdescribed": false,
      "complete_correct": false,
      "visual_calls": 2,
-     "orchestrator_calls": 0
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
     },
     {
-     "bundle": "v50-0-challenging-r1-s1",
-     "attempt": "a004",
-     "clip_id": "0-challenging-r1",
-     "seed": 1,
-     "reported_count": 0,
-     "colors": [],
-     "count_complete": false,
-     "accepted": true,
-     "posthoc": "pass",
-     "expected_count": 0,
-     "count_correct": true,
-     "exact_colors": true,
-     "goal_correct": true,
-     "complete_correct": false,
-     "visual_calls": 0,
-     "orchestrator_calls": 0
-    },
-    {
-     "bundle": "v50-1-challenging-r1-s1",
-     "attempt": "a005",
-     "clip_id": "1-challenging-r1",
-     "seed": 1,
-     "reported_count": 1,
-     "colors": [
-      "purple"
-     ],
-     "count_complete": false,
-     "accepted": true,
-     "posthoc": "pass",
-     "expected_count": 1,
-     "count_correct": true,
-     "exact_colors": true,
-     "goal_correct": true,
-     "complete_correct": false,
-     "visual_calls": 1,
-     "orchestrator_calls": 0
-    },
-    {
-     "bundle": "v50-2-nominal-r2-s1",
-     "attempt": "a006",
+     "bundle": "v52-2-nominal-r2-s1",
+     "attempt": "a010",
      "clip_id": "2-nominal-r2",
      "seed": 1,
      "reported_count": 2,
@@ -139,11 +264,264 @@
      "count_correct": true,
      "exact_colors": false,
      "goal_correct": true,
+     "underdescribed": false,
      "complete_correct": false,
      "visual_calls": 2,
-     "orchestrator_calls": 0
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-2-challenging-r1-s1",
+     "attempt": "a011",
+     "clip_id": "2-challenging-r1",
+     "seed": 1,
+     "reported_count": 2,
+     "colors": [
+      "purple",
+      "purple"
+     ],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 2,
+     "count_correct": true,
+     "exact_colors": true,
+     "goal_correct": true,
+     "underdescribed": false,
+     "complete_correct": false,
+     "visual_calls": 2,
+     "orchestrator_calls": 0,
+     "investigation": false,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": true
+    },
+    {
+     "bundle": "v52-2-challenging-r2-s1",
+     "attempt": "a012",
+     "clip_id": "2-challenging-r2",
+     "seed": 1,
+     "reported_count": 2,
+     "colors": [
+      "Green and white",
+      "white"
+     ],
+     "count_complete": false,
+     "accepted": true,
+     "posthoc": "pass",
+     "expected_count": 2,
+     "count_correct": true,
+     "exact_colors": false,
+     "goal_correct": true,
+     "underdescribed": true,
+     "complete_correct": false,
+     "visual_calls": 4,
+     "orchestrator_calls": 17,
+     "investigation": true,
+     "repeats": 4,
+     "identical_answers": true,
+     "identical_gemma_text": false
     }
-   ]
+   ],
+   "diagnostic": {
+    "batch": "20261016-07-diagnostic-7x3-v5.2-investigation-value",
+    "replays": {
+     "B2": "v52-diag-B2-pi",
+     "B4": "v52-diag-B4-pi",
+     "B7": "v52-diag-B7-pi"
+    },
+    "scenarios": {
+     "B1": "A saved Gemma reply already says purple, but has no Body color line",
+     "B2": "First look unclear; a better view exists later",
+     "B3": "One car split into T8 and T9",
+     "B4": "Same colour, different cars (T7, T9)",
+     "B5": "No additional media available",
+     "B6": "Nothing worth investigating",
+     "B7": "A wrong-way join (T1/T3) held back"
+    },
+    "assigned": [
+     "B3",
+     "B4"
+    ],
+    "cells": {
+     "B1": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Host colour unknown; the saved reply is still readable"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 1,
+       "case": "pending",
+       "note": "Asked frame 42: purple"
+      },
+      "pi": {
+       "nemotron": 9,
+       "gemma": 2,
+       "case": "unresolved",
+       "note": "Two visibility checks; did not use the saved reply; colour unknown",
+       "correct": false
+      }
+     },
+     "B2": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Second car's colour unknown"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 1,
+       "case": "pending",
+       "note": "Asked frame 85 (next best): White and purple"
+      },
+      "pi": {
+       "nemotron": 8,
+       "gemma": 2,
+       "case": "unresolved",
+       "note": "Visibility checks on T7 and T8, no appearance check; colour unknown",
+       "correct": false
+      }
+     },
+     "B3": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Join stays open"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 1,
+       "case": "pending",
+       "note": "One boundary compare supports one car; by design not parsed as same"
+      },
+      "pi": {
+       "nemotron": 11,
+       "gemma": 2,
+       "case": "unresolved",
+       "note": "Separate visibility checks, no compare",
+       "correct": false
+      }
+     },
+     "B4": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Assigned case left open; frame 71 shows both cars"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "resolved",
+       "note": "Saved detections show both at once: different"
+      },
+      "pi": {
+       "nemotron": 12,
+       "gemma": 2,
+       "case": "unresolved",
+       "note": "Tried different, cited only T7, refused, then unresolved",
+       "correct": false
+      }
+     },
+     "B5": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Colour stays unknown"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "No media: stops, colour stays unknown"
+      },
+      "pi": {
+       "nemotron": 8,
+       "gemma": 0,
+       "case": "unresolved",
+       "note": "Unresolved, correctly; costlier than stopping",
+       "correct": true
+      }
+     },
+     "B6": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": null,
+       "note": "No case"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": null,
+       "note": "No case"
+      },
+      "pi": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": null,
+       "note": "Pi not started, correctly",
+       "correct": true
+      }
+     },
+     "B7": {
+      "none": {
+       "nemotron": 0,
+       "gemma": 0,
+       "case": "pending",
+       "note": "Program opens an identity case; count 1"
+      },
+      "fixed": {
+       "nemotron": 0,
+       "gemma": 1,
+       "case": "pending",
+       "note": "Compare: Gemma calls the small TARGET a yellow bus; not adopted"
+      },
+      "pi": {
+       "nemotron": 8,
+       "gemma": 2,
+       "case": "resolved",
+       "note": "Adopted different on Gemma's misidentification; count still 1",
+       "correct": false
+      }
+     }
+    },
+    "totals": {
+     "none": {
+      "nemotron": 0,
+      "gemma": 0,
+      "wall_sec": 6.3
+     },
+     "fixed": {
+      "nemotron": 0,
+      "gemma": 4,
+      "wall_sec": 13.42
+     },
+     "pi": {
+      "nemotron": 56,
+      "gemma": 10,
+      "wall_sec": 102.56
+     }
+    },
+    "pi_cases": 6,
+    "pi_correct": 1,
+    "wrong_different_adopted": 1,
+    "wrong_same_adopted": 0,
+    "all_totals": {
+     "nemotron": 124,
+     "gemma": 70,
+     "items": 69
+    }
+   }
   },
   "v42": {
    "label": "V4.2",

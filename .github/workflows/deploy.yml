@@ -35,13 +35,15 @@ jobs:
         run: python tools/build_experiment.py --check
 
       - name: Published bundles match experiment.json, and no live run
-        # Every bundle on disk is listed in experiment.json, and nothing live
-        # slipped in.
+        # Every bundle on disk is listed in experiment.json (a run or a
+        # diagnostic replay), and nothing live slipped in.
         run: |
           python - <<'PY'
           import json, pathlib, sys
           exp = json.loads(pathlib.Path("content/experiment.json").read_text())
-          listed = sorted(r["bundle"] for v in exp["versions"].values() for r in v["runs"])
+          listed = sorted([r["bundle"] for v in exp["versions"].values() for r in v["runs"]]
+                          + [n for v in exp["versions"].values()
+                             for n in v.get("diagnostic", {}).get("replays", {}).values()])
           on_disk = sorted(p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json"))
           live = [p.parent.name for p in pathlib.Path("bundles").glob("*/bundle.json")
                   if json.loads(p.read_text()).get("live")]
