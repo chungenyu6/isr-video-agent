@@ -44,7 +44,7 @@ answers, and V5.2's diagnostic covers what V5.1 measured.
   - V4.2 replays the agent on its own run clock: every tool call, the track facts
     it read, the Gemma crops it asked for.
   - The answer is kept separate from the Runtime Verifier, the Post-hoc Verifier,
-    the study's scorer and the source review.
+    and the study's Property Evaluator (automatic score and source review).
 - **Diagnostic case replay** (`#/case/…`). Three of the seven V5.2 scenarios (B2,
   B4, B7): the scenario, the three controllers side by side, and the Pi attempt in
   full.

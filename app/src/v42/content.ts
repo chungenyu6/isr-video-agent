@@ -122,7 +122,7 @@ export const SEQUENCE: SeqMsg[] = [
   { from: "gateway", to: "agent", label: "accepted · terminal", step: 17, dashed: true, highlight: ["gateway", "pi"],
     detail: "The run ends after 18 Nemotron calls and 2 Gemma calls." },
   { from: "launcher", to: "posthoc", label: "rebuild records → integrity pass", highlight: ["launcher", "posthoc", "store"],
-    detail: "After the run, the Post-hoc Verifier rebuilds motion, requests, media, headers and budgets from the records. It passed. It says nothing about whether the answer is right; the study's scorer does that separately against ground truth." },
+    detail: "After the run, the Post-hoc Verifier rebuilds motion, requests, media, headers and budgets from the records. It passed. It says nothing about whether the answer is right; the study's Property Evaluator does that separately against ground truth." },
 ];
 
 /** a002, frames and values from the actual run */
@@ -140,7 +140,7 @@ export const FLOW: FlowStage[] = [
   { lane: "agent", name: "Nemotron answers", what: "Count, free-text colours, completeness, uncertainty.", payload: "{ 1, [purple], count_complete: false }" },
   { lane: "host", name: "Runtime Verifier", what: "Answer shape only.", payload: "accepted" },
   { lane: "after", name: "Post-hoc Verifier", what: "Rebuilds the records after the run. Integrity only.", payload: "pass" },
-  { lane: "after", name: "Study scorer + review", what: "Against ground truth the agent never saw.", payload: "count ✓ · colour ✓ · identity supported · complete ✗" },
+  { lane: "after", name: "Property Evaluator", what: "Against ground truth the agent never saw.", payload: "count ✓ · colour ✓ · identity supported · complete ✗" },
 ];
 
 export const CHANGES: { version: string; what: string; result: string }[] = [

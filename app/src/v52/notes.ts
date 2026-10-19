@@ -27,7 +27,7 @@ export const RUN_NOTES_V52: Record<string, Note> = {
   },
   "1-nominal-r2": {
     title: "One car, two-tone colour",
-    note: "Gemma described the target as “purple and white”. The frames show a purple car with a white roof; the exact-string scorer wants “purple”. Gemma's full text varied between repeats (white roof and hood, or roof and mirrors) while the Body color line stayed the same.",
+    note: "Gemma described the target as “purple and white”. The frames show a purple car with a white roof; the Property Evaluator's exact-string check wants “purple”. Gemma's full text varied between repeats (white roof and hood, or roof and mirrors) while the Body color line stayed the same.",
   },
   "1-challenging-r1": {
     title: "Found despite degraded imagery",
@@ -39,7 +39,7 @@ export const RUN_NOTES_V52: Record<string, Note> = {
   },
   "2-nominal-r1": {
     title: "Two cars; one colour string differs",
-    note: "Both wrong-way cars found. Gemma called the first “light purple”: a shade of the right colour on the right car, but not the scorer's exact string. V7 has no box at frame 85, so its frames are reported in pieces rather than filled in.",
+    note: "Both wrong-way cars found. Gemma called the first “light purple”: a shade of the right colour on the right car, but not the Property Evaluator's exact string. V7 has no box at frame 85, so its frames are reported in pieces rather than filled in.",
   },
   "2-nominal-r2": {
     title: "Two cars, two-tone colours",

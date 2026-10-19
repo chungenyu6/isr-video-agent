@@ -12,7 +12,7 @@ export const RUN_NOTES_V42: Record<string, { title: string; note: string }> = {
   },
   a003: {
     title: "Count matches, colours are not colours",
-    note: "Two purple cars travel against traffic here. The agent reported 2, but never called Gemma and wrote direction words (“upward”, “downward”) in the colour field; the scorer counts them as wrong colours and neither vehicle is identified.",
+    note: "Two purple cars travel against traffic here. The agent reported 2, but never called Gemma and wrote direction words (“upward”, “downward”) in the colour field; the Property Evaluator counts them as wrong colours and neither vehicle is identified.",
   },
   a004: {
     title: "False report, no visual check",

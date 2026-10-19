@@ -179,7 +179,7 @@ export interface Figures {
   count_and_supported_colors: number;
   complete_correct?: number;
   white_only_underdescribed?: number;
-  complete_property_true?: number;
+  count_complete_true?: number;
   natural_investigations?: number;
   nemotron_calls?: number;
   gemma_calls?: number;

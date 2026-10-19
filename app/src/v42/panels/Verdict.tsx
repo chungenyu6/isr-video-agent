@@ -1,6 +1,6 @@
 // The answer and the three things that looked at it, kept apart on purpose:
 // the Runtime Verifier (live, shape and resources only), the Post-hoc Verifier
-// (after the run, record integrity only) and the study's scorer (after the run,
+// (after the run, record integrity only) and the study's Property Evaluator (after the run,
 // against ground truth). Neither verifier judges traffic truth.
 
 import type { Loaded } from "../../types";
@@ -54,7 +54,7 @@ export default function Verdict({ bundle, t }: { bundle: Loaded; t: number }) {
       </div>
 
       <div className="vbox scorer">
-        <span className="eyebrow">Study scorer · ground truth, after the run</span>
+        <span className="eyebrow">Property Evaluator · automatic, ground truth, after the run</span>
         <div className="truthline">
           truth: <b>{sc.wrong_way_count}</b> wrong-way vehicle{sc.wrong_way_count === 1 ? "" : "s"}
           {expected.length > 0 && <> ({expected.join(", ")})</>}

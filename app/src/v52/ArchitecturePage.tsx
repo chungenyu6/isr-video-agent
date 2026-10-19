@@ -68,7 +68,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
           This page shows the <b>implemented runtime</b> at SUT <code>{src.sut_commit.slice(0, 7)}</code>. Measured on 12
           clips, each four times: {f.count_correct}/{f.attempts} right count, {f.count_and_supported_colors}/{f.attempts} colours
           supported by the frames ({f.white_only_underdescribed} only “white”), {f.count_and_exact_colors}/{f.attempts} exact
-          colour strings, <b>{f.complete_property_true}/{f.attempts} count_complete</b>. The agent started in{" "}
+          colour strings, <b>{f.count_complete_true}/{f.attempts} count_complete</b>. The agent started in{" "}
           {f.natural_investigations}/{f.attempts} attempts and resolved none of those cases; in a controlled comparison it
           was right in <b>{diag.pi_correct}/{diag.pi_cases}</b>. The clips are a known regression set, not new scenes.
           V5.2 was not promoted.
@@ -256,7 +256,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
         </p>
         <p>
           Runtime Verifier and Post-hoc Verifier are separate components; neither evaluates traffic truth. The traffic
-          rule is a third, separate host component. Scores on the replay come from the study's scorer after the run and
+          rule is a third, separate host component. Scores on the replay come from the study's Property Evaluator after the run and
           were never visible to the system.
         </p>
       </footer>

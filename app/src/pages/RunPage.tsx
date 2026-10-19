@@ -95,7 +95,7 @@ export default function RunPage({ exp, bundleName, startT, startStage }: Props) 
             <b>{f.count_correct}/{f.attempts}</b> right count · <b>{f.count_and_supported_colors}/{f.attempts}</b> colours
             supported by the frames ({f.white_only_underdescribed} only “white”, purple left out) ·{" "}
             <b>{f.count_and_exact_colors}/{f.attempts}</b> exact colour strings ·{" "}
-            <b className="bad">{f.complete_property_true}/{f.attempts}</b> count_complete ·{" "}
+            <b className="bad">{f.count_complete_true}/{f.attempts}</b> count_complete ·{" "}
             <b>{f.identical_answers_clips}/12</b> clips identical in all four repeats ·{" "}
             agent started <b>{f.natural_investigations}/{f.attempts}</b>, every case left unresolved ·{" "}
             {f.nemotron_calls} Nemotron / {f.gemma_calls} Gemma calls · not promoted

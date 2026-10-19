@@ -1,6 +1,6 @@
 // The host's answer and the four things that looked at it, kept apart on purpose:
 // the Runtime Verifier (live, shape and sources), the Post-hoc Verifier (after
-// the run, record integrity), the study's scorer (after the run, ground truth)
+// the run, record integrity), the study's Property Evaluator (after the run, ground truth)
 // and the source review (a coding agent reading the frames). Neither verifier
 // judges traffic truth.
 
@@ -78,7 +78,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
 
           {sc && (
             <div className="vbox scorer">
-              <span className="eyebrow">Study scorer · ground truth, after the run</span>
+              <span className="eyebrow">Property Evaluator · automatic, ground truth, after the run</span>
               <div className="truthline">
                 truth: <b>{sc.wrong_way_count}</b> wrong-way vehicle{sc.wrong_way_count === 1 ? "" : "s"}
                 {expected.length > 0 && <> ({expected.join(", ")})</>}
@@ -94,7 +94,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
 
           {rw && (
             <div className="vbox scorer review">
-              <span className="eyebrow">Source review · coding agent, not blind</span>
+              <span className="eyebrow">Property Evaluator · source review, coding agent, not blind</span>
               <ul className="targets">
                 <li>count: {rw.count_review}</li>
                 {rw.targets.length > 0 && <li>identity: {rw.identity_review} ({rw.targets.map((t) => `${t.vehicle_ref} → ${t.object_id}`).join(", ")})</li>}
@@ -106,7 +106,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
 
           {diag && (
             <div className="vbox scorer review">
-              <span className="eyebrow">Case review · coding agent, not blind</span>
+              <span className="eyebrow">Property Evaluator · case review, coding agent, not blind</span>
               <div className="vline">Pi's case result judged correct: <Mark ok={diag.review.pi_correct} /></div>
               <p className="vnote">Judged against the saved frames and the scenario's design, after the run. The count above is the host's; the case changes it only through cited, checked relations.</p>
             </div>

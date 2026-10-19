@@ -178,7 +178,7 @@ export const FLOW: FlowStage[] = [
   { lane: "agent", name: "Case result", what: "investigation_finish with outcome and cited observations.", payload: "C1 unresolved" },
   { lane: "host", name: "Assemble", what: "Targets, colours as written, frames; open case and ungrouped boxes keep it incomplete.", payload: "{ 2, [Green and white, white], count_complete: false }" },
   { lane: "after", name: "Verifiers", what: "Runtime: shape and sources, live. Post-hoc: rebuilds every step. Integrity only.", payload: "pass · pass" },
-  { lane: "after", name: "Study scorer + review", what: "Against ground truth the system never saw.", payload: "count ✓ · second colour under-described · complete ✗" },
+  { lane: "after", name: "Property Evaluator", what: "Against ground truth the system never saw.", payload: "count ✓ · second colour under-described · complete ✗" },
 ];
 
 /** V4.2 report vs V5.0 report (same six clips; V5.2's compatibility replay

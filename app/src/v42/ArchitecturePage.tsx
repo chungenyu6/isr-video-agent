@@ -163,7 +163,7 @@ export default function ArchitecturePage({ exp }: { exp: VersionData }) {
         </p>
         <p>
           Runtime Verifier and Post-hoc Verifier are separate components; neither evaluates traffic truth. Scores
-          shown on the replay come from the study's scorer after the run and were never visible to the agent.
+          shown on the replay come from the study's Property Evaluator after the run and were never visible to the agent.
         </p>
       </footer>
     </main>

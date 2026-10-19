@@ -19,7 +19,7 @@
     "count_and_exact_colors": 28,
     "count_and_supported_colors": 48,
     "white_only_underdescribed": 8,
-    "complete_property_true": 8,
+    "count_complete_true": 8,
     "natural_investigations": 4,
     "nemotron_calls": 68,
     "gemma_calls": 56,
