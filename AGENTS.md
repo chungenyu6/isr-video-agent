@@ -49,12 +49,14 @@ not a successful strategy. Plans and decisions: `docs/plan/`.
    endpoints in the configuration event, packet `sources` and Pi's provider error
    message are dropped. Do not relax `tools/publish_guard.py`.
 3. Ground truth and scores may appear only on cards labelled as ground truth /
-   study scorer / source review, after the run. Published ground truth covers the
+   Property Evaluator (automatic score; source review), after the run. Site copy
+   still says "study scorer" until the study's P2 rename plan updates it. Published ground truth covers the
    twelve Against-Traffic clips: six public since 2026-09-14, six more since
    2026-10-19 (researcher decisions). Their video SHA-256 must match every
    exported run.
-4. Keep the Runtime Verifier, Post-hoc Verifier, study scorer and source review
-   visually separate. Neither verifier evaluates traffic truth; a verifier pass is
+4. Keep the Runtime Verifier, Post-hoc Verifier and the two Property Evaluator
+   cards (automatic score, source review) visually separate. Names follow
+   `/workspace/experiments/video-agent-capability/docs/naming-conventions.zh-TW.md`. Neither verifier evaluates traffic truth; a verifier pass is
    not correctness. In V5.2 the traffic rule is a separate host component, not
    the Runtime Verifier and not a model judgement. Gateway refusals of agent
    calls are Runtime Verifier refusals.
