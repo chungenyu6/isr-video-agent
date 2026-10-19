@@ -28,31 +28,32 @@ BUNDLES = ROOT / "bundles"
 OUT = ROOT / "content" / "experiment.json"
 ORACLE = ROOT / "content" / "oracle"
 
-CURRENT = "v52"
+CURRENT = "v53"
 #: Per version: bundle prefix, featured bundle and the figures its delivered
 #: report states (experiments/video-agent-capability/reports/...).
 VERSIONS = {
-    "v52": {
-        "label": "V5.2",
-        "candidate_revision": "v5.2",
-        "featured": "v52-2-challenging-r2-s1",
-        #: sut-v5.2-stability-20261016.zh-TW.md sections 1 and 5 (group A:
-        #: 12 clips x Q1/Q2 x two passes); summary for the totals
+    "v53": {
+        "label": "V5.3",
+        "candidate_revision": "v5.3",
+        "featured": "v53-2-challenging-r2-s1",
+        #: sut-v5.3-results-20261019.zh-TW.md sections 1-3 (group A: 12 clips x
+        #: Q1/Q2 x two passes)
         "report": {
             "attempts": 48,
             "accepted": 48,
             "posthoc_pass": 48,
-            "count_correct": 48,
+            "count_correct": 44,
             "count_and_exact_colors": 28,
-            "count_and_supported_colors": 48,
-            "white_only_underdescribed": 8,
+            "color_tokens_matched": 40,
+            "false_positive_vehicles": 4,
+            "false_negative_objects": 0,
             "count_complete_true": 8,
+            "count_complete_conservative_false": 36,
+            "count_complete_false_and_wrong": 4,
             "natural_investigations": 4,
-            "nemotron_calls": 68,
-            "gemma_calls": 56,
+            "nemotron_calls": 45,
+            "gemma_calls": 62,
             "tracking_jobs": 48,
-            "identical_answers_clips": 12,
-            "identical_gemma_text_clips": 9,
             "promoted": False,
         },
     },
@@ -74,19 +75,21 @@ VERSIONS = {
 }
 
 
-#: sut-v5.2-investigation-value-20261016.zh-TW.md sections 2 and 4 (group B):
-#: seven saved-state scenarios x three controllers, one attempt each.
-#: Per cell: Nemotron calls, Gemma calls, final case status, and the report's
-#: description. Only the pi cells carry a verdict (the coding-agent review's
-#: pi_correct); the none and fixed cells are described, not scored.
+#: sut-v5.3-results-20261019.zh-TW.md section 4 (group B): seven saved-state
+#: scenarios x none / fixed / pi-cap2 / pi-cap4, one attempt each. Per cell:
+#: Nemotron calls, Gemma calls, final case status (from each run.json) and the
+#: report's description. Only the Pi cells carry a verdict (the report's table,
+#: against answers written down before V5.2); none and fixed are described.
 def _c(n, g, case, note, correct=None):
     return {"nemotron": n, "gemma": g, "case": case, "note": note, **(
         {"correct": correct} if correct is not None else {})}
 
 
+CONTROLLERS = ["none", "fixed", "pi-cap2", "pi-cap4"]
 DIAGNOSTIC = {
-    "batch": "20261016-07-diagnostic-7x3-v5.2-investigation-value",
-    "replays": {"B2": "v52-diag-B2-pi", "B4": "v52-diag-B4-pi", "B7": "v52-diag-B7-pi"},
+    "batch": "20261019-04-diagnostic-7x4-v5.3-investigation-value",
+    "controllers": CONTROLLERS,
+    "replays": {"B2": "v53-diag-B2-pi-cap2", "B4": "v53-diag-B4-pi-cap2", "B7": "v53-diag-B7-pi-cap2"},
     "scenarios": {
         "B1": "A saved Gemma reply already says purple, but has no Body color line",
         "B2": "First look unclear; a better view exists later",
@@ -96,50 +99,57 @@ DIAGNOSTIC = {
         "B6": "Nothing worth investigating",
         "B7": "A wrong-way join (T1/T3) held back",
     },
+    "expected": {"B1": "purple", "B2": "White and purple", "B3": "same", "B4": "different",
+                 "B5": "unresolved", "B6": "no case", "B7": "same"},
+    "v52_pi": {"B1": False, "B2": False, "B3": False, "B4": False, "B5": True, "B6": True, "B7": False},
     "assigned": ["B3", "B4"],
     "cells": {
-        "B1": {"none": _c(0, 0, "pending", "Host colour unknown; the saved reply is still readable"),
-               "fixed": _c(0, 1, "pending", "Asked frame 42: purple"),
-               "pi": _c(9, 2, "unresolved", "Two visibility checks; did not use the saved reply; colour unknown", False)},
+        "B1": {"none": _c(0, 0, "pending", "Host colour unknown"),
+               "fixed": _c(0, 1, "pending", "Host parser reads purple"),
+               "pi-cap2": _c(5, 1, "resolved", "purple", True),
+               "pi-cap4": _c(4, 1, "resolved", "purple", True)},
         "B2": {"none": _c(0, 0, "pending", "Second car's colour unknown"),
-               "fixed": _c(0, 1, "pending", "Asked frame 85 (next best): White and purple"),
-               "pi": _c(8, 2, "unresolved", "Visibility checks on T7 and T8, no appearance check; colour unknown", False)},
+               "fixed": _c(0, 1, "pending", "White and purple"),
+               "pi-cap2": _c(6, 2, "resolved", "White and purple", True),
+               "pi-cap4": _c(8, 1, "resolved", "White and purple", True)},
         "B3": {"none": _c(0, 0, "pending", "Join stays open"),
-               "fixed": _c(0, 1, "pending", "One boundary compare supports one car; by design not parsed as same"),
-               "pi": _c(11, 2, "unresolved", "Separate visibility checks, no compare", False)},
-        "B4": {"none": _c(0, 0, "pending", "Assigned case left open; frame 71 shows both cars"),
-               "fixed": _c(0, 0, "resolved", "Saved detections show both at once: different"),
-               "pi": _c(12, 2, "unresolved", "Tried different, cited only T7, refused, then unresolved", False)},
+               "fixed": _c(0, 1, "pending", "Compare text supports one car; by design not adopted"),
+               "pi-cap2": _c(4, 1, "resolved", "same", True),
+               "pi-cap4": _c(4, 1, "resolved", "same", True)},
+        "B4": {"none": _c(0, 0, "pending", "Assigned case left open"),
+               "fixed": _c(0, 0, "resolved", "different, from saved detections"),
+               "pi-cap2": _c(6, 2, "resolved", "different", True),
+               "pi-cap4": _c(6, 3, "resolved", "different", True)},
         "B5": {"none": _c(0, 0, "pending", "Colour stays unknown"),
-               "fixed": _c(0, 0, "pending", "No media: stops, colour stays unknown"),
-               "pi": _c(8, 0, "unresolved", "Unresolved, correctly; costlier than stopping", True)},
+               "fixed": _c(0, 0, "pending", "No media: stops"),
+               "pi-cap2": _c(9, 0, "unresolved", "unresolved", True),
+               "pi-cap4": _c(9, 0, "unresolved", "unresolved", True)},
         "B6": {"none": _c(0, 0, None, "No case"),
                "fixed": _c(0, 0, None, "No case"),
-               "pi": _c(0, 0, None, "Pi not started, correctly", True)},
+               "pi-cap2": _c(0, 0, None, "Pi not started", True),
+               "pi-cap4": _c(0, 0, None, "Pi not started", True)},
         "B7": {"none": _c(0, 0, "pending", "Program opens an identity case; count 1"),
-               "fixed": _c(0, 1, "pending", "Compare: Gemma calls the small TARGET a yellow bus; not adopted"),
-               "pi": _c(8, 2, "resolved", "Adopted different on Gemma's misidentification; count still 1", False)},
+               "fixed": _c(0, 1, "pending", "Compare says the two correspond; not adopted"),
+               "pi-cap2": _c(6, 2, "resolved", "different: Gemma called the small TARGET a yellow bus", False),
+               "pi-cap4": _c(7, 4, "resolved", "different, same misreading", False)},
     },
-    "totals": {"none": {"nemotron": 0, "gemma": 0, "wall_sec": 6.30},
-               "fixed": {"nemotron": 0, "gemma": 4, "wall_sec": 13.42},
-               "pi": {"nemotron": 56, "gemma": 10, "wall_sec": 102.56}},
-    "pi_cases": 6, "pi_correct": 1, "wrong_different_adopted": 1, "wrong_same_adopted": 0,
-    "all_totals": {"nemotron": 124, "gemma": 70, "items": 69},
+    "totals": {"none": {"nemotron": 0, "gemma": 0}, "fixed": {"nemotron": 0, "gemma": 4},
+               "pi-cap2": {"nemotron": 36, "gemma": 8}, "pi-cap4": {"nemotron": 38, "gemma": 10}},
+    "pi_cases": 6, "pi_correct": {"pi-cap2": 5, "pi-cap4": 5, "v52_pi": 1},
+    "wrong_different_adopted": 1, "wrong_same_adopted": 0,
+    "all_totals": {"nemotron": 119, "gemma": 84, "jobs": 49},
 }
 
 
-def supported_v52(b: dict) -> bool:
-    """Count matches and the source review judged every reported target's identity
-    and visible colour supported (white-only answers are flagged separately)."""
-    r = b["review"]
-    return (b["scorer"]["count_numeric_match"] and r["count_review"] == "supported"
-            and (not b["answer"]["targets"] or r["identity_review"].startswith("supported"))
-            and (not b["answer"]["targets"] or "supported" in r["color_review"]))
+def goal_v53(pe: dict) -> bool:
+    """Property Evaluator v1: count right and every reported colour's words match its object."""
+    return pe["count_match"] and pe["color_token"]["all_targets_matched"]
 
 
-def row_v52(name: str, b: dict) -> dict:
+def row_v53(name: str, b: dict) -> dict:
     s = b["answer"]["submission"]
     st = b["stability"]
+    pe = b["property_eval"]
     return {
         "bundle": name, "attempt": b["attempt"], "clip_id": b["clip_id"], "seed": b["seed"],
         "reported_count": s["reported_count"], "colors": s["colors"],
@@ -149,8 +159,9 @@ def row_v52(name: str, b: dict) -> dict:
         "expected_count": b["scorer"]["wrong_way_count"],
         "count_correct": b["scorer"]["count_numeric_match"],
         "exact_colors": b["scorer"]["count_numeric_match"] and b["scorer"]["color_multiset_correct"],
-        "goal_correct": supported_v52(b),
-        "underdescribed": "omits" in b["review"]["color_review"],
+        "goal_correct": goal_v53(pe),
+        "false_positive_vehicles": pe["geometry"]["false_positive_vehicles"],
+        "changed_from_v52": b["review"]["changed_from_v52"],
         "complete_correct": b["scorer"]["complete_count_correct"],
         "visual_calls": b["budget"]["gemma"]["used"],
         "orchestrator_calls": b["budget"]["nemotron"]["used"],
@@ -161,25 +172,27 @@ def row_v52(name: str, b: dict) -> dict:
     }
 
 
-def figures_v52(bundles: list[dict]) -> dict:
+def figures_v53(bundles: list[dict]) -> dict:
     """Group A figures over all 48 attempts: each bundle carries its clip's four."""
     att = [(b, a) for b in bundles for a in b["stability"]["attempts"]]
     sc = lambda a, k: a["scorer"][k]  # noqa: E731
+    cal = lambda a: a["property_eval"]["count_complete_calibration"]  # noqa: E731
     return {
         "attempts": len(att),
         "accepted": len(att) if all(b["runtime_verifier"]["final_answer_check"] == "pass" for b in bundles) else None,
         "posthoc_pass": len(att) if all(b["posthoc_verifier"]["status"] == "pass" for b in bundles) else None,
         "count_correct": sum(sc(a, "count_numeric_match") for _, a in att),
         "count_and_exact_colors": sum(sc(a, "count_numeric_match") and sc(a, "color_multiset_correct") for _, a in att),
-        "count_and_supported_colors": sum(supported_v52(b) and sc(a, "count_numeric_match") for b, a in att),
-        "white_only_underdescribed": sum("omits" in b["review"]["color_review"] for b, _ in att),
-        "count_complete_true": sum(a["submission"]["count_complete"] for _, a in att),
+        "color_tokens_matched": sum(a["property_eval"]["color_token"]["all_targets_matched"] for _, a in att),
+        "false_positive_vehicles": sum(len(a["property_eval"]["geometry"]["false_positive_vehicles"]) for _, a in att),
+        "false_negative_objects": sum(len(a["property_eval"]["geometry"]["false_negative_objects"]) for _, a in att),
+        "count_complete_true": sum(cal(a) == "justified_true" for _, a in att),
+        "count_complete_conservative_false": sum(cal(a) == "conservative_false" for _, a in att),
+        "count_complete_false_and_wrong": sum(cal(a) == "false_and_wrong" for _, a in att),
         "natural_investigations": sum(a["pi_started"] for _, a in att),
         "nemotron_calls": sum(a["nemotron"] for _, a in att),
         "gemma_calls": sum(a["gemma"] for _, a in att),
         "tracking_jobs": len(att),
-        "identical_answers_clips": sum(b["stability"]["identical_answers"] and b["stability"]["identical_targets"] for b in bundles),
-        "identical_gemma_text_clips": sum(b["stability"]["identical_gemma_text"] for b in bundles),
         "promoted": False,
     }
 
@@ -194,20 +207,23 @@ def check_diagnostic() -> list[str]:
             continue
         b = json.loads(p.read_text())
         d = b["diagnostic"]
-        got = {"pi": (b["budget"]["nemotron"]["used"], b["budget"]["gemma"]["used"],
-                      b["cases"][0]["status"] if b["cases"] else None, d["review"]["pi_correct"])}
+        got = {d["arm"]: (b["budget"]["nemotron"]["used"], b["budget"]["gemma"]["used"],
+                          b["cases"][0]["status"] if b["cases"] else None)}
         for s in d["siblings"]:
-            got[s["controller"]] = (s["nemotron"], s["gemma"], s["cases"][0]["status"] if s["cases"] else None, None)
-        for ctl, g in got.items():
-            w = DIAGNOSTIC["cells"][scen][ctl]
-            if g != (w["nemotron"], w["gemma"], w["case"], w.get("correct")):
-                fails.append(f"diagnostic {scen}/{ctl}: bundle {g} != report {w}")
-    for ctl, t in DIAGNOSTIC["totals"].items():
+            got[s["arm"]] = (s["nemotron"], s["gemma"], s["cases"][0]["status"] if s["cases"] else None)
+        if sorted(got) != sorted(CONTROLLERS):
+            fails.append(f"diagnostic {scen}: arms {sorted(got)}")
+        for arm, g in got.items():
+            w = DIAGNOSTIC["cells"][scen][arm]
+            if g != (w["nemotron"], w["gemma"], w["case"]):
+                fails.append(f"diagnostic {scen}/{arm}: bundle {g} != report {w}")
+    for arm, t in DIAGNOSTIC["totals"].items():
         for k in ("nemotron", "gemma"):
-            if sum(c[ctl][k] for c in DIAGNOSTIC["cells"].values()) != t[k]:
-                fails.append(f"diagnostic {ctl} {k} cells do not sum to the report total")
-    if sum(c["pi"]["correct"] for k, c in DIAGNOSTIC["cells"].items() if k != "B6") != DIAGNOSTIC["pi_correct"]:
-        fails.append("diagnostic pi_correct does not match the cells")
+            if sum(c[arm][k] for c in DIAGNOSTIC["cells"].values()) != t[k]:
+                fails.append(f"diagnostic {arm} {k} cells do not sum to the report total")
+    for arm in ("pi-cap2", "pi-cap4"):
+        if sum(c[arm]["correct"] for k, c in DIAGNOSTIC["cells"].items() if k != "B6") != DIAGNOSTIC["pi_correct"][arm]:
+            fails.append(f"diagnostic {arm} correct count does not match the cells")
     return fails
 
 
@@ -236,10 +252,10 @@ def build_version(key: str) -> dict:
             continue
         first = first or b
         loaded.append(b)
-        runs.append((row_v52 if key == "v52" else row_v42)(p.parent.name, b))
+        runs.append((row_v53 if key == "v53" else row_v42)(p.parent.name, b))
     runs.sort(key=lambda r: r["attempt"])
-    if key == "v52":
-        return finish_version(key, spec, first, runs, figures_v52(loaded))
+    if key == "v53":
+        return finish_version(key, spec, first, runs, figures_v53(loaded))
     figures = {
         "attempts": len(runs),
         "accepted": sum(r["accepted"] for r in runs),
@@ -267,7 +283,7 @@ def finish_version(key: str, spec: dict, first: dict | None, runs: list[dict], f
         "figures": figures,
         "runs": runs,
     }
-    if key == "v52":
+    if key == "v53":
         out["diagnostic"] = DIAGNOSTIC
     return out
 

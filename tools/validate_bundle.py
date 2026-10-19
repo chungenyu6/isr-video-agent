@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Gate V4.2 and V5.2 replay bundles before they may be committed or published.
+"""Gate V4.2 and V5.3 replay bundles before they may be committed or published.
 
 Three independent layers:
 
-  1. SCHEMA   the bundle matches schema/bundle-v42 or bundle-v52, chosen by
+  1. SCHEMA   the bundle matches schema/bundle-v42 or bundle-v53, chosen by
               its bundle_version
   2. LEAK     no host path, loopback URL, credential, stray file or oracle path
   3. SANITY   frame ids inside the clip, track indexes in range, every Gemma
               frame shows a real detection of its track, proxy video present,
-              size under budget; V4.2: one monotonic clock; V5.2: vehicle
+              size under budget; V4.2: one monotonic clock; V5.3: vehicle
               members are real tracks, reported intervals lie on observed
               frames, the ungrouped count matches the detections, agent steps
-              are ordered, linked to their Gemma images and equal the Nemotron
-              budget, every case and colour cites something the bundle holds
+              are ordered, linked to their Gemma images, and their tool and text
+              turns equal the Nemotron budget, every case and colour cites something the bundle holds
 
 The exporter enforces the leak rules as it writes; this re-checks what is on
 disk, because a bundle can be edited after export and CI never runs the exporter.
@@ -41,7 +41,7 @@ from publish_guard import leaks  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMAS = {"4.2": ROOT / "schema" / "bundle-v42.schema.json",
-           "5.2": ROOT / "schema" / "bundle-v52.schema.json"}
+           "5.3": ROOT / "schema" / "bundle-v53.schema.json"}
 VIDEO_DIR = ROOT / "app" / "public" / "video"
 FRAME_FILE_RE = re.compile(r"frames/o[0-9a-f]{32}-\d+-(full|crop\d*)\.jpg")
 
@@ -92,8 +92,8 @@ def validate(bundle_dir: Path, schemas: dict[str, dict]) -> list[str]:
             fails.append(f"sanity: {t['alias']} observed {s}-{e} outside the clip")
 
     alias_idx = {t["alias"]: i for i, t in enumerate(tr["tracks"])}
-    if b["bundle_version"] == "5.2":
-        fails += sanity_v52(b)
+    if b["bundle_version"] == "5.3":
+        fails += sanity_v53(b)
         visuals = [{"observation_ref": o["observation_ref"], "track_ref": t["track_ref"],
                     "frame": m["frame"], "full": m["full"], "crop": c["path"]}
                    for o in b["appearance"] for m in o["media"]
@@ -127,7 +127,7 @@ def validate(bundle_dir: Path, schemas: dict[str, dict]) -> list[str]:
     return fails
 
 
-def sanity_v52(b: dict) -> list[str]:
+def sanity_v53(b: dict) -> list[str]:
     fails = []
     tr = b["tracking"]
     vrefs = [v["ref"] for v in b["vehicles"]]
@@ -185,8 +185,16 @@ def sanity_v52(b: dict) -> list[str]:
     if (ag is not None) != b["run"]["pi_started"]:
         fails.append("sanity: agent trace present without Pi, or Pi without a trace")
     steps = ag["steps"] if ag else []
-    if len(steps) != b["budget"]["nemotron"]["used"]:
-        fails.append(f"sanity: {len(steps)} agent steps, {b['budget']['nemotron']['used']} Nemotron calls")
+    calls = [s for s in steps if s["kind"] in ("tool", "message")]
+    if len(calls) != b["budget"]["nemotron"]["used"] or (ag and ag["calls"] != len(calls)):
+        fails.append(f"sanity: {len(calls)} Nemotron turns, {b['budget']['nemotron']['used']} Nemotron calls")
+    if (ag and ag["continuations"] != sum(s["kind"] == "nudge" for s in steps)):
+        fails.append("sanity: continuation count disagrees with the steps")
+    for s in steps:
+        if (s["kind"] == "tool") != (s["tool"] is not None) or (s["kind"] != "tool" and s["outcome"] != s["kind"]):
+            fails.append(f"sanity: step {s['i']} kind, tool and outcome disagree")
+    if b["runtime_verifier"]["agent_tool_calls"] != sum(s["kind"] == "tool" for s in steps):
+        fails.append("sanity: Runtime Verifier tool-call count disagrees with the steps")
     if [s["i"] for s in steps] != list(range(len(steps))):
         fails.append("sanity: step indexes are not 0..n-1")
     times = [t for s in steps for t in (s["t_call"], s["t_result"])]
