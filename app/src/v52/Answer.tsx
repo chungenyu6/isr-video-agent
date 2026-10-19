@@ -4,12 +4,13 @@
 // and the source review (a coding agent reading the frames). Neither verifier
 // judges traffic truth.
 
-import type { Loaded50 } from "./types";
-import type { Focus50 } from "./RunView";
+import type { Loaded52 } from "./types";
+import type { Focus52 } from "./RunView";
+import { STAGE } from "./derive";
 
 const Mark = ({ ok }: { ok: boolean }) => <span className={`pill ${ok ? "st-pass" : "st-fail"}`}>{ok ? "yes" : "no"}</span>;
 
-interface Props { bundle: Loaded50; stage: number; focus: Focus50 }
+interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
 
 export default function Answer({ bundle, stage, focus }: Props) {
   const a = bundle.answer;
@@ -18,14 +19,15 @@ export default function Answer({ bundle, stage, focus }: Props) {
   const ph = bundle.posthoc_verifier;
   const sc = bundle.scorer;
   const rw = bundle.review;
-  const expected = Object.entries(sc.expected_color_multiset).flatMap(([c, n]) => Array(n).fill(c) as string[]);
+  const expected = sc ? Object.entries(sc.expected_color_multiset).flatMap(([c, n]) => Array(n).fill(c) as string[]) : [];
+  const diag = bundle.diagnostic;
   const vIdx = new Map(bundle.vehicles.map((v, i) => [v.ref, i]));
 
-  if (stage < 5) {
+  if (stage < STAGE.assemble) {
     return (
       <div className="verdict">
         <h3 className="ph">Answer</h3>
-        <p className="pending">No answer yet. The host assembles it in stage 5, from the rule's candidates and Gemma's colour text.</p>
+        <p className="pending">No answer yet. The host assembles it in stage {STAGE.assemble}, from the rule's candidates, Gemma's colour text and any case results.</p>
       </div>
     );
   }
@@ -52,18 +54,19 @@ export default function Answer({ bundle, stage, focus }: Props) {
           ))}
         </ul>
       )}
-      <blockquote className="uncertainty">{s.uncertainty}</blockquote>
+      {s.uncertainty && <blockquote className="uncertainty">{s.uncertainty}</blockquote>}
+      {s.count_complete && <p className="fine">Nothing is left unexplained: no ungrouped box, no unresolved record, no open case. Only then is a count called complete.</p>}
 
-      {stage < 6 ? (
-        <p className="pending">Checks run in stage 6 (Verify).</p>
+      {stage < STAGE.verify ? (
+        <p className="pending">Checks run in stage {STAGE.verify} (Verify).</p>
       ) : (
         <>
           <div className="vboxes">
             <div className={`vbox ${rv.final_answer_check === "pass" ? "pass" : "fail"}`}>
               <span className="eyebrow">Runtime Verifier · live</span>
               <div className="vline">answer shape and sources {rv.final_answer_check}</div>
-              <div className="vline">agent tool calls to check: {rv.agent_tool_calls ?? "–"}</div>
-              <p className="vnote">Before the run ends: count = colours = targets, every reported frame is a real observation of that vehicle, every colour cites a stored Gemma reply. It would also check agent tool calls; there were none.</p>
+              <div className="vline">agent tool calls checked: {rv.agent_tool_calls}{rv.agent_tool_calls ? ` · ${rv.agent_refused} refused` : ""}</div>
+              <p className="vnote">While the run is live: every agent tool call's schema, references, frames and budgets{rv.agent_tool_calls ? "" : " (there were none)"}; then count = colours = targets, every reported frame is a real observation of that vehicle, every colour cites a stored Gemma reply.</p>
             </div>
             <div className={`vbox ${ph.status === "pass" ? "pass" : "fail"}`}>
               <span className="eyebrow">Post-hoc Verifier · after the run</span>
@@ -73,35 +76,41 @@ export default function Answer({ bundle, stage, focus }: Props) {
             </div>
           </div>
 
-          <div className="vbox scorer">
-            <span className="eyebrow">Study scorer · ground truth, after the run</span>
-            <div className="truthline">
-              truth: <b>{sc.wrong_way_count}</b> wrong-way vehicle{sc.wrong_way_count === 1 ? "" : "s"}
-              {expected.length > 0 && <> ({expected.join(", ")})</>}
+          {sc && (
+            <div className="vbox scorer">
+              <span className="eyebrow">Study scorer · ground truth, after the run</span>
+              <div className="truthline">
+                truth: <b>{sc.wrong_way_count}</b> wrong-way vehicle{sc.wrong_way_count === 1 ? "" : "s"}
+                {expected.length > 0 && <> ({expected.join(", ")})</>}
+              </div>
+              <div className="scoregrid">
+                <span>count right</span><Mark ok={sc.count_numeric_match} />
+                <span>colour strings equal the labels</span><Mark ok={sc.color_multiset_correct} />
+                <span>complete answer</span><Mark ok={sc.complete_count_correct} />
+              </div>
+              <p className="vnote">Exact strings only: “light purple” is not “purple” here. Nothing on this card was visible to the system.</p>
             </div>
-            <div className="scoregrid">
-              <span>count right</span><Mark ok={sc.count_numeric_match} />
-              <span>colour strings equal the labels</span><Mark ok={sc.color_multiset_correct} />
-              <span>complete answer</span><Mark ok={sc.complete_count_correct} />
-            </div>
-            <p className="vnote">Exact strings only: “light purple” is not “purple” here. Nothing on this card was visible to the system.</p>
-          </div>
+          )}
 
-          <div className="vbox scorer review">
-            <span className="eyebrow">Source review · coding agent, not blind</span>
-            {rw.targets.length === 0 ? (
-              <p className="vnote">No target reported; {rw.false_reported_targets} false targets. {rw.meaning}</p>
-            ) : (
+          {rw && (
+            <div className="vbox scorer review">
+              <span className="eyebrow">Source review · coding agent, not blind</span>
               <ul className="targets">
-                {rw.targets.map((t) => (
-                  <li key={t.vehicle_ref}>
-                    <b>{t.vehicle_ref}</b> → {t.object_id}: identity {t.identity}; colour “{t.color_original}” {t.color}; {t.interval}.
-                  </li>
-                ))}
+                <li>count: {rw.count_review}</li>
+                {rw.targets.length > 0 && <li>identity: {rw.identity_review} ({rw.targets.map((t) => `${t.vehicle_ref} → ${t.object_id}`).join(", ")})</li>}
+                {rw.targets.length > 0 && <li>colour: {rw.color_review}</li>}
               </ul>
-            )}
-            <p className="vnote">A coding agent compared the reported vehicles, frames and crops with the ground-truth frames. It is not an independent blind evaluation.</p>
-          </div>
+              <p className="vnote">A coding agent compared the reported vehicles, frames and crops with the ground-truth frames, once per clip for all four repeats. It is not an independent blind evaluation.</p>
+            </div>
+          )}
+
+          {diag && (
+            <div className="vbox scorer review">
+              <span className="eyebrow">Case review · coding agent, not blind</span>
+              <div className="vline">Pi's case result judged correct: <Mark ok={diag.review.pi_correct} /></div>
+              <p className="vnote">Judged against the saved frames and the scenario's design, after the run. The count above is the host's; the case changes it only through cited, checked relations.</p>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -1,10 +1,11 @@
 // Tracker IDs → vehicle records → one vote each → against the flow, drawn from
-// the real a002 data over frame 30 of the published clip.
+// the real tracking data of clip 1-nominal-r1 over frame 30 (V5.2 attempt a005;
+// identical tracking to V5.0 attempt a002).
 
 import { useMemo } from "react";
 import { asset, trackColor } from "../data";
-import type { Loaded50 } from "./types";
-import { maxAngle, memberSpans, trackPoints50, vehiclePoints } from "./derive";
+import type { Loaded52 } from "./types";
+import { maxAngle, memberSpans, trackPoints52, vehiclePoints } from "./derive";
 
 const STILL = "arch/1-nominal-r1-f30.jpg";
 const OPP = "#FF5A3C";
@@ -25,8 +26,8 @@ function Panel({ n, title, children, caption }: { n: number; title: string; chil
 const line = (pts: number[][]) => pts.map((p) => `${p[1]},${p[2]}`).join(" ");
 const mean = (pts: number[][]) => [pts.reduce((a, p) => a + p[1], 0) / pts.length, pts.reduce((a, p) => a + p[2], 0) / pts.length];
 
-export default function RuleExplainer({ bundle }: { bundle: Loaded50 }) {
-  const tpts = useMemo(() => trackPoints50(bundle), [bundle]);
+export default function RuleExplainer({ bundle }: { bundle: Loaded52 }) {
+  const tpts = useMemo(() => trackPoints52(bundle), [bundle]);
   const vpts = useMemo(() => vehiclePoints(bundle), [bundle]);
   const vIdx = new Map(bundle.vehicles.map((v, i) => [v.ref, i]));
   const tIdx = new Map(bundle.tracking.tracks.map((t, i) => [t.alias, i]));

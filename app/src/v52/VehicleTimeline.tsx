@@ -8,11 +8,11 @@
 import { useState } from "react";
 import type { Oracle } from "../types";
 import { detectionRuns, dirClass } from "../data";
-import type { Loaded50, Vehicle } from "./types";
-import { fmt, looseBoxes, memberSpans, phaseAt50 } from "./derive";
-import type { Focus50 } from "./RunView";
+import type { Loaded52, Vehicle } from "./types";
+import { fmt, lookFrames, looseBoxes, memberSpans, phaseAt52, STAGE } from "./derive";
+import type { Focus52 } from "./RunView";
 
-interface Props { bundle: Loaded50; oracle: Oracle; stage: number; focus: Focus50; vpts: number[][][]; tpts: number[][][] }
+interface Props { bundle: Loaded52; oracle: Oracle; stage: number; focus: Focus52; vpts: number[][][]; tpts: number[][][] }
 
 const W = 1000, LAB = 74, R = 8, ROW = 17, TOP = 20, STRIP = 26;
 
@@ -23,8 +23,8 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
   const tracked = stage >= 1;
   const grouped = stage >= 2;
   const ruled = stage >= 3;
-  const looked = stage >= 4;
-  const assembled = stage >= 5;
+  const assembled = stage >= STAGE.assemble;
+  const looks = lookFrames(bundle, stage);
   const vehicles = bundle.vehicles;
   const tracks = bundle.tracking.tracks;
   const x = (f: number) => LAB + ((W - LAB - R) * f) / nb;
@@ -64,7 +64,7 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
   const segsFor = (v: Vehicle, pts: number[][]) => {
     const segs: { a: number; b: number; dc: string }[] = [];
     const cls = (f: number) => {
-      const ph = phaseAt50(v, f);
+      const ph = phaseAt52(v, f);
       return ph && ph.valid ? dirClass(ph.direction) : "unresolved";
     };
     for (const [s, e] of detectionRuns(pts)) {
@@ -140,8 +140,11 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
                   );
                 })}
                 {joined[i].map((f) => <rect key={`j${f}`} className="joinedtick" x={x(f) + fw * 0.2} y={y + ROW - 3} width={fw * 0.6} height={2.5} />)}
-                {looked && bundle.appearance.map((a) => a.vehicle_ref === v.ref && (
-                  <path key={a.observation_ref} className="gemma" d={`M${x(a.frame) + fw / 2},${y + 1.5} l5,7 l-5,7 l-5,-7 z`} />
+                {looks.map((l) => (bundle.tracking.tracks.find((t) => t.alias === l.track_ref)?.vehicle === v.ref) && (
+                  <path key={`${l.a.observation_ref}-${l.frame}`} className={`gemma${l.a.origin === "host" ? "" : " agent"}`}
+                        d={`M${x(l.frame) + fw / 2},${y + 1.5} l5,7 l-5,7 l-5,-7 z`}>
+                    <title>{`${l.a.origin === "host" ? "host colour check" : `asked by Pi (${l.a.intent})`} · ${l.track_ref} @ ${l.frame}`}</title>
+                  </path>
                 ))}
                 {tgt?.source_frame_intervals.map(([a, b]) => (
                   <path key={`r${a}`} className="reported" d={`M${x(a)},${y + 4} v-3 H${x(b + 1)} v3`} />
@@ -190,7 +193,8 @@ export default function VehicleTimeline({ bundle, oracle, stage, focus, vpts, tp
             {ruled && <span><i className="sw oppband" />against the flow</span>}
             <span><i className="sw linkmark" />tracker IDs joined</span>
             <span><i className="sw joinedtick" />unmatched box attached</span>
-            {looked && <span><i className="sw gemma" />frame sent to Gemma</span>}
+            {looks.length > 0 && <span><i className="sw gemma" />frame sent to Gemma by the host</span>}
+            {looks.some((l) => l.a.origin !== "host") && <span><i className="sw gemma agent" />frame sent to Gemma on Pi's request</span>}
             {assembled && <span><i className="sw reported" />frames reported in the answer</span>}
           </>
         ) : (

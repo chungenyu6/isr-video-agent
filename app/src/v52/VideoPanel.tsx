@@ -6,19 +6,20 @@
 //   after Group:  boxes coloured by vehicle record (V); ungrouped boxes grey
 //   after Rule:   phases that move against the flow drawn as TARGET
 //   after Look:   the TARGET box and crop the host sent to Gemma
+//   after Investigate: the frames Gemma was shown on Pi's request
 
 import { useEffect, useRef, useState } from "react";
 import type { Oracle } from "../types";
 import { asset, bundleFile, DIR_LABEL, dirClass, gtBoxesAt, trackColor } from "../data";
-import type { Loaded50 } from "./types";
-import { phaseAt50 } from "./derive";
-import type { Focus50 } from "./RunView";
+import type { Loaded52 } from "./types";
+import { lookFrames, phaseAt52, STAGE } from "./derive";
+import type { Focus52 } from "./RunView";
 
 interface Props {
-  bundle: Loaded50;
+  bundle: Loaded52;
   oracle: Oracle;
   stage: number;
-  focus: Focus50;
+  focus: Focus52;
   vpts: number[][][];
   tpts: number[][][];
 }
@@ -45,7 +46,6 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
   const tracked = stage >= 1;
   const grouped = stage >= 2;
   const ruled = stage >= 3;
-  const looked = stage >= 4;
   const tracks = bundle.tracking.tracks;
   const vehicles = bundle.vehicles;
   const fr = bundle.tracking.frames[frame];
@@ -70,11 +70,12 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
     if (Math.floor(v.currentTime * fps) !== frame) v.currentTime = (frame + 0.5) / fps;
   }, [frame, playing, mode, fps]);
 
-  const shownLooks = looked ? bundle.appearance : [];
-  const gem = mode === "gemma"
-    ? shownLooks.find((a) => focus.veh !== null && a.vehicle_ref === vehicles[focus.veh]?.ref)
-      ?? shownLooks[shownLooks.length - 1] ?? null
-    : null;
+  const shownLooks = lookFrames(bundle, stage);
+  const [gemPick, setGemPick] = useState<number | null>(null);
+  const gemList = shownLooks.filter((l) => l.crop !== null);
+  const gemDefault = gemList.findIndex((l) => focus.veh !== null && l.a.vehicle_ref === vehicles[focus.veh]?.ref);
+  const gemIdx = gemPick !== null && gemPick < gemList.length ? gemPick : gemDefault >= 0 ? gemDefault : gemList.length - 1;
+  const gem = mode === "gemma" && gemIdx >= 0 ? gemList[gemIdx] : null;
 
   // What to draw trails and arrows for: vehicles after grouping, tracker IDs before.
   const units = grouped
@@ -136,7 +137,7 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
             })}
             {grouped && on.motion && active.map((u) => {
               const v = vehicles[u.i];
-              const ph = phaseAt50(v, Math.min(frame, v.observed[1]));
+              const ph = phaseAt52(v, Math.min(frame, v.observed[1]));
               if (!ph) return null;
               const a = u.pts.find((p) => p[0] >= ph.start);
               const b = [...u.pts].reverse().find((p) => p[0] <= ph.end);
@@ -147,7 +148,7 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
               const lab = Math.hypot(b[1] - a[1], b[2] - a[2]) > 20;
               return (
                 <g key={`mv${v.ref}`} className={`motion${opp ? " opp" : ""}`} opacity={u.op}>
-                  <line x1={a[1]} y1={a[2]} x2={b[1]} y2={b[2]} stroke={stroke} markerEnd={`url(#v5arrow-${opp ? "opp" : dc})`} />
+                  <line x1={a[1]} y1={a[2]} x2={b[1]} y2={b[2]} stroke={stroke} markerEnd={`url(#v52arrow-${opp ? "opp" : dc})`} />
                   {lab && (
                     <text x={(a[1] + b[1]) / 2 + 8} y={(a[2] + b[2]) / 2} fill={stroke}>
                       {opp ? "against the flow" : DIR_LABEL[dc]}
@@ -176,18 +177,19 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
                 </g>
               );
             })}
-            {shownLooks.filter((a) => a.frame === frame).map((a) => (
-              <g key={a.observation_ref} className="inspected">
-                <rect x={a.target_bbox[0]} y={a.target_bbox[1]} width={a.target_bbox[2] - a.target_bbox[0]}
-                      height={a.target_bbox[3] - a.target_bbox[1]} />
-                <rect className="cropb" x={a.crop_bounds[0]} y={a.crop_bounds[1]}
-                      width={a.crop_bounds[2] - a.crop_bounds[0]} height={a.crop_bounds[3] - a.crop_bounds[1]} />
-                <text x={a.crop_bounds[0]} y={Math.max(14, a.crop_bounds[1] - 6)}>TARGET {a.vehicle_ref}·{a.track_ref} → Gemma</text>
+            {shownLooks.filter((l) => l.frame === frame).map((l) => (
+              <g key={`${l.a.observation_ref}-${l.frame}`} className={`inspected${l.a.origin === "host" ? "" : " agent"}`}>
+                <rect x={l.bbox[0]} y={l.bbox[1]} width={l.bbox[2] - l.bbox[0]} height={l.bbox[3] - l.bbox[1]} />
+                {l.bounds && <rect className="cropb" x={l.bounds[0]} y={l.bounds[1]}
+                      width={l.bounds[2] - l.bounds[0]} height={l.bounds[3] - l.bounds[1]} />}
+                <text x={(l.bounds ?? l.bbox)[0]} y={Math.max(14, (l.bounds ?? l.bbox)[1] - 6)}>
+                  TARGET {l.a.vehicle_ref}·{l.track_ref} → Gemma{l.a.origin === "host" ? "" : ` (Pi: ${l.a.intent})`}
+                </text>
               </g>
             ))}
             <defs>
               {Object.entries({ ...DIR_STROKE, opp: OPP }).map(([k, c]) => (
-                <marker key={k} id={`v5arrow-${k}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <marker key={k} id={`v52arrow-${k}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                   <path d="M0,0 L10,5 L0,10 z" fill={c} />
                 </marker>
               ))}
@@ -199,20 +201,29 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
         <div className="gemscreen">
           {gem ? (
             <>
+              {gemList.length > 1 && (
+                <div className="gempick" role="group" aria-label="Which image Gemma was shown">
+                  {gemList.map((l, k) => (
+                    <button key={`${l.a.observation_ref}-${l.frame}`} aria-pressed={k === gemIdx} onClick={() => setGemPick(k)}>
+                      {l.track_ref}@{l.frame}{l.a.origin === "host" ? "" : " · Pi"}
+                    </button>
+                  ))}
+                </div>
+              )}
               <figure>
                 <img src={bundleFile(bundle._dir, gem.full)} alt={`Frame ${gem.frame} with the TARGET box on ${gem.track_ref}, as sent to Gemma`} />
-                <figcaption>full frame {gem.frame}, TARGET box drawn by the host</figcaption>
+                <figcaption>full frame {gem.frame}, TARGET box drawn by the host · {gem.a.intent}{gem.a.origin === "host" ? "" : ", asked by Pi"}</figcaption>
               </figure>
               <figure className="crop">
-                <img src={bundleFile(bundle._dir, gem.crop)} alt={`Padded crop around ${gem.track_ref}`} />
+                <img src={bundleFile(bundle._dir, gem.crop!)} alt={`Padded crop around ${gem.track_ref}`} />
                 <figcaption>crop, box + 25% padding</figcaption>
               </figure>
             </>
           ) : (
             <div className="empty">
-              {bundle.appearance.length === 0
-                ? "No candidate in this run, so Gemma was never called."
-                : "Gemma is called in stage 4 (Look)."}
+              {bundle.appearance.every((a) => a.origin === "imported")
+                ? "No new Gemma call in this run."
+                : `Gemma is called in stage ${STAGE.look} (Look)${bundle.appearance.some((a) => a.origin === "agent") ? ` and again in stage ${STAGE.investigate} (Investigate)` : ""}.`}
             </div>
           )}
         </div>
@@ -230,8 +241,8 @@ export default function VideoPanel({ bundle, oracle, stage, focus, vpts, tpts }:
       )}
       <p className="gapline">
         {mode === "gemma" ? (
-          <>Gemma gets exactly these two images and one factual question about body colour. It never sees the video,
-            other vehicles, earlier answers or anything about traffic direction.</>
+          <>Gemma gets exactly these images and one factual question{gem && gem.a.media.length > 1 ? ` (this request had ${gem.a.media.length} frames)` : ""}.
+            It never sees the video, earlier answers or anything about traffic direction.</>
         ) : !tracked ? (
           <>Tracking has not run yet, so no detector output exists.</>
         ) : grouped ? (

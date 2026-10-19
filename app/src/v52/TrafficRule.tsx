@@ -5,11 +5,11 @@
 // arrows, and a phase inside the shaded wedge (135° or more from the flow)
 // makes it a candidate. A host rule: not a model judgement, not the Runtime Verifier.
 
-import type { Loaded50, Vehicle } from "./types";
+import type { Loaded52, Vehicle } from "./types";
 import { compassWord, maxAngle, phaseAngles, STATUS_LABEL } from "./derive";
-import type { Focus50 } from "./RunView";
+import type { Focus52 } from "./RunView";
 
-interface Props { bundle: Loaded50; stage: number; focus: Focus50 }
+interface Props { bundle: Loaded52; stage: number; focus: Focus52 }
 
 const S = 240, C = S / 2, RAD = 92;
 

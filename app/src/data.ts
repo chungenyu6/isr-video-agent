@@ -2,7 +2,7 @@
 // (bundle, oracle, run-clock position, video frame, selected track).
 
 import type { Bundle, Detection, Experiment, Loaded, Oracle, Phase, Step, Track } from "./types";
-import type { Bundle50, Loaded50 } from "./v50/types";
+import type { Bundle52, Loaded52 } from "./v52/types";
 
 const base = import.meta.env.BASE_URL;
 
@@ -28,17 +28,17 @@ export function loadOracle(clip: string): Promise<Oracle> {
   return oracles.get(clip)!;
 }
 
-export type AnyLoaded = Loaded | Loaded50;
+export type AnyLoaded = Loaded | Loaded52;
 
 const bundles = new Map<string, Promise<AnyLoaded>>();
 export function loadAnyBundle(name: string): Promise<AnyLoaded> {
   if (!bundles.has(name)) {
-    bundles.set(name, getJSON<Bundle | Bundle50>(`bundles/${name}/bundle.json`).then((b) => ({ ...b, _dir: name }) as AnyLoaded));
+    bundles.set(name, getJSON<Bundle | Bundle52>(`bundles/${name}/bundle.json`).then((b) => ({ ...b, _dir: name }) as AnyLoaded));
   }
   return bundles.get(name)!;
 }
 export const loadBundle = (name: string) => loadAnyBundle(name) as Promise<Loaded>;
-export const loadBundle50 = (name: string) => loadAnyBundle(name) as Promise<Loaded50>;
+export const loadBundle52 = (name: string) => loadAnyBundle(name) as Promise<Loaded52>;
 
 export const bundleFile = (dir: string, file: string) => asset(`bundles/${dir}/${file}`);
 

@@ -1,5 +1,5 @@
 // V4.2 bundle: mirrors schema/bundle-v42.schema.json. Experiment: tools/build_experiment.py.
-// The V5.0 bundle lives in v50/types.ts.
+// The V5.2 bundle lives in v52/types.ts.
 
 export type Box = [number, number, number, number];
 
@@ -155,8 +155,15 @@ export interface RunSummary {
   posthoc: string;
   expected_count: number;
   count_correct: boolean;
-  /** V5.0 only: count right and the exact colour strings equal the labels */
+  /** V5.2 only: count right and the exact colour strings equal the labels */
   exact_colors?: boolean;
+  /** V5.2 only: the review found a white-only answer that omits a visible colour */
+  underdescribed?: boolean;
+  /** V5.2 only: the program opened a case and Pi ran */
+  investigation?: boolean;
+  repeats?: number;
+  identical_answers?: boolean;
+  identical_gemma_text?: boolean;
   goal_correct: boolean;
   complete_correct: boolean;
   visual_calls: number;
@@ -170,14 +177,36 @@ export interface Figures {
   count_correct: number;
   count_and_exact_colors?: number;
   count_and_supported_colors: number;
-  complete_correct: number;
+  complete_correct?: number;
+  white_only_underdescribed?: number;
+  complete_property_true?: number;
+  natural_investigations?: number;
   nemotron_calls?: number;
   gemma_calls?: number;
   tracking_jobs?: number;
+  identical_answers_clips?: number;
+  identical_gemma_text_clips?: number;
   promoted: boolean;
 }
 
-export type VersionKey = "v50" | "v42";
+export interface DiagCell { nemotron: number; gemma: number; case: string | null; note: string; correct?: boolean }
+export type Controller = "none" | "fixed" | "pi";
+
+export interface Diagnostic {
+  batch: string;
+  replays: Record<string, string>;
+  scenarios: Record<string, string>;
+  assigned: string[];
+  cells: Record<string, Record<Controller, DiagCell>>;
+  totals: Record<Controller, { nemotron: number; gemma: number; wall_sec: number }>;
+  pi_cases: number;
+  pi_correct: number;
+  wrong_different_adopted: number;
+  wrong_same_adopted: number;
+  all_totals: { nemotron: number; gemma: number; items: number };
+}
+
+export type VersionKey = "v52" | "v42";
 
 export interface VersionData {
   label: string;
@@ -185,6 +214,7 @@ export interface VersionData {
   featured: string;
   figures: Figures;
   runs: RunSummary[];
+  diagnostic?: Diagnostic;
 }
 
 export interface Experiment {

@@ -1,21 +1,25 @@
 // Hash routing. The static host serves one index.html, so the route lives after
-// '#'. Two pages: a run replay (either version, chosen by the bundle name) and
-// the architecture explainer (V5.0 by default, V4.2 kept).
+// '#'. Pages: a run replay (either version, chosen by the bundle name), a V5.2
+// diagnostic case replay, and the architecture explainer (V5.2 by default,
+// V4.2 kept).
 
 import { useEffect, useState } from "react";
 import type { VersionKey } from "./types";
 
 export type Route =
   | { page: "run"; bundle: string | null; t: number | null; stage: number | null }
+  | { page: "case"; bundle: string | null; stage: number | null }
   | { page: "architecture"; version: VersionKey };
 
 const num = (v: string | null) => (v !== null && v !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
 
 export function parse(hash: string): Route {
-  const [path, query] = hash.replace(/^#\/?/, "").split("?");
+  // A second "#" is an in-page anchor (for example #/architecture#agent-value).
+  const [path, query] = hash.replace(/^#\/?/, "").split("#")[0].split("?");
   const [head, arg] = path.split("/");
-  if (head === "architecture") return { page: "architecture", version: arg === "v4.2" ? "v42" : "v50" };
+  if (head === "architecture") return { page: "architecture", version: arg === "v4.2" ? "v42" : "v52" };
   const q = new URLSearchParams(query ?? "");
+  if (head === "case") return { page: "case", bundle: arg ? decodeURIComponent(arg) : null, stage: num(q.get("stage")) };
   return {
     page: "run",
     bundle: head === "run" && arg ? decodeURIComponent(arg) : null,
@@ -36,11 +40,16 @@ export function useRoute(): Route {
 
 /** The version a bundle belongs to, from its name; null for anything else. */
 export const versionOf = (bundle: string): VersionKey | null =>
-  bundle.startsWith("v50-") ? "v50" : bundle.startsWith("v42-") ? "v42" : null;
+  bundle.startsWith("v52-") ? "v52" : bundle.startsWith("v42-") ? "v42" : null;
+
+/** V5.0 left the site with V5.2 (same clips, same main pipeline): its links land on the V5.2 run of that clip. */
+export const upgradeLink = (bundle: string) => bundle.replace(/^v50-/, "v52-");
 
 export const runHref = (bundle: string, t?: number) =>
   `#/run/${encodeURIComponent(bundle)}${t !== undefined ? `?t=${t.toFixed(2)}` : ""}`;
 export const stageHref = (bundle: string, stage: number) =>
   `#/run/${encodeURIComponent(bundle)}?stage=${stage}`;
-export const archHref = (v: VersionKey = "v50") => (v === "v42" ? "#/architecture/v4.2" : "#/architecture");
-export const ARCH_HREF = archHref("v50");
+export const caseHref = (bundle: string, stage?: number) =>
+  `#/case/${encodeURIComponent(bundle)}${stage !== undefined ? `?stage=${stage}` : ""}`;
+export const archHref = (v: VersionKey = "v52") => (v === "v42" ? "#/architecture/v4.2" : "#/architecture");
+export const ARCH_HREF = archHref("v52");
