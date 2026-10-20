@@ -141,6 +141,46 @@ DIAGNOSTIC = {
 }
 
 
+#: property-eval-v2-outcome-vector-20261019.zh-TW.md section 2: runs with Y = 1 per
+#: field of the L0-L6 outcome vector (Y-schema v1). The V5.3 column is checked
+#: against the bundles; V5.0 and V5.2 are not on this site and are quoted as stated.
+_V2_FIELDS = ["L0.no_submission", "L0.invalid_submission", "L1.missed_targets", "L2.target_fragmented",
+              "L2.target_split", "L2.target_merged", "L3.rule_FN", "L3.rule_FP", "L3.coverage_gap",
+              "L4.color_FN", "L4.color_FP", "L4.identity_wrong_same", "L4.identity_wrong_different",
+              "L5.unsupported_claims", "L5.missing_support", "L5.agent_adopted_wrong", "L6.answer_FN",
+              "L6.answer_FP", "L6.answer_color_miss", "L6.abstention", "L6.unknown", "L6.count_complete_overclaim"]
+_V52 = {"L2.target_fragmented": 4, "L4.color_FN": 8, "L6.answer_color_miss": 8}
+_V53 = {"L2.target_fragmented": 4, "L4.color_FN": 8, "L4.color_FP": 1, "L4.identity_wrong_different": 4,
+        "L5.missing_support": 3, "L5.agent_adopted_wrong": 4, "L6.answer_FP": 4, "L6.answer_color_miss": 8,
+        "L6.unknown": 3}
+OUTCOME_VECTOR = {
+    "evaluator": "property_eval_v2", "y_schema": "v1",
+    "fields": _V2_FIELDS,
+    "info_fields": ["L2.target_fragmented"],
+    "runs": {"v50": 6, "v52": 48, "v53": 48},
+    "ones": {"v50": {f: 0 for f in _V2_FIELDS},
+             "v52": {f: _V52.get(f, 0) for f in _V2_FIELDS},
+             "v53": {f: _V53.get(f, 0) for f in _V2_FIELDS}},
+}
+
+
+def check_outcome_vector(bundles: list[dict]) -> list[str]:
+    got = {f: 0 for f in _V2_FIELDS}
+    n = 0
+    for b in bundles:
+        for a in b["stability"]["attempts"]:
+            v = a.get("property_eval_v2")
+            if v is None:
+                return [f"{b['run_id']}: an attempt has no Property Evaluator v2 vector"]
+            n += 1
+            for f, y in zip(v["fields"], v["Y"]):
+                got[f] += y
+    fails = [] if n == OUTCOME_VECTOR["runs"]["v53"] else [f"outcome vector: {n} runs, report says 48"]
+    if got != OUTCOME_VECTOR["ones"]["v53"]:
+        fails.append(f"outcome vector v53 {got} != report {OUTCOME_VECTOR['ones']['v53']}")
+    return fails
+
+
 def goal_v53(pe: dict) -> bool:
     """Property Evaluator v1: count right and every reported colour's words match its object."""
     return pe["count_match"] and pe["color_token"]["all_targets_matched"]
@@ -285,6 +325,7 @@ def finish_version(key: str, spec: dict, first: dict | None, runs: list[dict], f
     }
     if key == "v53":
         out["diagnostic"] = DIAGNOSTIC
+        out["outcome_vector"] = OUTCOME_VECTOR
     return out
 
 
@@ -308,6 +349,7 @@ def main() -> int:
             if not (ORACLE / f"{r['clip_id']}.json").is_file():
                 fails.append(f"no oracle for {r['clip_id']}")
     fails += check_diagnostic()
+    fails += check_outcome_vector([json.loads(p.read_text()) for p in sorted(BUNDLES.glob("v53-[0-9]*/bundle.json"))])
     if args.check:
         committed = json.loads(OUT.read_text())
         if committed != data:

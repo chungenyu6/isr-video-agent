@@ -7,6 +7,7 @@
 import type { Loaded53 } from "./types";
 import type { Focus53 } from "./RunView";
 import { STAGE } from "./derive";
+import OutcomeVector from "./OutcomeVector";
 
 const CAL: Record<string, string> = {
   justified_true: "true, and the count is right",
@@ -116,6 +117,7 @@ export default function Answer({ bundle, stage, focus }: Props) {
                 v1 matches colour words (“Green and white” has green), not exact strings; v42 is the original exact-string
                 scorer. Geometry is a box overlap, not proof of physical identity. Nothing on this card was visible to the system.
               </p>
+              {bundle.property_eval_v2 && <OutcomeVector v2={bundle.property_eval_v2} />}
             </div>
           )}
 

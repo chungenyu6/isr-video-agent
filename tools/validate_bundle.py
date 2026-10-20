@@ -216,6 +216,14 @@ def sanity_v53(b: dict) -> list[str]:
         for o in (c["result"] or {}).get("observation_refs", []):
             if o not in obs:
                 fails.append(f"sanity: case {c['case_ref']} cites unknown observation {o}")
+    v2 = b.get("property_eval_v2")
+    if v2 is not None:
+        y = dict(zip(v2["fields"], v2["Y"]))
+        if any(y[f] != int(v2["counts"].get(f.split(".", 1)[1], 0) > 0) for f in v2["fields"]):
+            fails.append("sanity: Property Evaluator v2 Y disagrees with its counts")
+        pe = b.get("property_eval")
+        if pe and y.get("L6.answer_FP") != int(bool(pe["geometry"]["false_positive_vehicles"])):
+            fails.append("sanity: v2 answer_FP disagrees with v1 geometry false positives")
     if set(a["pending_cases"]) - {c["case_ref"] for c in b["cases"]}:
         fails.append("sanity: pending case missing from cases")
     return fails

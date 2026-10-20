@@ -79,7 +79,11 @@ not a successful strategy. Plans and decisions: `docs/plan/`.
    continuation prompt as the host speaking; thinking is off, so do not invent
    reasoning. Reviews are coding-agent reviews, not independent blind ones; say so.
 7. Detector confidence scores are never presented as something a model saw
-   (V5.3 bundles do not carry them). GPU memory is the study's sampling; always
+   (V5.3 bundles do not carry them). Property Evaluator v2 (the L0-L6 outcome
+   vector Y) comes from the study's `evaluations/20261019-02-property-eval-v2/`,
+   allowlisted; never export the visible-colour labels behind it. Figures:
+   `OUTCOME_VECTOR` in `build_experiment.py` (report
+   `property-eval-v2-outcome-vector-20261019.zh-TW.md` §2). GPU memory is the study's sampling; always
    say that vLLM reserves 90% of each GPU, so its nvidia-smi figure is flat. Kalman predictions are drawn only as
    "prediction, not observed".
 8. After adding or changing published data, run

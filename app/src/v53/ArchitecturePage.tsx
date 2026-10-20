@@ -199,8 +199,64 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
         </div>
       </section>
 
+      {ver.outcome_vector && (
+        <section id="failure-layers">
+          <h2>6 · Where it fails, layer by layer</h2>
+          <p className="intro">
+            Property Evaluator v2 gives every run an outcome vector Y: 22 yes/no fields in seven layers that follow the
+            pipeline, from L0 (an answer was given) to L6 (the final answer against ground truth). A field is 1 if it
+            happened at least once in the run. Computed after the runs with no new model calls; the system never saw it.
+          </p>
+          <div className="tbl">
+            <table className="ovtable">
+              <thead>
+                <tr><th>Field</th>{(["v50", "v52", "v53"] as const).map((k) => (
+                  <th key={k}>{k === "v50" ? "V5.0" : k === "v52" ? "V5.2" : "V5.3"} · {ver.outcome_vector!.runs[k]} runs</th>
+                ))}</tr>
+              </thead>
+              <tbody>
+                {ver.outcome_vector.fields.map((f) => {
+                  const info = ver.outcome_vector!.info_fields.includes(f);
+                  return (
+                    <tr key={f} className={info ? "info" : ""}>
+                      <th scope="row"><code>{f}</code>{info && <span className="dim"> (for information)</span>}</th>
+                      {(["v50", "v52", "v53"] as const).map((k) => {
+                        const n = ver.outcome_vector!.ones[k][f];
+                        return <td key={k} className={`num${n && !info ? " hot" : ""}`}>{n}</td>;
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="boundary">
+            <b>V5.3's extra wrong-way vehicle (4/48 runs, all 2-challenging-r2).</b> L1–L3 are clean: the purple car was
+            tracked, the rule flagged it and Gemma was sent to look. L2 records the program keeping it as two records (V6,
+            V8) in one counting unit, a deliberate cautious choice and not an error. Then L4: asked to compare the two
+            sightings, Gemma called the small, blurred one a different vehicle. L5: the agent adopted that, with matching
+            citations; the decision fitted its evidence, but the evidence was wrong. L6: the host counted two cars where there
+            is one. V5.2 on the same clip and the same tracking has the same L2 field, but its agent never compared the
+            sightings, so L4–L6 stay 0. The cautious split is necessary but not sufficient; only a wrong reading that the
+            agent adopts turns it into a wrong count.{" "}
+            <a href={stageHref(ver.featured, 7)}>See the vector on the replay →</a>
+          </div>
+          <div className="boundary">
+            <b>Colour under-described (8/48 runs, V5.2 and V5.3 alike).</b> In exactly the runs where L6
+            <code>answer_color_miss</code> is 1, L4 <code>color_FN</code> is 1: Gemma described a purple car with a white roof as
+            just “white”, and the host passed the wording on. No agent decision is involved.
+          </div>
+          <p className="fine">
+            The links between layers rest on fields lighting up together in the same runs and on a same-clip comparison
+            with V5.2, not on a randomised experiment, and the extra-vehicle failure comes from one scene repeated four
+            times. Geometric matches and text readings are rules, not proof of physical identity. The visible-colour labels
+            behind L4 were cropped by a coding agent and confirmed row by row by the researcher.
+          </p>
+        </section>
+      )}
+
       <section>
-        <h2>6 · V4.2 → V5.0 → V5.2 → V5.3</h2>
+        <h2>7 · V4.2 → V5.0 → V5.2 → V5.3</h2>
         <p className="intro">
           V4.2 and V5.0 were measured once on the same six clips; V5.2 and V5.3 each reproduced the earlier answers in a
           replay with no model calls, then ran 12 clips four times each. Several things changed between versions, so this describes
@@ -229,7 +285,7 @@ export default function ArchitecturePage({ exp }: { exp: Experiment }) {
 
       {bundle && bundle.provenance.tracking && (
         <section>
-          <h2>7 · Models and versions</h2>
+          <h2>8 · Models and versions</h2>
           <div className="tbl">
             <table>
               <thead><tr><th>Role</th><th>Model</th><th>Revision</th><th>Settings</th></tr></thead>

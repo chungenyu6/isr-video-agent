@@ -13,6 +13,10 @@ This is an ALLOWLIST exporter. Per attempt it opens only:
   Evaluator legacy v42 and v1, stability batch only),
   the images named by a visual_request event,
 
+from the study's evaluations/20261019-02-property-eval-v2/<batch>/<attempt>/:
+property-eval-v2.json (Property Evaluator v2, the L0-L6 outcome vector Y; allowlisted
+fields only, never the visible-colour labels),
+
 and per batch: manifest.json (commits and plan) and
 review-final-v1/semantic-review.json (counts, the changed-attempt list and the
 per-scenario review line).
@@ -288,6 +292,7 @@ def summary(adir: Path) -> dict:
             "count_numeric_match", "color_multiset_correct", "complete_count_correct")}
             if (adir / "score.json").is_file() else None),
         "property_eval": (property_eval(adir) if (adir / "property-eval.json").is_file() else None),
+        "property_eval_v2": ({"Y": v2["Y"], "fields": v2["fields"]} if (v2 := property_eval_v2(adir)) else None),
     }
 
 
@@ -310,6 +315,27 @@ def property_eval(adir: Path) -> dict:
                                                     "cited_frames_outside_event")} for x in ge["matched"]],
                      "false_positive_vehicles": ge["false_positive_vehicles"],
                      "false_negative_objects": ge["false_negative_objects"], "scope": ge["scope"]},
+    }
+
+
+V2_DIR = "evaluations/20261019-02-property-eval-v2"
+
+
+def property_eval_v2(adir: Path) -> dict | None:
+    """Property Evaluator v2: one 0/1 outcome vector Y over 22 fields in layers L0-L6
+    (submission, targets tracked, counting units, rule, observations, agent, answer),
+    with per-field counts and the identity readings it compared with ground truth."""
+    study = adir.parent.parent.parent
+    p = study / V2_DIR / adir.parent.name / adir.name / "property-eval-v2.json"
+    if not p.is_file():
+        return None
+    v = json.loads(p.read_text())
+    assert len(v["Y"]) == len(v["fields"]), "Y and fields disagree"
+    return {
+        "evaluator_version": v["evaluator_version"], "y_schema": v["y_schema"], "fields": v["fields"],
+        "Y": v["Y"], "counts": v["counts"], "info_fields": v["info_fields"], "scope": v["scope"],
+        "identity_readings": [{k: r[k] for k in ("observation_ref", "reading", "truth")}
+                              for r in v["details"].get("identity_readings", [])],
     }
 
 
@@ -461,6 +487,8 @@ def export_attempt(batch: Path, attempt: str, manifest: dict, review: dict, kind
             "count_numeric_match", "color_multiset_correct", "complete_count_correct",
             "partial_color_matches", "matching_scope")}
         bundle["property_eval"] = property_eval(adir)
+        if (v2 := property_eval_v2(adir)) is not None:
+            bundle["property_eval_v2"] = v2
         changed = attempt in review["changed_attempts"]
         bundle["review"] = {"reviewer": review["reviewer"], "independent": review["independent"],
                             "method": review["method"], "scope": review["scope"],
@@ -512,7 +540,7 @@ def stability(batch: Path, manifest: dict) -> dict:
             "attempts": [{k: r[k] for k in ("attempt", "pass", "query_id", "submission", "pi_started",
                                             "nemotron", "gemma", "wall_sec", "cases", "gemma_texts",
                                             "query_text", "query_delivered_to", "scorer",
-                                            "property_eval")} for r in rows],
+                                            "property_eval", "property_eval_v2")} for r in rows],
             "identical_answers": same("submission"),
             "identical_targets": same("targets"),
             "identical_tracking": same("tracking_sha256"),

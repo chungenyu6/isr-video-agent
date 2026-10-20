@@ -213,6 +213,15 @@ export interface Diagnostic {
   all_totals: { nemotron: number; gemma: number; jobs: number };
 }
 
+export interface OutcomeVectorTable {
+  evaluator: string;
+  y_schema: string;
+  fields: string[];
+  info_fields: string[];
+  runs: Record<string, number>;
+  ones: Record<string, Record<string, number>>;
+}
+
 export type VersionKey = "v53" | "v42";
 
 export interface VersionData {
@@ -222,6 +231,7 @@ export interface VersionData {
   figures: Figures;
   runs: RunSummary[];
   diagnostic?: Diagnostic;
+  outcome_vector?: OutcomeVectorTable;
 }
 
 export interface Experiment {

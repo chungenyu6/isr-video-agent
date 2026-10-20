@@ -654,3 +654,22 @@ svg .inspected.agent text { fill: #FF8A5C; }
 .diagmatrix tfoot td, .diagmatrix tfoot th { background: var(--ground); font-size: 0.72rem; }
 .vnote.bad { color: var(--fail); }
 .gpulist { margin: 0.3rem 0 0; padding-left: 1.1rem; font-size: 0.8rem; color: var(--ink-2); } .gpulist b { font-family: var(--mono); font-size: 0.72rem; }
+
+/* Property Evaluator v2 outcome vector */
+.ovec { margin-top: 0.6rem; }
+.ovec .ov-head { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: space-between; margin-bottom: 0.3rem; }
+.ov-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.ov-layers li { display: grid; grid-template-columns: 1.9rem minmax(8rem, 15rem) minmax(0, 1fr); gap: 0.4rem; align-items: baseline; padding: 0.2rem 0.4rem; background: var(--surface); border-left: 3px solid var(--pass); }
+.ov-layers li.bad { border-left-color: var(--fail); background: var(--fail-soft); }
+.ov-id { font-family: var(--mono); font-size: 0.7rem; font-weight: 700; }
+.ov-name { font-size: 0.78rem; }
+.ov-fields { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+.ov-f { font-family: var(--mono); font-size: 0.62rem; padding: 0 0.3rem; border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-3); }
+.ov-f.on { color: #fff; background: var(--fail); border-color: var(--fail); font-weight: 700; }
+.ov-f.info { color: var(--ink); background: var(--surface-2); border-color: var(--rule-strong); }
+.ovec.compact .ov-layers li { grid-template-columns: 1.9rem minmax(7rem, 11rem) minmax(0, 1fr); }
+@media (max-width: 560px) { .ov-layers li, .ovec.compact .ov-layers li { grid-template-columns: 1.9rem minmax(0, 1fr); } .ov-fields { grid-column: 1 / -1; } }
+.ovtable td.hot { background: var(--fail-soft); color: var(--fail); font-weight: 700; }
+.ovtable tr.info th, .ovtable tr.info td { color: var(--ink-3); }
+.ovtable th[scope="row"] code { font-size: 0.74rem; }
+.ov-name, .ov-name b { font-family: var(--sans); }

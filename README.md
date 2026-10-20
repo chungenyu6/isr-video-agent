@@ -52,7 +52,8 @@ answers are word for word V5.2's.
   full.
 - **How it works.** For each version: components and trust zones, the call
   sequence (the general V5.3 flow; one real V4.2 run), what each stage hands to the
-  next, illustrated explainers, and for V5.3 the full 7 × 4 diagnostic matrix.
+  next, illustrated explainers, and for V5.3 the full 7 × 4 diagnostic matrix and
+  where runs fail, layer by layer (Property Evaluator v2's L0–L6 outcome vector).
 
 ## What is running
 
@@ -113,7 +114,9 @@ Both exporters are allowlists. The V5.3 exporter reads only:
 - Pi's finished messages (tool calls and results with their timestamps; the
   provider's error text is dropped);
 - `run.json`, `attempt.json`, `gpu-usage.json`, the verdict, `score.json` and
-  `property-eval.json`, five named fields of a
+  `property-eval.json`, and the study's Property Evaluator v2 outcome vector
+  (`evaluations/…/property-eval-v2.json`: the 22 fields, their counts and identity
+  readings; never the visible-colour labels behind them), five named fields of a
   diagnostic packet (never its source paths), and structured review fields;
 - the images Gemma was sent.
 

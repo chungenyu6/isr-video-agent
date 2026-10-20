@@ -161,6 +161,7 @@ export interface AttemptSummary {
   query_delivered_to?: string[];
   scorer?: { count_numeric_match: boolean; color_multiset_correct: boolean; complete_count_correct: boolean } | null;
   property_eval?: PropertyEval | null;
+  property_eval_v2?: { fields: string[]; Y: number[] } | null;
 }
 
 export interface Target {
@@ -256,6 +257,17 @@ export interface Bundle53 {
   };
   /** Property Evaluator v1: count, colour words and geometry against ground truth */
   property_eval?: PropertyEval;
+  /** Property Evaluator v2: the L0-L6 outcome vector Y (22 fields, Y-schema v1) */
+  property_eval_v2?: {
+    evaluator_version: "property_eval_v2";
+    y_schema: string;
+    fields: string[];
+    Y: number[];
+    counts: Record<string, number>;
+    info_fields: string[];
+    scope: string;
+    identity_readings: { observation_ref: string; reading: string; truth: string }[];
+  };
   review?: {
     reviewer: "coding-agent";
     independent: false;
