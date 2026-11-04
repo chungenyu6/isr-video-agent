@@ -21,8 +21,8 @@
 .search-loop figcaption { padding:.7rem 1rem; margin:0; border-top:1px solid var(--rule); font-size:.8rem; color:var(--ink-2); }
 .search-loop figcaption b { color:var(--accent); }
 .search-number { font-family:var(--mono); color:var(--accent); font-size:1.2rem; }
-.search-stats { display:flex; gap:4rem; padding-block:.7rem 1.6rem; }
-.search-stats div { display:flex; flex-direction:column; gap:.4rem; }
+.search-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:2rem; padding-block:.7rem 1rem; }
+.search-stats div { display:flex; flex-direction:column; gap:.4rem; min-width:0; }
 .search-stats b { font-family:var(--mono); font-size:2.6rem; letter-spacing:-.05em; font-weight:400; }
 .search-stats span { font-size:.85rem; color:var(--ink-2); }
 .search-table-wrap { overflow-x:auto; max-width:100%; }
@@ -154,3 +154,6 @@
 
 .search-verification .search-pair { margin-top:1.5rem; gap:2rem; }
 .search-verification li { margin:.5rem 0; color:var(--ink-2); line-height:1.6; }
+
+.search-stats small { color:var(--ink-2); font-size:.78rem; line-height:1.6; max-width:28ch; }
+@media(max-width:650px) { .search-stats { gap:1rem; } .search-stats small { font-size:.72rem; } }

@@ -59,3 +59,7 @@
 來源核對：measured SUT `efa176bc3536a9350dc12a9a909d55b63d1b6b69` 的 `inspection/runtime_verifier_v5.py:11–44`（答案shape／source與工具schema檢查）；`inspection/v5.py:175–242`（visual dispatch、case citations、finalize）；`inspection/runtime_verifier_v41.py:11–49`（基底工具／deadline／delivery檢查）。正式例f2-r023-ce-2的host_finalized、Post-hoc pass、answer_FP=1已從發布bundle核對，不將finalization標成獨立traffic-truth pass。
 
 本修訂驗收：正式base-path build、完整Round 2 validator、主導航名稱、Verifier置前內容、實例三種檢查結果、400px light／dark與無HTTP／runtime錯誤均通過；未更動資料或SUT。
+
+## 首頁數字文案修訂
+
+依研究者確認，三組數字改為288 Video tests、48 Condition combinations、3 Search methods。48的附註為4 weather presets × 4 speed ranges × 3 vehicle gaps；3的附註為Random／CE／Thompson與每方法96次。288不加each tested once，首頁不再用cells或staging gaps；Scenario Forge保留實際參數定義與研究範圍。
