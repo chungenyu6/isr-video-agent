@@ -151,3 +151,6 @@
 /* New study pages use local font fallbacks; no third-party font requests. */
 .search-site { font-family:var(--sans); }
 .search-site h1 { font-family:var(--serif); }
+
+.search-verification .search-pair { margin-top:1.5rem; gap:2rem; }
+.search-verification li { margin:.5rem 0; color:var(--ink-2); line-height:1.6; }

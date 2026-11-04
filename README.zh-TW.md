@@ -6,7 +6,7 @@
 
 | 層次 | 頁面 |
 |---|---|
-| 初次閱讀 | Overview、Video Agent、Properties、Scenario Forge、Samplers |
+| 初次閱讀 | Overview、Verifiable Video Agent、Properties、Scenario Forge、Samplers |
 | 深入探索 | How it works、Run traces、Previous studies、Architecture archive、Evidence & scope |
 
 參數選擇器只瀏覽已保存的結果，不生成影片或執行模型。V4.2、原 A48／B28 與舊 deep links 保留，各自標示實驗範圍。
@@ -56,3 +56,7 @@ bash /workspace/video-agent/sandbox/agent_user.sh --check \
 ```
 
 本次發布已獲授權；push main 會部署既有 GitHub Pages。CI執行 `python tools/validate_round02.py --portable`，檢查公開資產；lab的完整驗證另核對private source SHA與agent隔離。Live demo 本次完全不動。
+
+## Verifiable Video Agent 的展示用語
+
+名稱強調SUT內建Runtime Verifier與可檢視的執行紀錄，不表示交通答案已被證明正確。Runtime Verifier、Post-hoc Verifier與Property Evaluator分開展示；搜尋測試的是包含Runtime Verifier的整套frozen系統。Round 2的sampler回饋仍只有final-answer FN／FP事件，沒有把Verifier pass當成正確性分數。

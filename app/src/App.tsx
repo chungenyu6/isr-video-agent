@@ -33,7 +33,7 @@ export default function App() {
         <header className="mast">
           <a className="brand" href="#/">ISR <span className="ver">Falsification Search</span></a>
           <nav className="nav" aria-label="Main pages">
-            {[["overview","Overview",""],["system","Video Agent","system"],["properties","Properties","properties"],["forge","Scenario Forge","forge"],["samplers","Samplers","samplers"]].map(([view,label,path])=><a key={view} href={`#/${path}`} aria-current={route.page === "search" && route.view === view ? "page" : undefined}>{label}</a>)}
+            {[["overview","Overview",""],["system","Verifiable Video Agent","system"],["properties","Properties","properties"],["forge","Scenario Forge","forge"],["samplers","Samplers","samplers"]].map(([view,label,path])=><a key={view} href={`#/${path}`} aria-current={route.page === "search" && route.view === view ? "page" : undefined}>{label}</a>)}
           </nav>
         </header>
         <nav className="search-deeper" aria-label="Explore deeper"><span>Explore deeper</span><a href="#/how-it-works">How it works</a><a href="#/traces">Run traces</a><a href="#/previous-studies">Previous studies</a><a href="#/archive/v4.2">Architecture archive</a><a href="#/evidence">Evidence & scope</a></nav>

@@ -51,3 +51,11 @@
 ## 後續發布核准與修訂
 
 2026-11-04研究者核准將既有Ground Truth相關資訊公開並push發布。主標改以falsification search與failure patterns為主，副標保留實際video agent應用。桌面流程有可見回饋箭頭，手機依Samplers→Forge→Video Agent→Evaluator順時針排列。正式`/isr-video-agent/` base path build通過；CI另驗公開資產schema／hash／leak guard，不依賴lab私有來源。原lab完整validator繼續核對sources與Unix隔離。部署完成與否以對應commit的GitHub Actions結果為準。
+
+## Verifiable Video Agent 文案修訂
+
+依研究者要求，以Verifiable Video Agent作網站展示名稱，主導航與回圈同步；system頁首明示Runtime Verifier在SUT內。新增runtime檢查範圍、其語意正確性限制，以及整套系統受測的說明。三種Verifier／Evaluator維持分開，沒有改變Round 2 FN／FP reward或任何SUT程式。
+
+來源核對：measured SUT `efa176bc3536a9350dc12a9a909d55b63d1b6b69` 的 `inspection/runtime_verifier_v5.py:11–44`（答案shape／source與工具schema檢查）；`inspection/v5.py:175–242`（visual dispatch、case citations、finalize）；`inspection/runtime_verifier_v41.py:11–49`（基底工具／deadline／delivery檢查）。正式例f2-r023-ce-2的host_finalized、Post-hoc pass、answer_FP=1已從發布bundle核對，不將finalization標成獨立traffic-truth pass。
+
+本修訂驗收：正式base-path build、完整Round 2 validator、主導航名稱、Verifier置前內容、實例三種檢查結果、400px light／dark與無HTTP／runtime錯誤均通過；未更動資料或SUT。

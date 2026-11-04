@@ -15,7 +15,7 @@ English. Site copy and `README.md` are English. Internal planning documents live
 ## Scope
 
 The landing page presents Round 2 falsification search over frozen V5.3.
-Main pages: Overview, Video Agent, Properties, Scenario Forge and Samplers.
+Main pages: Overview, Verifiable Video Agent, Properties, Scenario Forge and Samplers.
 Explore deeper links to How it works, Run traces, Previous studies, Architecture
 archive and Evidence & scope. V4.2 and the A48/B28 studies remain readable on the
 site, labelled with their original scope; old hash routes remain supported.
@@ -120,3 +120,10 @@ cd app && npm run build
 
 Then check the site in a browser at desktop and 400 px widths, light and dark.
 Report what changed, what was checked, and what is still unverified.
+
+## System presentation terminology
+
+Use Verifiable Video Agent as the presentation name. Explicitly show the
+Runtime Verifier as part of the frozen SUT. This is not a proof of traffic
+correctness. Inspect Runtime/Post-hoc outcomes separately from oracle-based
+properties; do not imply verifier status is a Round 2 sampler reward.
