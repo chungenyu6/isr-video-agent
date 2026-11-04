@@ -1,6 +1,8 @@
 # ISR Falsification Search：靜態網站
 
-本機改版以 **Round 2／frozen V5.3** 為主線，尚未部署。原公開網站及 live demo 未修改。
+網站以 **Round 2／frozen V5.3** 為主線。研究者於2026-11-04核准發布既有Ground Truth證據與靜態改版。
+
+正式網址：[ISR Falsification Search](https://chungenyu6.github.io/isr-video-agent/)。Live demo 本次未修改。
 
 | 層次 | 頁面 |
 |---|---|
@@ -53,4 +55,4 @@ bash /workspace/video-agent/sandbox/agent_user.sh --check \
   /workspace/demos/isr-video-agent-demo/app/dist
 ```
 
-正式發布須另獲指示；push main 會部署既有 GitHub Pages。Live demo 本次完全不動。
+本次發布已獲授權；push main 會部署既有 GitHub Pages。CI執行 `python tools/validate_round02.py --portable`，檢查公開資產；lab的完整驗證另核對private source SHA與agent隔離。Live demo 本次完全不動。

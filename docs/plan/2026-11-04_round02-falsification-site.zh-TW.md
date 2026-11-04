@@ -1,6 +1,6 @@
 # Round 2 Falsification Search：靜態網站改版計畫
 
-狀態：**已獲實作指示，本機實作及驗收完成，等待研究者審閱；尚未部署**。日期：2026-11-04 America/Chicago。
+狀態：**已獲實作指示，本機驗收完成；研究者已核准此版公開發布，部署狀態見GitHub Actions**。日期：2026-11-04 America/Chicago。
 
 ## 1. 目標與範圍
 
@@ -8,7 +8,7 @@
 
 主敘事改為 Round 2 falsification search，以 frozen V5.3 為被測系統。四個組件各有獨立頁面；短首頁負責串起全程。保留 How it works、實際 replay、Gemma 輸入／輸出、Pi + Nemotron 工具動作。V4.2 移至 Archive，既有能力批次和受控 diagnostics 與 Round 2 清楚分開。
 
-使用者已指示「去做吧」，本次執行靜態改版並完成本機預覽供研究者審閱；公開部署及 live demo 更新各等明確指示。所有互動僅瀏覽已保存資料，不生成影片、不發模型請求、不改 SUT／evaluator／研究紀錄。沿用 React/Vite、GitHub Pages 與 hash routing，不另建託管平台。
+使用者已指示「去做吧」，本次執行靜態改版並完成本機預覽供研究者審閱；研究者其後於2026-11-04核准公開Ground Truth相關資訊及push靜態網站；live demo 更新仍等另行指示。所有互動僅瀏覽已保存資料，不生成影片、不發模型請求、不改 SUT／evaluator／研究紀錄。沿用 React/Vite、GitHub Pages 與 hash routing，不另建託管平台。
 
 本計畫承接使用者本次要求，取代本站 AGENTS.md 舊 Scope 中「不新增 overview」及兩頁限制；實作時同步更新該 Scope。其資料邊界、誠實呈現及禁止 auto-push 規則繼續適用。網站文案沿用 English；計畫及 README.zh-TW.md 使用繁體中文。
 
@@ -209,8 +209,8 @@ Round 2 兩個 campaign 必須合併並去重：parent Random／CE64 + extension
 | P2 | 首頁＋四個組件頁的本機首版、How it works、Archive 路由 | 已完成 |
 | P3 | 安全匯出、選定 replay、參數瀏覽、搜尋圖與交叉連結 | 已完成 |
 | P4 | 數字／邊界／build／瀏覽器驗收、README／AGENTS 更新 | 已完成，見同目錄site-validation文件 |
-| P5 | 提供本機預覽及變更說明，研究者審閱 | 本機頁面／截圖已備妥，等待審閱 |
-| P6 | 獲明確指示後發布靜態網站；live demo 另案 | 未授權執行 |
+| P5 | 提供本機預覽及變更說明，研究者審閱 | 研究者已審閱方向，要求標題／回圈調整並核准發布 |
+| P6 | 獲明確指示後發布靜態網站；live demo 另案 | 已獲核准；使用既有GitHub Pages流程，live demo不動 |
 
 P2 可先以已核對 summary 做版面，但所有未接上的媒體標為待接資料；交 P5 時主要路徑不得留 placeholder。
 
@@ -229,3 +229,7 @@ P2 可先以已核對 summary 做版面，但所有未接上的媒體標為待�
 ## 13. 開發交接
 
 依本計畫先做 Round 2 的離線資料與代表案例 inventory，再在既有靜態網站加入 Overview、Video Agent、Properties、Scenario Forge、Samplers，保留 How it works 與歷史 deep links。以四元件分工和一個真實反例作主線，trace 逐層展開；V4.2 移 Archive，A48/B28 移 Previous studies。新素材用獨立 allowlist 匯出與 hash binding，所有數字對照 Round 2 兩批既有資料，禁止新增模型／Forge 執行。完成本機預覽、資料邊界及前端驗收並回報變更／證據／限制後停止；公開部署與 live demo 更新等研究者另行指示。
+
+## 14. 發布修訂（2026-11-04）
+
+研究者明確核准既有Ground Truth相關資訊上站及push發布。首頁標題改為 **Discovering failure patterns through falsification search.**，保留video-agent應用副標；流程圖桌面版有Evaluator→Sampler回饋箭頭，手機版四個元件順時針成圈。Ground Truth原已存在於四例bundle，本次維持明確標籤與可切換圖層，沒有新增模型測量。GitHub Actions新增portable資料驗證，lab完整驗證仍保留private source hashes及agent隔離檢查。

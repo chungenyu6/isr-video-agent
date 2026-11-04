@@ -1,6 +1,6 @@
 # Round 2 靜態改版：本機驗收
 
-日期：2026-11-04 America/Chicago。狀態：**本機改版完成，等待研究者審閱；未push／未部署／未修改live demo**。
+日期：2026-11-04 America/Chicago。狀態：**本機驗收完成；研究者其後核准靜態發布，live demo未修改**。
 
 ## 交付
 
@@ -47,3 +47,7 @@
 測過Chromium，未做Safari／Firefox或實體手機測試。未新增公開preview hosting，不宣稱外部訪客已能連線。
 
 自動審查曾阻擋資料匯出與bridge監聽：前者在強制權限與逐檔不可讀驗證後完成，後者改採loopback預覽。發現agent_user.sh會切換工作目錄，因此本站所有驗權限指令已改用絕對路徑。沒有放寬publish_guard。
+
+## 後續發布核准與修訂
+
+2026-11-04研究者核准將既有Ground Truth相關資訊公開並push發布。主標改以falsification search與failure patterns為主，副標保留實際video agent應用。桌面流程有可見回饋箭頭，手機依Samplers→Forge→Video Agent→Evaluator順時針排列。正式`/isr-video-agent/` base path build通過；CI另驗公開資產schema／hash／leak guard，不依賴lab私有來源。原lab完整validator繼續核對sources與Unix隔離。部署完成與否以對應commit的GitHub Actions結果為準。

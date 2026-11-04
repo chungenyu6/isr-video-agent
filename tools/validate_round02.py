@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Offline checks for exported Round 2 artifacts, source bindings and isolation."""
-import hashlib,json,subprocess,sys
+import argparse,hashlib,json,subprocess,sys
 from pathlib import Path
 sys.dont_write_bytecode=True
 import jsonschema
@@ -9,6 +9,7 @@ ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'content/search';BASE=Path('/w
 def read(p):return json.loads(p.read_text())
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--portable',action='store_true',help='Validate only published artifacts; private source and Unix boundary checks require the lab.');args=ap.parse_args()
  d=read(OUT/'experiment.json');jsonschema.validate(d,read(ROOT/'schema/round02-search.schema.json'))
  assert len({r['run_id'] for r in d['rows']})==288
  for arm,fn,fp,cov in [('random',1,7,44),('ce',2,10,43),('thompson',0,7,48)]:
@@ -37,11 +38,13 @@ def main():
  manifest=read(OUT/'publication-manifest.json')
  for a in manifest['assets']:
   p=(OUT/a['file']).resolve();assert p.is_relative_to(OUT.resolve());assert sha(p)==a['sha256'] and p.stat().st_size==a['bytes']
- for s in manifest['sources']:
-  p=BASE/s['source'] if 'source' in s else BASE/s['campaign']/'items'/s['run']/'oracle.json'
-  assert sha(p)==s['sha256'],'source changed since export'
+ if not args.portable:
+  for s in manifest['sources']:
+   p=BASE/s['source'] if 'source' in s else BASE/s['campaign']/'items'/s['run']/'oracle.json'
+   assert sha(p)==s['sha256'],'source changed since export'
  for p in OUT.rglob('*.json'):assert not leaks(p.read_text()),(p,leaks(p.read_text()))
- protected=[ROOT/'.git',ROOT/'bundles',ROOT/'content',ROOT/'app/public',ROOT/'app/dist']
- subprocess.run(['bash','/workspace/video-agent/sandbox/agent_user.sh','--check',*map(str,protected)],check=True)
- print('Round 2 PASS: schemas, 288 Y vectors, event totals, four replays, media, 72 states, asset/source hashes, leak guard and absolute-path boundary checks.')
+ if not args.portable:
+  protected=[ROOT/'.git',ROOT/'bundles',ROOT/'content',ROOT/'app/public',ROOT/'app/dist']
+  subprocess.run(['bash','/workspace/video-agent/sandbox/agent_user.sh','--check',*map(str,protected)],check=True)
+ print('Round 2 PASS: schemas, 288 Y vectors, event totals, four replays, media, 72 states, asset hashes and leak guard.' + (' Private source/boundary checks skipped in portable mode.' if args.portable else ' Source hashes and absolute-path boundary checks passed.'))
 if __name__=='__main__':main()

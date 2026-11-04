@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Round 2 local-review export. Sources read-only; no inference or deployment.
+"""Round 2 recorded-evidence export. Sources read-only; no inference or deployment.
 
 Requires root-owned mode-700 content and a passing tested-agent-user boundary
 check BEFORE reading private results. New media scope is four named recordings;
@@ -81,7 +81,7 @@ def main():
  write(OUT/'experiment.json',{'schema_version':1,'round':2,'query':query,'fields':rows[0]['Y_fields'],'arms':arms,'rows':public,'selected':selected,'weathers':WEATHERS,'bins':BINS,'cells':CELLS,'candidates':candidates['union'],'versions':rows[0]['versions'],'study_commit':manifest['experiment_commit'],'smoke_n':len(allrows)-len(rows)})
  write(OUT/'history.json',hist)
  assets=[{'file':str(p.relative_to(OUT)),'sha256':sha(p),'bytes':p.stat().st_size} for p in sorted(OUT.rglob('*')) if p.is_file() and p.name!='publication-manifest.json']
- write(OUT/'publication-manifest.json',{'schema_version':1,'sources':SOURCES,'assets':assets,'media_scope':list(SELECTED),'scope':'Protected local review; no deployment. Video proxies preserve frame count and timing.'})
+ write(OUT/'publication-manifest.json',{'schema_version':1,'sources':SOURCES,'assets':assets,'media_scope':list(SELECTED),'scope':'User-approved public Round 2 evidence. Video proxies preserve frame count and timing.'})
  subprocess.run(['bash','/workspace/video-agent/sandbox/agent_user.sh','--check',str(OUT)],check=True)
  print(f'Exported {len(rows)} summaries, {len(selected)} detailed replays, {len(hist)} saved states.')
 if __name__=='__main__':main()

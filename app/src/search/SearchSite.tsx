@@ -20,7 +20,27 @@ function More({ to, children }: {
     children: ReactNode;
 }) { return <a className="search-link" href={to}>{children} <span aria-hidden="true">↗</span></a>; }
 function Scope() { return <p className="search-scope">One fixed scene · adaptive search · no independent confirmation. These observations do not establish general method superiority.</p>; }
-function Loop() { return <div className="search-loop" aria-label="Search feedback loop">{[['samplers', '01', 'Samplers', 'Choose conditions'], ['forge', '02', 'Scenario Forge', 'Make the video'], ['system', '03', 'Video Agent', 'Produce an answer'], ['properties', '04', 'Property Evaluator', 'Check against truth']].map(([route, n, title, sub]) => <a key={route} href={`#/${route}`}><span className="search-number">{n}</span><strong>{title}</strong><small>{sub}</small><span aria-hidden="true">→</span></a>)}<p>FN / FP events feed back into the next choice. Ground truth goes only to the evaluator.</p></div>; }
+function Loop() {
+    return <figure className="search-loop" aria-label="Falsification search cycle: choose conditions, generate a video, run the system, evaluate, and feed outcomes back into sampling">
+      <div className="search-loop-grid">
+        {[
+          ['samplers', '01', 'Samplers', 'Choose conditions'],
+          ['forge', '02', 'Scenario Forge', 'Make the video'],
+          ['system', '03', 'Video Agent', 'Produce an answer'],
+          ['properties', '04', 'Property Evaluator', 'Check against truth'],
+        ].map(([route, n, title, sub]) => <a key={route} href={`#/${route}`}>
+          <span className="search-number">{n}</span><strong>{title}</strong><small>{sub}</small>
+        </a>)}
+      </div>
+      <svg className="search-loop-return" viewBox="0 0 1000 72" role="img" aria-label="Evaluation outcomes return to the sampler to guide the next trial">
+        <defs><marker id="feedback-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" /></marker></defs>
+        <path d="M 875 0 V 25 Q 875 47 853 47 H 147 Q 125 47 125 25 V 3" fill="none" stroke="currentColor" strokeWidth="1.6" markerEnd="url(#feedback-arrow)" />
+        <rect x="350" y="33" width="300" height="26" fill="var(--ground)" />
+        <text x="500" y="51" textAnchor="middle">FN / FP outcomes guide the next trial</text>
+      </svg>
+      <figcaption><b>Repeat with the next conditions.</b> Ground truth goes only to the evaluator; FN / FP outcomes feed back to the sampler.</figcaption>
+    </figure>;
+}
 function Results({ d }: {
     d: SearchData;
 }) { return <div className="search-table-wrap"><table><caption>Recorded search outcomes · an event means at least one missed or extra target in a run</caption><thead><tr><th>Method</th><th>Runs</th><th>Misses · FN</th><th>Overcounts · FP</th><th>Cells visited</th></tr></thead><tbody>{d.arms.map(a => <tr key={a.arm}><th>{names[a.arm]}</th><td>{a.n}</td><td>{a.FN} / {a.n}</td><td>{a.FP} / {a.n}</td><td>{a.coverage} / 48</td></tr>)}</tbody></table></div>; }
@@ -29,7 +49,7 @@ function Examples({ d }: {
 }) { return <div className="search-examples">{d.selected.map((c, i) => <a href={href(c.id)} key={c.id}><span className="eyebrow">Recorded example {String(i + 1).padStart(2, '0')}</span><h3>{c.title}</h3><p>{c.note}</p><span className="search-link">Inspect this run ↗</span></a>)}</div>; }
 function Overview({ d }: {
     d: SearchData;
-}) { return <><Heading tag="Round 2 / Recorded experiment / Frozen V5.3" title="Finding when a video agent gets traffic wrong.">We vary a simulated traffic scene, ask a fixed system to find wrong-way vehicles, and search for conditions where it misses or overcounts them.</Heading><Loop /><div className="search-stats"><div><b>288</b><span>search runs</span></div><div><b>48</b><span>condition cells</span></div><div><b>3 × 96</b><span>trials across three methods</span></div></div><section><p className="eyebrow">What we observed</p><h2>Different searches. The same system.</h2><Results d={d}/><p>FN means a missed wrong-way vehicle. FP means an extra reported wrong-way vehicle. They can coexist in one run; adding them is not a total failure rate.</p><Scope /><More to="#/samplers">Explore how the methods searched</More></section><section><p className="eyebrow">Start with the evidence</p><h2>See what actually happened.</h2><Examples d={d}/><p className="search-scope">Four selected replays, not a representative frequency estimate. All 288 runs are available as summaries.</p></section></>; }
+}) { return <><Heading tag="Round 2 / Recorded experiment / Frozen V5.3" title="Discovering failure patterns through falsification search.">We vary a simulated traffic scene, ask a fixed system to find wrong-way vehicles, and search for conditions where it misses or overcounts them.</Heading><Loop /><div className="search-stats"><div><b>288</b><span>search runs</span></div><div><b>48</b><span>condition cells</span></div><div><b>3 × 96</b><span>trials across three methods</span></div></div><section><p className="eyebrow">What we observed</p><h2>Different searches. The same system.</h2><Results d={d}/><p>FN means a missed wrong-way vehicle. FP means an extra reported wrong-way vehicle. They can coexist in one run; adding them is not a total failure rate.</p><Scope /><More to="#/samplers">Explore how the methods searched</More></section><section><p className="eyebrow">Start with the evidence</p><h2>See what actually happened.</h2><Examples d={d}/><p className="search-scope">Four selected replays, not a representative frequency estimate. All 288 runs are available as summaries.</p></section></>; }
 function Pipeline() { return <ol className="search-pipeline">{[['Track', 'YOLO26s finds boxes; ByteTrack connects detections.'], ['Group', 'The host joins compatible track fragments into vehicle records.'], ['Traffic rule', 'A fixed program compares motion with nearby flow.'], ['Look', 'Gemma describes candidate appearance.'], ['Investigate', 'When a case opens, Pi + Nemotron may request more evidence.'], ['Assemble', 'The host writes the final structured answer.']].map(([a, b]) => <li key={a}><strong>{a}</strong><p>{b}</p></li>)}</ol>; }
 function System({ d }: {
     d: SearchData;

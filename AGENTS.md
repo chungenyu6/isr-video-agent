@@ -22,13 +22,15 @@ site, labelled with their original scope; old hash routes remain supported.
 
 Authority: docs/plan/2026-11-04_round02-falsification-site.zh-TW.md, explicitly
 approved for implementation by the researcher. This replaces the old two-page
-scope and no-overview rule. Work is local review only; no deployment or live-demo
-changes without a new instruction. Controls browse recordings, never start runs.
+scope and no-overview rule. On 2026-11-04 the researcher explicitly approved
+publishing the existing Round 2 ground-truth evidence and pushing this static
+site to GitHub Pages. Live-demo changes remain out of scope. Controls browse
+recordings, never start runs.
 
 Round 2 sources (read-only): experiments/falsification-search/rounds/round-02/
 RESULTS.zh-TW.md and the parent/extension campaigns named by tools/export_round02.py.
 The separate exporter permits exactly four named source videos, their simulator
-target boxes and visual_request media for local review. Existing exporters keep
+target boxes and visual_request media for publication (approved 2026-11-04). Existing exporters keep
 their original exclusions. New JSON must pass publish_guard without relaxing it.
 Before reading private sources, export_round02.py requires root-owned content/
 mode 700, umask 077 and an absolute-path agent boundary check. Keep .git/, app/public/

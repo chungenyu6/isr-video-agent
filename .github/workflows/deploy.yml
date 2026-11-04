@@ -31,6 +31,9 @@ jobs:
       - name: Validate every bundle (schema + leak + sanity)
         run: python tools/validate_bundle.py bundles/*/
 
+      - name: Validate Round 2 recorded evidence
+        run: python tools/validate_round02.py --portable
+
       - name: Site figures must equal the study report
         run: python tools/build_experiment.py --check
 
