@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import type { VersionKey } from "./types";
 
 export type Route =
+  | { page: "search"; view: string; id: string | null }
   | { page: "run"; bundle: string | null; t: number | null; stage: number | null }
   | { page: "case"; bundle: string | null; stage: number | null }
   | { page: "architecture"; version: VersionKey };
@@ -16,10 +17,15 @@ const num = (v: string | null) => (v !== null && v !== "" && Number.isFinite(Num
 export function parse(hash: string): Route {
   // A second "#" is an in-page anchor (for example #/architecture#agent-value).
   const [path, query] = hash.replace(/^#\/?/, "").split("#")[0].split("?");
-  const [head, arg] = path.split("/");
+  const [head, arg, third] = path.split("/");
+  const views: Record<string,string> = {"":"overview",system:"system",properties:"properties",forge:"forge",samplers:"samplers","how-it-works":"how","previous-studies":"previous",evidence:"evidence",traces:"traces"};
+  if (head in views) return { page: "search", view: views[head], id: null };
+  if (head === "search" && arg === "run") return { page: "search", view:"detail", id:third ?? null };
+  if (head === "archive" && arg === "v4.2") return {page:"architecture",version:"v42"};
   if (head === "architecture") return { page: "architecture", version: arg === "v4.2" ? "v42" : "v53" };
   const q = new URLSearchParams(query ?? "");
   if (head === "case") return { page: "case", bundle: arg ? decodeURIComponent(arg) : null, stage: num(q.get("stage")) };
+  if (head !== "run") return { page:"search", view:"missing", id:null };
   return {
     page: "run",
     bundle: head === "run" && arg ? decodeURIComponent(arg) : null,

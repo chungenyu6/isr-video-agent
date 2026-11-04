@@ -1,0 +1,49 @@
+# Round 2 靜態改版：本機驗收
+
+日期：2026-11-04 America/Chicago。狀態：**本機改版完成，等待研究者審閱；未push／未部署／未修改live demo**。
+
+## 交付
+
+- Overview＋Video Agent／Properties／Scenario Forge／Samplers 五個主要頁。
+- How it works、Run traces、Previous studies、Evidence & scope；V4.2架構與舊A48／B28 replay保留，標示歷史範圍。
+- 288筆搜尋摘要、4個完整案例、72組保存的batch狀態、6個候選cell。新資料約5.6MiB；只有四例附影片及詳細trace。
+- 圖片／影片／定義／圖表皆由本站提供；移除外部字型請求。
+- README.md／README.zh-TW.md／AGENTS.md與改版計畫已同步。
+
+## 代表例與解讀
+
+| Run | 用途 | 已核對的觀察 |
+|---|---|---|
+| f2-r002-thompson-4 | 有Pi的FP | appearance investigation；reported 3、expected 2；target_split=1，identity_wrong_different與agent_adopted_wrong均0，不講成身分誤判因果鏈 |
+| f2-r023-ce-2 | 無Pi的FP | Pi未啟動；rule_FP=1、answer_FP=1 |
+| f2-r002-random-2 | FN | 2.05m/s、gap24；其餘分層由實際保存counts呈現 |
+| f2-r001-random-3 | 正常對照 | 22個Y bits全0；不宣稱一般能力保證 |
+
+## 驗收結果
+
+| 檢查 | 結果 |
+|---|---|
+| TypeScript／Vite production build | 通過 |
+| 既有 bundle validator | 21／21通過 |
+| 既有 build_experiment.py --check | V5.3／V4.2數字與原報告一致 |
+| 新export schema／validator | 288個Y與counts、事件總數、slot唯一性、4例媒體／模型呼叫數、72組狀態與source／asset SHA一致 |
+| Leak guard | 所有新JSON通過，未放寬規則 |
+| 隔離 | 絕對路徑agent_user.sh --check通過；content、app/public、app/dist維持700 |
+| Chromium路由 | 主要五頁、深入頁、V4.2、舊架構／run／B7 case、四例新run皆可載入 |
+| 場景瀏覽 | weather／bin／gap／method可篩選，reload後保留選擇 |
+| Samplers | FN／FP切換、heatmap格子下鑽、CE／Random／Thompson狀態可查看 |
+| Replay | 四例影片metadata正常、960×540、34–36秒；frame slider、track／vehicle overlay與GT展開正常 |
+| Gemma／Pi | 真實圖片可載入；有Pi例可讀initial context與cases；無Pi例明示未啟動 |
+| 無效路由 | 未發布run與不存在頁面有可返回的明確訊息 |
+| 手機／dark mode | 400px，主要五頁與案例在light／dark無整頁橫向溢出；桌面1440px截圖已查看 |
+| 瀏覽器錯誤 | 驗收未見JavaScript runtime或HTTP 4xx／5xx錯誤 |
+
+## 本機審閱與限制
+
+預覽只允許container loopback `http://127.0.0.1:5173/#/`。外部裝置的localhost不是此容器；需使用能進入此容器的port forwarding。預覽啟動指令在README.zh-TW.md。截圖在docs/shots/（不進Git）。
+
+完整Gemma prompt body未匯出；頁面提供ledger intent／resolved args與真實input images／output text，明確說明這個限制。其餘284個runs只有摘要，沒有虛構完整trace。未新增模型／Forge執行，沒有獨立confirmation。
+
+測過Chromium，未做Safari／Firefox或實體手機測試。未新增公開preview hosting，不宣稱外部訪客已能連線。
+
+自動審查曾阻擋資料匯出與bridge監聽：前者在強制權限與逐檔不可讀驗證後完成，後者改採loopback預覽。發現agent_user.sh會切換工作目錄，因此本站所有驗權限指令已改用絕對路徑。沒有放寬publish_guard。

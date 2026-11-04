@@ -1,5 +1,8 @@
 # ISR Video Agent
 
+**Local redesign (not deployed): Round 2 falsification search.** The public URL below still serves the previous release. New main pages: Overview, Video Agent, Properties, Scenario Forge, Samplers. How it works, traces, previous studies and V4.2 remain available through Explore deeper. See [local review guide](README.zh-TW.md).
+
+
 **Live: https://chungenyu6.github.io/isr-video-agent/**
 
 A replay site for a video system that answers a traffic question about a fixed

@@ -1,0 +1,11 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema","type":"object",
+ "required":["schema_version","id","title","query","video","tracking","vehicles","appearance","agent","answer","ground_truth","properties","checks","source_video_sha256","proxy_sha256"],
+ "properties":{
+  "schema_version":{"const":1},"id":{"type":"string","pattern":"^f2-r[0-9]{3}-(random|ce|thompson)-[1-4]$"},
+  "appearance":{"type":"array","items":{"type":"object","required":["observation_ref","intent","origin","media","text","request_args"]}},
+  "agent":{"type":["object","null"]},
+  "properties":{"type":"object","required":["fields","Y","counts","info_fields"],"properties":{"fields":{"type":"array","minItems":22,"maxItems":22},"Y":{"type":"array","minItems":22,"maxItems":22,"items":{"enum":[0,1]}}}},
+  "source_video_sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"proxy_sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+ }
+}

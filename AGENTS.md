@@ -14,14 +14,31 @@ English. Site copy and `README.md` are English. Internal planning documents live
 
 ## Scope
 
-Two pages per version, the **run replay** and **How it works** (`#/architecture`
-= V5.3, `#/architecture/v4.2`), plus the V5.3 **diagnostic case replay**
-(`#/case/v53-diag-B<n>-pi-cap2`, three scenarios; researcher decision 2026-10-19).
-The replay picks its view from the bundle name (`v53-*` stage stepper, `v42-*` run
-clock); `v50-*` and `v52-*` links land on the V5.3 run of the same clip. The 7×4 diagnostic
-matrix is a table on How it works, not a grid of replays. Do not add an
-overview/leaderboard page, a live-run page or an "every run on this clip" grid.
-Live mode is out of scope until a runner for the current SUT exists.
+The landing page presents Round 2 falsification search over frozen V5.3.
+Main pages: Overview, Video Agent, Properties, Scenario Forge and Samplers.
+Explore deeper links to How it works, Run traces, Previous studies, Architecture
+archive and Evidence & scope. V4.2 and the A48/B28 studies remain readable on the
+site, labelled with their original scope; old hash routes remain supported.
+
+Authority: docs/plan/2026-11-04_round02-falsification-site.zh-TW.md, explicitly
+approved for implementation by the researcher. This replaces the old two-page
+scope and no-overview rule. Work is local review only; no deployment or live-demo
+changes without a new instruction. Controls browse recordings, never start runs.
+
+Round 2 sources (read-only): experiments/falsification-search/rounds/round-02/
+RESULTS.zh-TW.md and the parent/extension campaigns named by tools/export_round02.py.
+The separate exporter permits exactly four named source videos, their simulator
+target boxes and visual_request media for local review. Existing exporters keep
+their original exclusions. New JSON must pass publish_guard without relaxing it.
+Before reading private sources, export_round02.py requires root-owned content/
+mode 700, umask 077 and an absolute-path agent boundary check. Keep .git/, app/public/
+and app/dist/ mode 700; check absolute paths after every sync/build. Relative
+paths are unsafe here because agent_user.sh changes its working directory.
+
+The new summary data has its own schema, source/asset hash manifest and validator.
+Do not label these records as A48 or treat their SUT freeze as 476ef72.
+Round 2: 288 formal runs (96 per arm), FN 1/2/0 and FP 7/10/7 for Random/CE/
+Thompson; 14 smoke runs excluded. No independent confirmation or superiority claim.
 
 Earlier sites are git tags: `v52-site` (V5.2 + V4.2), `v50-site` (V5.0 + V4.2),
 `v42-site` (V4.2 only) and
@@ -87,7 +104,7 @@ not a successful strategy. Plans and decisions: `docs/plan/`.
    say that vLLM reserves 90% of each GPU, so its nvidia-smi figure is flat. Kalman predictions are drawn only as
    "prediction, not observed".
 8. After adding or changing published data, run
-   `bash /workspace/video-agent/sandbox/agent_user.sh --check bundles content app/public`.
+   `bash /workspace/video-agent/sandbox/agent_user.sh --check "$PWD/bundles" "$PWD/content" "$PWD/app/public" "$PWD/app/dist"`.
 9. No auto-push. Pushing `main` deploys the public site; ask first.
 
 ## Engineering rhythm
@@ -95,6 +112,7 @@ not a successful strategy. Plans and decisions: `docs/plan/`.
 ```bash
 python3 -B tools/validate_bundle.py bundles/*/
 python3 -B tools/build_experiment.py --check
+python3 -B tools/validate_round02.py
 cd app && npm run build
 ```
 
