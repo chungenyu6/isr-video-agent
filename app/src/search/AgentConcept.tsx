@@ -35,9 +35,10 @@ export default function AgentConcept() {
   const title = useId();
   useEffect(() => { let active = true; loadIllustration().then(s => {if (active) setShot(s);}).catch(() => {if (active) setFailed(true);}); return () => {active = false;}; }, []);
   return <figure className="agent-concept" aria-labelledby={title}>
-    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal Reasoning</h2></div><span className="concept-version">V5.3</span></header>
+    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal UAV Reasoning</h2></div><span className="concept-version">V5.3</span></header>
     <div className="concept-layout">
       <div className="concept-scene">
+        <p className="concept-inputs-label">Inputs</p>
         <div className="concept-query"><Icon kind="query"/><div><strong>User query:</strong><p>Are any vehicles moving against the major traffic? How many, what colors, and when happened?</p><small>Illustrative wording; the replay retains the original measured query.</small></div></div>
         <div className="concept-scene-label"><Icon kind="camera"/><b>A real recorded video</b></div>
         {shot ? <div className="concept-photo"><img src={asset(`content/search/${shot.image}`)} width={shot.width} height={shot.height} alt="Recorded traffic frame with a purple car selected by the program as moving against nearby flow"/>
@@ -52,7 +53,8 @@ export default function AgentConcept() {
         <a className="concept-replay" href="#/search/run/f2-r001-random-3">Inspect the recorded run ↗</a>
         <small>Source frame {shot?.frame ?? 155} · {((shot?.frame ?? 155)/(shot?.fps ?? 10)).toFixed(1)} s. Actual detector boxes and program selection; no ground-truth overlay.</small>
       </div>
-      <div className="concept-workflow">
+      <div className="concept-workflow" role="group" aria-label="Verifiable video agent system">
+        <div className="concept-system-boundary-label"><Icon kind="agent"/><strong>Verifiable Video Agent System</strong></div>
         <div className="concept-program">
           <p className="concept-lane-label">System 1: Program-guided decisions</p>
           <div className="concept-program-steps">

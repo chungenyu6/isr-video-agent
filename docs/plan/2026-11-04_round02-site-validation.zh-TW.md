@@ -79,3 +79,7 @@
 確認文案：System 1: Program-guided decisions；System 2: Agentic reasoning；Gemma (VLM) provides more details；Pi coding harness + Nemotron (LLM)；Assemble the final answer。移除Read saved evidence first及Count／colours／uncertainty輸出附註。System1／2為概念標籤，沒有新增Python／shell工具。
 
 Overview回圈前加入Runtime verification is not enough與failure-pattern說明；結果段改為Different search methods on the same system.。
+
+## 2026-11-05：UAV標題與系統邊界
+
+依研究者指定，概念圖標題改為A Verifiable Video Agent for Spatio-temporal UAV Reasoning。左側User query與影片標示Inputs，放在系統框外；右側以Verifiable Video Agent System標頭與實線邊框涵蓋System1、Gemma、System2、Runtime Verifier及Assemble the final answer。桌面使用右箭頭、手機使用向下箭頭連接輸入與系統。僅調整網站展示，既有固定camera影片與實驗範圍未改。
