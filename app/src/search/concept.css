@@ -73,3 +73,10 @@
 
 .concept-look { display:flex; align-items:center; gap:.5rem; padding:.6rem .8rem 0; font-size:.72rem; color:var(--ink-2); }
 .concept-look .concept-icon { width:20px; height:20px; }
+
+.concept-query { display:flex; align-items:start; gap:.6rem; margin-bottom:1.2rem; padding:1rem; border-left:3px solid var(--accent); background:var(--surface-2); }
+.concept-query > div { min-width:0; }
+.concept-query strong { font-size:.8rem; }
+.search-site .concept-query p { font-size:.85rem; line-height:1.6; margin:.4rem 0; color:var(--ink); }
+.concept-query small { font-size:.65rem; line-height:1.5; color:var(--ink-2); display:block; }
+.search-site .concept-investigation .concept-system-two { grid-column:1/-1; color:var(--unk); margin:0 0 .4rem; font-size:.65rem; text-transform:uppercase; letter-spacing:.1em; font-weight:700; }

@@ -7,9 +7,10 @@ interface Illustration {
   run_id: string; frame: number; fps: number; width: number; height: number; image: string;
   boxes: {bbox: number[]; vehicle: string | null; candidate: boolean}[];
 }
-type IconKind = 'camera' | 'boxes' | 'group' | 'rule' | 'agent' | 'inspect' | 'shield' | 'answer';
+type IconKind = 'query' | 'camera' | 'boxes' | 'group' | 'rule' | 'agent' | 'inspect' | 'shield' | 'answer';
 function Icon({kind}: {kind: IconKind}) {
   const paths: Record<IconKind, ReactNode> = {
+    query: <><path d="M4 3h16v13H9l-5 5z"/><path d="M8 7h8M8 11h6"/></>,
     camera: <><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></>,
     boxes: <><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"/><rect x="7" y="8" width="10" height="8" rx="2"/><path d="M9 8V6h6v2M9 16v2M15 16v2"/></>,
     group: <><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="16" y="9" width="6" height="6" rx="1"/><path d="m8 6 8 6-8 6"/></>,
@@ -34,9 +35,10 @@ export default function AgentConcept() {
   const title = useId();
   useEffect(() => { let active = true; loadIllustration().then(s => {if (active) setShot(s);}).catch(() => {if (active) setFailed(true);}); return () => {active = false;}; }, []);
   return <figure className="agent-concept" aria-labelledby={title}>
-    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>Program rules. Active inspection. Runtime verification.</h2></div><span className="concept-version">V5.3</span></header>
+    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal Reasoning</h2></div><span className="concept-version">V5.3</span></header>
     <div className="concept-layout">
       <div className="concept-scene">
+        <div className="concept-query"><Icon kind="query"/><div><strong>User query:</strong><p>Are any vehicles moving against the major traffic? How many, what colors, and when happened?</p><small>Illustrative wording; the replay retains the original measured query.</small></div></div>
         <div className="concept-scene-label"><Icon kind="camera"/><b>A real recorded video</b></div>
         {shot ? <div className="concept-photo"><img src={asset(`content/search/${shot.image}`)} width={shot.width} height={shot.height} alt="Recorded traffic frame with a purple car selected by the program as moving against nearby flow"/>
           <svg viewBox={`0 0 ${shot.width} ${shot.height}`} aria-label="Actual detector boxes; amber marks the program-selected wrong-way vehicle" role="img">
@@ -52,7 +54,7 @@ export default function AgentConcept() {
       </div>
       <div className="concept-workflow">
         <div className="concept-program">
-          <p className="concept-lane-label">Fast program path</p>
+          <p className="concept-lane-label">System 1: Program-guided decisions</p>
           <div className="concept-program-steps">
             <div><Icon kind="boxes"/><strong>Detect &amp; track</strong><small>YOLO26s + ByteTrack</small></div>
             <span className="concept-arrow" aria-hidden="true">→</span>
@@ -61,16 +63,17 @@ export default function AgentConcept() {
             <div><Icon kind="rule"/><strong>Apply traffic rules</strong><small>Symbolic motion checks</small></div>
           </div>
         </div>
-        <div className="concept-look"><Icon kind="inspect"/><span>Gemma checks candidate appearance</span></div>
+        <div className="concept-look"><Icon kind="inspect"/><span>Gemma (VLM) provides more details</span></div>
         <div className="concept-fork"><span className="concept-condition">↓ If a case needs more evidence</span><span className="concept-direct">Otherwise → assemble answer</span></div>
         <div className="concept-investigation">
-          <div className="concept-agent"><Icon kind="agent"/><strong>Investigation agent</strong><small>Pi + Nemotron</small><span>Choose what to inspect</span></div>
+          <p className="concept-lane-label concept-system-two">System 2: Agentic reasoning</p>
+          <div className="concept-agent"><Icon kind="agent"/><strong>Investigation agent</strong><small>Pi coding harness + Nemotron (LLM)</small><span>Choose what to inspect</span></div>
           <div className="concept-active-loop"><span aria-hidden="true">⇄</span><small>Ask · observe · decide</small></div>
           <div className="concept-inspect"><Icon kind="inspect"/><strong>Actively inspect video</strong><small>Selected frames / crops<br/>Compare sightings with Gemma</small></div>
-          <p>Read saved evidence first. Request a targeted look when useful. Return a supported finding or leave the case unresolved.</p>
+          <p>Request a targeted look when useful. Return a supported finding or leave the case unresolved.</p>
         </div>
         <div className="concept-verifier"><Icon kind="shield"/><div><strong>Runtime Verifier</strong><span>Checks tool operations, sources, schemas and resources, plus host answer structure.</span></div></div>
-        <div className="concept-answer"><Icon kind="answer"/><strong>Host assembles the answer</strong><span>Count · colours · uncertainty</span></div>
+        <div className="concept-answer"><Icon kind="answer"/><strong>Assemble the final answer</strong></div>
       </div>
     </div>
     <figcaption>A program-first path with a conditional investigation loop. Runtime checks enforce execution constraints; traffic correctness is assessed separately by the Property Evaluator.</figcaption>

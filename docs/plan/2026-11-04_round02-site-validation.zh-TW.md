@@ -71,3 +71,11 @@
 圖示分為快路徑（YOLO／ByteTrack→grouping→symbolic traffic rule）、Gemma appearance check、條件式Pi＋Nemotron主動inspect／compare，以及Runtime Verifier與host assembly。frozen工具契約沒有Python／shell，故不將調查者畫成Python coding agent。System1／System2只作設計直覺，不宣稱認知系統或新架構。
 
 首頁加入並排FP／FN累積曲線，重用Samplers的實際trial資料；標示不同縱軸尺度、64次prefix與非共享wall-clock。Chromium驗證兩頁共享圖、圖片／實際車框、逆向候選、refusal／verification用語、replay連結、FP 7／10／7與FN 1／2／0的曲線末值，以及400px light／dark無整頁橫向溢出，未見HTTP／runtime錯誤。
+
+## 概念圖用語與User query修訂
+
+研究者指定標題為A Verifiable Video Agent for Spatio-temporal Reasoning（保留連字號）。圖上新增query icon與指定問題：Are any vehicles moving against the major traffic? How many, what colors, and when happened? 此為illustrative wording，實測query與run資料不改。
+
+確認文案：System 1: Program-guided decisions；System 2: Agentic reasoning；Gemma (VLM) provides more details；Pi coding harness + Nemotron (LLM)；Assemble the final answer。移除Read saved evidence first及Count／colours／uncertainty輸出附註。System1／2為概念標籤，沒有新增Python／shell工具。
+
+Overview回圈前加入Runtime verification is not enough與failure-pattern說明；結果段改為Different search methods on the same system.。
