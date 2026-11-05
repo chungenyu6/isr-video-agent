@@ -61,6 +61,24 @@ def detail(r):
  d={'schema_version':1,'id':rid,'title':title,'note':note,'query':next(e['user_query'] for e in events if e['kind']=='query_input'),'source_video_sha256':r['video_sha256'],'proxy_sha256':sha(proxy),'video':video,'tracking':tracking,**groups,'appearance':obs,'agent':agent,'cases':cases_of(events),'answer':answer,'ground_truth':gt,'properties':{k:pe[k] for k in ['fields','Y','counts','info_fields']},'checks':{'runtime_final':run['terminal_reason'],'posthoc':verdict['v5_status'],'posthoc_issues':verdict['issues'],'traffic_truth_checked':verdict['traffic_truth_checked']},'configuration':{'gemma_temperature':conf['visual_config']['temperature'],'thinking':False,'tools':conf['surface']['descriptions']},'wall_sec':round(run['wall_sec'],3)}
  assert len(obs)==r['gemma_calls'];assert (agent['calls'] if agent else 0)==r['nemotron_calls'];write(dest/'bundle.json',d)
  return {'id':rid,'title':title,'note':note}
+def illustration():
+ # Reuse an already published proxy; add no source video, model call or label.
+ rid='f2-r001-random-3';frame=155;root=OUT/'runs'/rid;b=read(root/'bundle.json')
+ dest=OUT/'illustration';dest.mkdir(exist_ok=True,mode=0o700)
+ image=dest/'frame-155.jpg'
+ subprocess.run(['ffmpeg','-v','error','-y','-i',str(root/'video.mp4'),'-vf','select=eq(n\\,155)','-frames:v','1','-q:v','2',str(image)],check=True)
+ candidates={t['vehicle_ref'] for t in b['answer']['targets']}
+ boxes=[]
+ for box in b['tracking']['frames'][frame]['d']:
+  vi=int(box[6]);vehicle=b['vehicles'][vi] if vi>=0 else None
+  boxes.append({'bbox':box[:4],'vehicle':vehicle['ref'] if vehicle else None,
+                'candidate':bool(vehicle and vehicle['ref'] in candidates and any(a<=frame<=z for a,z in vehicle['opposing']))})
+ assert any(x['candidate'] for x in boxes)
+ write(OUT/'illustration.json',{'schema_version':1,'run_id':rid,'frame':frame,'fps':b['video']['fps'],
+   'width':b['video']['width'],'height':b['video']['height'],'image':'illustration/frame-155.jpg',
+   'image_sha256':sha(image),'proxy_sha256':sha(root/'video.mp4'),'boxes':boxes,
+   'scope':'Recorded source frame with real detector boxes and program-selected opposing vehicle; no ground-truth overlay.'})
+
 def main():
  os.umask(0o077)
  assert os.geteuid()==0 and (ROOT/'content').stat().st_uid==0 and (ROOT/'content').stat().st_mode&0o777==0o700,'private content boundary required'
@@ -80,6 +98,7 @@ def main():
  manifest=read(EXT/'manifest.json');bind(EXT/'manifest.json');bind(PARENT/'manifest.json');query=read(OUT/'runs'/next(iter(SELECTED))/'bundle.json')['query'];assert hashlib.sha256(query.encode()).hexdigest()==manifest['query_sha256'];candidates=read(EXT/'candidates.json');bind(EXT/'candidates.json')
  write(OUT/'experiment.json',{'schema_version':1,'round':2,'query':query,'fields':rows[0]['Y_fields'],'arms':arms,'rows':public,'selected':selected,'weathers':WEATHERS,'bins':BINS,'cells':CELLS,'candidates':candidates['union'],'versions':rows[0]['versions'],'study_commit':manifest['experiment_commit'],'smoke_n':len(allrows)-len(rows)})
  write(OUT/'history.json',hist)
+ illustration()
  assets=[{'file':str(p.relative_to(OUT)),'sha256':sha(p),'bytes':p.stat().st_size} for p in sorted(OUT.rglob('*')) if p.is_file() and p.name!='publication-manifest.json']
  write(OUT/'publication-manifest.json',{'schema_version':1,'sources':SOURCES,'assets':assets,'media_scope':list(SELECTED),'scope':'User-approved public Round 2 evidence. Video proxies preserve frame count and timing.'})
  subprocess.run(['bash','/workspace/video-agent/sandbox/agent_user.sh','--check',str(OUT)],check=True)

@@ -35,6 +35,18 @@ def main():
   if h['arm']=='random':assert h['before']==h['after']
   if h['arm']=='ce':assert all(abs(sum(axis)-1)<1e-9 for event in h['after']['weights'].values() for axis in event)
   if h['arm']=='thompson':assert sum(h['after']['n'])==h['batch']*4
+ illustration=read(OUT/'illustration.json');example=read(OUT/'runs'/illustration['run_id']/'bundle.json')
+ assert illustration['image_sha256']==sha(OUT/illustration['image'])
+ assert illustration['proxy_sha256']==example['proxy_sha256']
+ assert illustration['width']==example['video']['width'] and illustration['height']==example['video']['height']
+ frame=illustration['frame'];assert 0<=frame<example['video']['nb_frames']
+ actual=example['tracking']['frames'][frame]['d'];assert len(illustration['boxes'])==len(actual)
+ for box,det in zip(illustration['boxes'],actual):
+  assert box['bbox']==det[:4]
+  vehicle=example['vehicles'][int(det[6])] if det[6]>=0 else None
+  assert box['vehicle']==(vehicle['ref'] if vehicle else None)
+  if box['candidate']:assert vehicle and any(a<=frame<=z for a,z in vehicle['opposing'])
+ assert any(box['candidate'] for box in illustration['boxes'])
  manifest=read(OUT/'publication-manifest.json')
  for a in manifest['assets']:
   p=(OUT/a['file']).resolve();assert p.is_relative_to(OUT.resolve());assert sha(p)==a['sha256'] and p.stat().st_size==a['bytes']

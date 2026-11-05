@@ -63,3 +63,11 @@
 ## 首頁數字文案修訂
 
 依研究者確認，三組數字改為288 Video tests、48 Condition combinations、3 Search methods。48的附註為4 weather presets × 4 speed ranges × 3 vehicle gaps；3的附註為Random／CE／Thompson與每方法96次。288不加each tested once，首頁不再用cells或staging gaps；Scenario Forge保留實際參數定義與研究範圍。
+
+## 共用概念圖與FP／FN曲線
+
+依研究者要求，在Overview與system頁加入共用HTML／SVG概念圖。原圖來自已發布f2-r001-random-3 proxy的frame155；只使用該幀實際detector boxes與program opposing status，不是GT overlay。抽幀不執行新模型，publication manifest新增source-proxy／image hash binding；validator同時檢查boxes、對應V refs與opposing phase。
+
+圖示分為快路徑（YOLO／ByteTrack→grouping→symbolic traffic rule）、Gemma appearance check、條件式Pi＋Nemotron主動inspect／compare，以及Runtime Verifier與host assembly。frozen工具契約沒有Python／shell，故不將調查者畫成Python coding agent。System1／System2只作設計直覺，不宣稱認知系統或新架構。
+
+首頁加入並排FP／FN累積曲線，重用Samplers的實際trial資料；標示不同縱軸尺度、64次prefix與非共享wall-clock。Chromium驗證兩頁共享圖、圖片／實際車框、逆向候選、refusal／verification用語、replay連結、FP 7／10／7與FN 1／2／0的曲線末值，以及400px light／dark無整頁橫向溢出，未見HTTP／runtime錯誤。

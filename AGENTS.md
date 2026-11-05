@@ -127,3 +127,12 @@ Use Verifiable Video Agent as the presentation name. Explicitly show the
 Runtime Verifier as part of the frozen SUT. This is not a proof of traffic
 correctness. Inspect Runtime/Post-hoc outcomes separately from oracle-based
 properties; do not imply verifier status is a Round 2 sampler reward.
+
+## Shared visual overview
+
+Overview and system share AgentConcept (HTML/SVG). Its screenshot is extracted
+from an already published proxy, with actual detector boxes and program
+selection, never an invented or oracle-derived detection. illustration.json and
+the asset manifest bind it to the source proxy. The schematic is conditional,
+not a replay of the pictured run. Pi + Nemotron has no Python/shell tool in the
+frozen contract. Keep this distinction and the verifier boundary visible.

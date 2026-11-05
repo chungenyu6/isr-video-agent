@@ -60,3 +60,11 @@ bash /workspace/video-agent/sandbox/agent_user.sh --check \
 ## Verifiable Video Agent 的展示用語
 
 名稱強調SUT內建Runtime Verifier與可檢視的執行紀錄，不表示交通答案已被證明正確。Runtime Verifier、Post-hoc Verifier與Property Evaluator分開展示；搜尋測試的是包含Runtime Verifier的整套frozen系統。Round 2的sampler回饋仍只有final-answer FN／FP事件，沒有把Verifier pass當成正確性分數。
+
+## 共用系統概念圖與首頁搜尋曲線
+
+Overview與Verifiable Video Agent共用`AgentConcept`：真實Round 2影片幀＋實際detector boxes，配上偵測／追蹤、分組、symbolic traffic rules、conditional Pi＋Nemotron調查、Gemma主動檢視與Runtime Verifier圖示。示例為f2-r001-random-3的frame155；畫面標註program-selected candidate，不混入GT。這是架構示意，並不表示該正常對照run啟動了Pi。
+
+首頁並排FP／FN累積曲線，資料沿用288筆結果，顯示不同y軸尺度與分期採樣限制。Samplers頁共用曲線元件。概念圖使用原生HTML／SVG以維持手機可讀與可存取性；沒有AI合成車輛畫面。
+
+`export_round02.py`從既有發布proxy抽出示例原幀，`illustration.json`綁proxy／image SHA與實際boxes；manifest涵蓋新增資產。`validate_round02.py`檢查截圖標註與原run的tracking／opposing phases一致。不新增模型或Forge執行。

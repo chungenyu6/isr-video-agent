@@ -4,6 +4,7 @@ import { asset } from '../data';
 import type { Detail, History, SearchData, SearchRow } from './types';
 import { binLabel, definitions, layers, names } from './glossary';
 import './search.css';
+import AgentConcept from './AgentConcept';
 const href = (id: string) => `#/search/run/${id}`;
 const media = (id: string, p: string) => asset(`content/search/runs/${id}/${p}`);
 const pretty = (x: unknown) => JSON.stringify(x, null, 2);
@@ -49,11 +50,11 @@ function Examples({ d }: {
 }) { return <div className="search-examples">{d.selected.map((c, i) => <a href={href(c.id)} key={c.id}><span className="eyebrow">Recorded example {String(i + 1).padStart(2, '0')}</span><h3>{c.title}</h3><p>{c.note}</p><span className="search-link">Inspect this run ↗</span></a>)}</div>; }
 function Overview({ d }: {
     d: SearchData;
-}) { return <><Heading tag="Round 2 / Recorded experiment / Frozen V5.3" title="Discovering failure patterns through falsification search.">We vary a simulated traffic scene, ask a fixed video agent with a Runtime Verifier to find wrong-way vehicles, and search for conditions where it misses or overcounts them.</Heading><Loop /><div className="search-stats"><div><b>288</b><span>Tests on generated videos</span><small>Varying weather, speeds and vehicle gaps</small></div><div><b>48</b><span>Condition combinations</span><small>4 weather presets × 4 speed ranges × 3 vehicle gaps</small></div><div><b>3</b><span>Search methods</span><small>Random · CE · Thompson<br />96 tests per method</small></div></div><p className="search-scope">One fixed traffic scene, explored under varied weather, vehicle speeds and vehicle gaps.</p><section><p className="eyebrow">What we observed</p><h2>Different searches. The same system.</h2><Results d={d}/><p>FN means a missed wrong-way vehicle. FP means an extra reported wrong-way vehicle. They can coexist in one run; adding them is not a total failure rate.</p><Scope /><More to="#/samplers">Explore how the methods searched</More></section><section><p className="eyebrow">Start with the evidence</p><h2>See what actually happened.</h2><Examples d={d}/><p className="search-scope">Four selected replays, not a representative frequency estimate. All 288 runs are available as summaries.</p></section></>; }
+}) { return <><Heading tag="Round 2 / Recorded experiment / Frozen V5.3" title="Discovering failure patterns through falsification search.">We vary a simulated traffic scene, ask a fixed video agent with a Runtime Verifier to find wrong-way vehicles, and search for conditions where it misses or overcounts them.</Heading><AgentConcept /><Loop /><div className="search-stats"><div><b>288</b><span>Tests on generated videos</span><small>Varying weather, speeds and vehicle gaps</small></div><div><b>48</b><span>Condition combinations</span><small>4 weather presets × 4 speed ranges × 3 vehicle gaps</small></div><div><b>3</b><span>Search methods</span><small>Random · CE · Thompson<br />96 tests per method</small></div></div><p className="search-scope">One fixed traffic scene, explored under varied weather, vehicle speeds and vehicle gaps.</p><section><p className="eyebrow">What we observed</p><h2>Different searches. The same system.</h2><OverviewPlots d={d}/><Results d={d}/><p>FN means a missed wrong-way vehicle. FP means an extra reported wrong-way vehicle. They can coexist in one run; adding them is not a total failure rate.</p><Scope /><More to="#/samplers">Explore how the methods searched</More></section><section><p className="eyebrow">Start with the evidence</p><h2>See what actually happened.</h2><Examples d={d}/><p className="search-scope">Four selected replays, not a representative frequency estimate. All 288 runs are available as summaries.</p></section></>; }
 function Pipeline() { return <ol className="search-pipeline">{[['Track', 'YOLO26s finds boxes; ByteTrack connects detections.'], ['Group', 'The host joins compatible track fragments into vehicle records.'], ['Traffic rule', 'A fixed program compares motion with nearby flow.'], ['Look', 'Gemma describes candidate appearance.'], ['Investigate', 'When a case opens, Pi + Nemotron may request more evidence.'], ['Assemble', 'The host writes the final structured answer.']].map(([a, b]) => <li key={a}><strong>{a}</strong><p>{b}</p></li>)}</ol>; }
 function System({ d }: {
     d: SearchData;
-}) { return <><Heading tag="01 / Verifiable Video Agent" title="A video agent with runtime verification.">The system combines video perception, program rules and model-led investigation with a Runtime Verifier. Falsification search tests this whole system, including its checks.</Heading>
+}) { return <><Heading tag="01 / Verifiable Video Agent" title="A video agent with runtime verification.">The system combines video perception, program rules and model-led investigation with a Runtime Verifier. Falsification search tests this whole system, including its checks.</Heading><AgentConcept />
 <section className="search-boundary search-verification">
   <p className="eyebrow">Inside the system under test</p>
   <h2>Runtime verification is built in.</h2>
@@ -105,10 +106,35 @@ function Browser({ d }: {
 function Forge({ d }: {
     d: SearchData;
 }) { return <><Heading tag="03 / Scenario Forge" title="Change the conditions. Keep the scene fixed.">Four weather presets, four speed ranges and three staging gaps define 48 condition cells. Each run uses one exact speed inside its selected range.</Heading><div className="search-pair"><section><h2>What changes?</h2><p>Clear or heavy rain, at noon or sunset. Speeds from 2 to 22 m/s. Staging gaps of 12, 18 or 24 m.</p><p><strong>Gap is spacing between off-screen staging slots.</strong> It is not a measured distance between visible cars in every frame.</p></section><section className="search-fixed"><span className="eyebrow">What stays fixed</span><p>Scene seed 9943 · 12 vehicles · 2 wrong-way targets · 35-second requested window · 960 × 540 · 10 fps · same camera and geometry.</p><p className="search-scope">Recorded frame count can yield 34.9 s of video; replays use actual frames and timing.</p></section></div><Browser d={d}/><section><h2>From request to evidence.</h2><ol className="search-pipeline"><li><strong>Request</strong><p>Set weather, speed and staging gap in the frozen template.</p></li><li><strong>Create job</strong><p>Submit once, then poll until completion.</p></li><li><strong>Collect</strong><p>Download video, simulator truth, trace and metadata.</p></li><li><strong>Check</strong><p>Verify parameters, frame alignment and target visibility.</p></li></ol><div className="search-boundary"><b>Two separate destinations</b><p>Video → Video Agent<br />Simulator ground truth → Property Evaluator</p><small>Ground truth is never supplied to the tested agent.</small></div></section><details><summary>Inspect a safe API request example</summary><p>Illustrative selection of real Round 2 request fields; not a complete executable request.</p><pre>{pretty({ features: { environment: { observability: 'nominal', weather: 'HardRainNoon' }, traffic: { speed_mps: 2.82, gap_m: 12 } }, sampling: { seed: 9943 }, run: { duration_seconds: 35 } })}</pre><p><code>POST /v1/scenarios?wait=false</code> creates the job. <code>GET /v1/scenarios/&lt;job-id&gt;</code> polls it. No service address or credentials are published.</p></details><More to={href('f2-r023-ce-2')}>Watch the recorded 2.82 m/s example</More></>; }
-function Discovery({ d, event }: {
-    d: SearchData;
-    event: 'FN' | 'FP';
-}) { const colors = ['var(--accent)', 'var(--target)', 'var(--lane)']; return <><svg className="search-chart" viewBox="0 0 660 255" role="img" aria-label={`Cumulative ${event} events over each method’s 96 slots`}><line x1="42" x2="630" y1="213" y2="213" stroke="currentColor"/><line x1="42" x2="42" y1="20" y2="213" stroke="currentColor"/>{[0, 5, 10].map(v => <g key={v}><line x1="42" x2="630" y1={213 - v * 17} y2={213 - v * 17} stroke="currentColor" opacity=".12"/><text x="17" y={217 - v * 17}>{v}</text></g>)}<line x1={42 + 64 / 96 * 588} x2={42 + 64 / 96 * 588} y1="20" y2="213" stroke="currentColor" strokeDasharray="4 4" opacity=".4"/>{d.arms.map((a, i) => { let n = 0; const pts = ['42,213']; d.rows.filter(r => r.arm === a.arm).sort((a, b) => a.slot - b.slot).forEach(r => { const x = 42 + r.slot / 96 * 588; pts.push(`${x},${213 - n * 17}`); n += event === 'FN' ? r.F_FN : r.F_FP; pts.push(`${x},${213 - n * 17}`); }); return <polyline key={a.arm} points={pts.join(' ')} stroke={colors[i]} strokeWidth="2.5" fill="none"/>; })}<text x="42" y="240">0</text><text x="423" y="240">64</text><text x="615" y="240">96</text><text x="240" y="253">Trial slot within each method</text></svg><div className="search-legend">{d.arms.map((a, i) => <span key={a.arm} style={{ borderColor: colors[i] }}>{names[a.arm]}</span>)}</div></>; }
+function Discovery({ d, event }: { d: SearchData; event: 'FN' | 'FP' }) {
+    const colors = ['var(--accent)', 'var(--target)', 'var(--lane)'];
+    const max = event === 'FN' ? 3 : 12;
+    const ticks = event === 'FN' ? [0,1,2,3] : [0,4,8,12];
+    const y = (n:number) => 213 - n / max * 170;
+    const x = (slot:number) => 48 + slot / 96 * 454;
+    return <><svg className="search-chart" viewBox="0 0 540 265" role="img" aria-label={`Cumulative runs with ${event} events over each method's 96 trial slots`}>
+      <line x1="48" x2="502" y1="213" y2="213" stroke="currentColor" />
+      <line x1="48" x2="48" y1="35" y2="213" stroke="currentColor" />
+      {ticks.map(v => <g key={v}><line x1="48" x2="502" y1={y(v)} y2={y(v)} stroke="currentColor" opacity=".12"/><text x="20" y={y(v)+4}>{v}</text></g>)}
+      <text x="48" y="22">Runs with {event}</text>
+      <line x1={x(64)} x2={x(64)} y1="35" y2="213" stroke="currentColor" strokeDasharray="4 4" opacity=".35" />
+      {d.arms.map((a,i) => {
+        let n=0; const pts=[`${x(0)},${y(0)}`];
+        d.rows.filter(r => r.arm===a.arm).sort((a,b)=>a.slot-b.slot).forEach(r => {
+          pts.push(`${x(r.slot)},${y(n)}`); n+=event==='FN'?r.F_FN:r.F_FP; pts.push(`${x(r.slot)},${y(n)}`);
+        });
+        return <polyline key={a.arm} points={pts.join(' ')} stroke={colors[i]} strokeWidth="2.5" fill="none"><title>{names[a.arm]}: {n} runs with {event}</title></polyline>;
+      })}
+      {[0,32,64,96].map(v=><text key={v} x={x(v)} y="238" textAnchor="middle">{v}</text>)}
+      <text x="275" y="260" textAnchor="middle">Trial slot within each method</text>
+    </svg><div className="search-legend">{d.arms.map((a,i)=><span key={a.arm} style={{borderColor:colors[i]}}>{names[a.arm]}</span>)}</div></>;
+}
+function OverviewPlots({d}:{d:SearchData}) {
+    return <><div className="search-plot-pair">
+      <figure><h3>Overcounts · FP</h3><Discovery d={d} event="FP"/><figcaption>Cumulative runs reporting at least one extra wrong-way vehicle.</figcaption></figure>
+      <figure><h3>Misses · FN</h3><Discovery d={d} event="FN"/><figcaption>Cumulative runs missing at least one wrong-way vehicle.</figcaption></figure>
+    </div><p className="search-scope">Each method has 96 trials. The charts use different vertical scales. Trial order is not shared wall-clock time; the dashed line marks the 64-trial prefix. These are adaptive search observations, not independent risk estimates.</p></>;
+}
 function Heatmap({ d, event }: {
     d: SearchData;
     event: 'FN' | 'FP';
