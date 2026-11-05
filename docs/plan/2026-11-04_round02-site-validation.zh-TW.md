@@ -83,3 +83,11 @@ Overview回圈前加入Runtime verification is not enough與failure-pattern說�
 ## 2026-11-05：UAV標題與系統邊界
 
 依研究者指定，概念圖標題改為A Verifiable Video Agent for Spatio-temporal UAV Reasoning。左側User query與影片標示Inputs，放在系統框外；右側以Verifiable Video Agent System標頭與實線邊框涵蓋System1、Gemma、System2、Runtime Verifier及Assemble the final answer。桌面使用右箭頭、手機使用向下箭頭連接輸入與系統。僅調整網站展示，既有固定camera影片與實驗範圍未改。
+
+## 2026-11-05：概念圖影片與輸出縮圖
+
+依研究者要求在右側系統框內加入V5.3，將原車框截圖移至框內右下角並縮小為Example output（桌面220px，手機145px）。左側以可播放影片替代截圖；提供Video only／track IDs／vehicle groups、reported-only篩選、frame slider與前後逐幀。
+
+新增共用RecordedVideoPlayer，概念圖與replay使用同一播放器；requestVideoFrameCallback同步播放中的實際框，fallback使用requestAnimationFrame。GT透過明確prop與replay展開控制，概念圖不顯示GT。
+
+Chromium驗收兩個主要頁面的播放、seek、逐幀、T9／V9標籤、篩選數量、右側縮圖位置與大小及系統內版本標籤；原replay的GT圖層與400px light／dark無橫向溢出均通過，未見HTTP／runtime錯誤。未改原始影片、run資料或SUT。

@@ -1,6 +1,8 @@
 import { useEffect, useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import { asset } from '../data';
+import type { Detail } from './types';
+import RecordedVideoPlayer from './RecordedVideoPlayer';
 import './concept.css';
 
 interface Illustration {
@@ -29,10 +31,20 @@ function loadIllustration() {
     return r.json() as Promise<Illustration>;
   });
 }
+let savedExample: Promise<Detail> | null = null;
+function loadExample() {
+  return savedExample ??= fetch(asset('content/search/runs/f2-r001-random-3/bundle.json')).then(r => {
+    if (!r.ok || !r.headers.get('content-type')?.includes('json')) throw Error('Recorded video unavailable');
+    return r.json() as Promise<Detail>;
+  });
+}
 export default function AgentConcept() {
   const [shot, setShot] = useState<Illustration | null>(null);
   const [failed, setFailed] = useState(false);
   const title = useId();
+  const [example, setExample] = useState<Detail | null>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  useEffect(() => { let active = true; loadExample().then(b => {if (active) setExample(b);}).catch(() => {if (active) setVideoFailed(true);}); return () => {active = false;}; }, []);
   useEffect(() => { let active = true; loadIllustration().then(s => {if (active) setShot(s);}).catch(() => {if (active) setFailed(true);}); return () => {active = false;}; }, []);
   return <figure className="agent-concept" aria-labelledby={title}>
     <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal UAV Reasoning</h2></div><span className="concept-version">V5.3</span></header>
@@ -41,20 +53,11 @@ export default function AgentConcept() {
         <p className="concept-inputs-label">Inputs</p>
         <div className="concept-query"><Icon kind="query"/><div><strong>User query:</strong><p>Are any vehicles moving against the major traffic? How many, what colors, and when happened?</p><small>Illustrative wording; the replay retains the original measured query.</small></div></div>
         <div className="concept-scene-label"><Icon kind="camera"/><b>A real recorded video</b></div>
-        {shot ? <div className="concept-photo"><img src={asset(`content/search/${shot.image}`)} width={shot.width} height={shot.height} alt="Recorded traffic frame with a purple car selected by the program as moving against nearby flow"/>
-          <svg viewBox={`0 0 ${shot.width} ${shot.height}`} aria-label="Actual detector boxes; amber marks the program-selected wrong-way vehicle" role="img">
-            {shot.boxes.map((b,i) => <g key={i} className={b.candidate?'concept-box-target':'concept-box'}>
-              <rect x={b.bbox[0]} y={b.bbox[1]} width={b.bbox[2]-b.bbox[0]} height={b.bbox[3]-b.bbox[1]}/>
-              {b.candidate && <text x={b.bbox[0]} y={Math.max(24,b.bbox[1]-12)}>{b.vehicle} · wrong-way candidate</text>}
-            </g>)}
-          </svg>
-        </div> : <div className="concept-photo-pending">{failed?'Recorded frame unavailable. Open the replay below.':'Loading recorded frame…'}</div>}
-        <p className="concept-photo-note"><span className="concept-key"/>System-selected wrong-way candidate <span className="concept-key concept-key-cyan"/>Other detections</p>
-        <a className="concept-replay" href="#/search/run/f2-r001-random-3">Inspect the recorded run ↗</a>
-        <small>Source frame {shot?.frame ?? 155} · {((shot?.frame ?? 155)/(shot?.fps ?? 10)).toFixed(1)} s. Actual detector boxes and program selection; no ground-truth overlay.</small>
+        {example ? <RecordedVideoPlayer b={example} compact/> : <div className="concept-photo-pending">{videoFailed?'Recorded video unavailable. Open the replay below.':'Loading recorded video…'}</div>}
+        <a className="concept-replay" href="#/search/run/f2-r001-random-3">Inspect the full recorded run ↗</a>
       </div>
       <div className="concept-workflow" role="group" aria-label="Verifiable video agent system">
-        <div className="concept-system-boundary-label"><Icon kind="agent"/><strong>Verifiable Video Agent System</strong></div>
+        <div className="concept-system-boundary-label"><Icon kind="agent"/><strong>Verifiable Video Agent System</strong><span className="concept-version">V5.3</span></div>
         <div className="concept-program">
           <p className="concept-lane-label">System 1: Program-guided decisions</p>
           <div className="concept-program-steps">
@@ -75,7 +78,21 @@ export default function AgentConcept() {
           <p>Request a targeted look when useful. Return a supported finding or leave the case unresolved.</p>
         </div>
         <div className="concept-verifier"><Icon kind="shield"/><div><strong>Runtime Verifier</strong><span>Checks tool operations, sources, schemas and resources, plus host answer structure.</span></div></div>
-        <div className="concept-answer"><Icon kind="answer"/><strong>Assemble the final answer</strong></div>
+        <div className="concept-output">
+          <div className="concept-answer"><Icon kind="answer"/><strong>Assemble the final answer</strong></div>
+          <figure className="concept-output-preview">
+            <p className="concept-output-label">Example output</p>
+        {shot ? <div className="concept-photo"><img src={asset(`content/search/${shot.image}`)} width={shot.width} height={shot.height} alt="Recorded traffic frame with a purple car selected by the program as moving against nearby flow"/>
+          <svg viewBox={`0 0 ${shot.width} ${shot.height}`} aria-label="Actual detector boxes; amber marks the program-selected wrong-way vehicle" role="img">
+            {shot.boxes.map((b,i) => <g key={i} className={b.candidate?'concept-box-target':'concept-box'}>
+              <rect x={b.bbox[0]} y={b.bbox[1]} width={b.bbox[2]-b.bbox[0]} height={b.bbox[3]-b.bbox[1]}/>
+              {b.candidate && <text x={b.bbox[0]} y={Math.max(24,b.bbox[1]-12)}>{b.vehicle} · wrong-way candidate</text>}
+            </g>)}
+          </svg>
+        </div> : <div className="concept-photo-pending">{failed?'Recorded frame unavailable. Open the replay below.':'Loading recorded frame…'}</div>}
+            <figcaption>System-selected candidate · frame {shot?.frame ?? 155} · {((shot?.frame ?? 155)/(shot?.fps ?? 10)).toFixed(1)} s. Recorded boxes, no ground-truth overlay.</figcaption>
+          </figure>
+        </div>
       </div>
     </div>
     <figcaption>A program-first path with a conditional investigation loop. Runtime checks enforce execution constraints; traffic correctness is assessed separately by the Property Evaluator.</figcaption>

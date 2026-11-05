@@ -68,3 +68,5 @@ Overview與Verifiable Video Agent共用`AgentConcept`：真實Round 2影片幀�
 首頁並排FP／FN累積曲線，資料沿用288筆結果，顯示不同y軸尺度與分期採樣限制。Samplers頁共用曲線元件。概念圖使用原生HTML／SVG以維持手機可讀與可存取性；沒有AI合成車輛畫面。
 
 `export_round02.py`從既有發布proxy抽出示例原幀，`illustration.json`綁proxy／image SHA與實際boxes；manifest涵蓋新增資產。`validate_round02.py`檢查截圖標註與原run的tracking／opposing phases一致。不新增模型或Forge執行。
+
+概念圖左側提供可播放的原始影片、track／vehicle overlay、reported-only篩選、逐幀按鈕與slider；與replay共用RecordedVideoPlayer。右側系統框含V5.3及縮小的Example output截圖。播放時依presented-frame timestamp同步實際框，GT仍僅在replay明確展開後出現。
