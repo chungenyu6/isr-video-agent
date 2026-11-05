@@ -47,12 +47,12 @@ export default function AgentConcept() {
   useEffect(() => { let active = true; loadExample().then(b => {if (active) setExample(b);}).catch(() => {if (active) setVideoFailed(true);}); return () => {active = false;}; }, []);
   useEffect(() => { let active = true; loadIllustration().then(s => {if (active) setShot(s);}).catch(() => {if (active) setFailed(true);}); return () => {active = false;}; }, []);
   return <figure className="agent-concept" aria-labelledby={title}>
-    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal UAV Reasoning</h2></div><span className="concept-version">V5.3</span></header>
+    <header className="concept-heading"><div><p className="eyebrow">Meet the system under test</p><h2 id={title}>A Verifiable Video Agent for Spatio-temporal UAV Reasoning</h2></div></header>
     <div className="concept-layout">
       <div className="concept-scene">
         <p className="concept-inputs-label">Inputs</p>
         <div className="concept-query"><Icon kind="query"/><div><strong>User query:</strong><p>Are any vehicles moving against the major traffic? How many, what colors, and when happened?</p><small>Illustrative wording; the replay retains the original measured query.</small></div></div>
-        <div className="concept-scene-label"><Icon kind="camera"/><b>A real recorded video</b></div>
+        <div className="concept-scene-label"><Icon kind="camera"/><b>A simulator-generated video</b></div>
         {example ? <RecordedVideoPlayer b={example} compact/> : <div className="concept-photo-pending">{videoFailed?'Recorded video unavailable. Open the replay below.':'Loading recorded video…'}</div>}
         <a className="concept-replay" href="#/search/run/f2-r001-random-3">Inspect the full recorded run ↗</a>
       </div>
